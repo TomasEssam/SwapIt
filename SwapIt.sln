@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwapIt.API", "SwapIt.API\SwapIt.API.csproj", "{CB6A3AE1-1857-4B3B-B14A-2D29B2454D9F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SwapIt.API", "SwapIt.API\SwapIt.API.csproj", "{CB6A3AE1-1857-4B3B-B14A-2D29B2454D9F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwapIt.Data", "SwapIt.Data\SwapIt.Data.csproj", "{1173B1C8-5528-4786-AB86-82F351DB5B8B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwapIt.BL", "SwapIt.BL\SwapIt.BL.csproj", "{B35E0673-5819-404F-AD62-35F37D3A59C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{CB6A3AE1-1857-4B3B-B14A-2D29B2454D9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CB6A3AE1-1857-4B3B-B14A-2D29B2454D9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CB6A3AE1-1857-4B3B-B14A-2D29B2454D9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1173B1C8-5528-4786-AB86-82F351DB5B8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1173B1C8-5528-4786-AB86-82F351DB5B8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1173B1C8-5528-4786-AB86-82F351DB5B8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1173B1C8-5528-4786-AB86-82F351DB5B8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B35E0673-5819-404F-AD62-35F37D3A59C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B35E0673-5819-404F-AD62-35F37D3A59C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B35E0673-5819-404F-AD62-35F37D3A59C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B35E0673-5819-404F-AD62-35F37D3A59C5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

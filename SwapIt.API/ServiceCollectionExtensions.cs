@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SwapIt.BL.Helpers;
+using SwapIt.BL.IServices.Identity;
+using SwapIt.BL.Services;
 using SwapIt.Data.Entities.Context;
 using SwapIt.Data.Entities.Identity;
 using System.IdentityModel.Tokens.Jwt;
@@ -77,7 +79,9 @@ namespace SwapIt.API
         }
         public static void AddApplicationServices(this IServiceCollection services)
         {
- 
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IRoleService, RoleService>();
+
         }
         public static void AddSwagger(this IServiceCollection services)
         {

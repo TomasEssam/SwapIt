@@ -41,9 +41,9 @@ namespace SwapIt.Data.Entities.Context
                 .Where(e => e.State == EntityState.Added);
             foreach (var entity in addedEntities)
             {
-                entity.Entity.CreationUser = AppSecurityContext.UserName;
+                entity.Entity.CreationUser = "Tomas";
                 entity.Entity.CreationDate = DateTime.UtcNow;
-                entity.Entity.ModificationUser = AppSecurityContext.UserName;
+                entity.Entity.ModificationUser = "Tomas";
                 entity.Entity.ModificationDate = DateTime.UtcNow;
             }
 
@@ -60,7 +60,7 @@ namespace SwapIt.Data.Entities.Context
                 .Where(e => e.State == EntityState.Modified);
             foreach (var entity in modifiedEntities)
             {
-                entity.Entity.ModificationUser = AppSecurityContext.UserName;
+                entity.Entity.ModificationUser = "Tomas";
                 entity.Entity.ModificationDate = DateTime.UtcNow;
             }
 

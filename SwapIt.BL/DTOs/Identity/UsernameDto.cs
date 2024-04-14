@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace SwapIt.BL.DTOs.Identity
 {
-    public class ResetPasswordDto
+    public class UsernameDto
     {
-        public int UserId { get; set; }
-        public string UserName { get; set; }
-        public string Password { get; set; }
+        public string Username { get; set; }
+
     }
 }

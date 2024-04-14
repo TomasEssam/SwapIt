@@ -34,16 +34,14 @@ namespace SwapIt.API.Controllers
         }
 
         [HttpGet]
-        [Route("username-exists")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> IsUserNameExists(string userName, int? userId)
+        [Route("IsUserNameExists")]
+        public async Task<IActionResult> IsUserNameExists([FromBody] UsernameDto dto)
         {
-            return Ok(await _userService.IsUserNameExists(userName, userId));
+            return Ok(await _userService.IsUserNameExists(dto.Username, null));
         }
 
         [HttpPost]
-        [Route("reset-password")]
-        [Authorize(Roles = "Admin")]
+        [Route("ResetPassword")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
         {
             await _userService.ResetPasswordAsync(dto);
@@ -52,7 +50,6 @@ namespace SwapIt.API.Controllers
 
         [HttpPost]
         [Route("create")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateAsync([FromBody] UserDto dto)
         {
             await _userService.CreateUserAsync(dto);

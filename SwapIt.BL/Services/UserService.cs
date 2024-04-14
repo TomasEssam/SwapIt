@@ -71,6 +71,7 @@ namespace SwapIt.BL.Services
             {
                 Email = dto.Username,
                 SecurityStamp = Guid.NewGuid().ToString(),
+                ApplicationUserId = Guid.NewGuid(),
                 UserName = dto.Username,
                 IsActive = true
             };
@@ -84,7 +85,16 @@ namespace SwapIt.BL.Services
             }
 
             dto.UserId = user.Id;
-            await _userManager.AddToRoleAsync(user, dto.RoleId);
+            try
+            {
+
+                await _userManager.AddToRoleAsync(user, dto.RoleId);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
         public async Task DeleteUserAsync(int userId)
         {

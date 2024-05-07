@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SwapIt.BL.DTOs.Identity;
 using SwapIt.BL.IServices.Identity;
 
 namespace SwapIt.API.Controllers
@@ -31,7 +32,12 @@ namespace SwapIt.API.Controllers
         {
             return Ok(_roleService.GetRoles());
         }
-
+        [HttpGet]
+        [Route("AddUserRole")]
+        public async Task<IActionResult> AddUserRolesRow([FromBody] UserRolesDto userRole)
+        {
+            return Ok(_roleService.AddUserRoleRow(userRole));
+        }
         #endregion
     }
 }

@@ -11,6 +11,10 @@ namespace SwapIt.Data.Entities.Identity
     public class ApplicationUser : IdentityUser<int>, IDeletedEntity, IAuditEntity
     {
         public Guid ApplicationUserId { get; set; }
+        #region new fields 
+        public string? Gender { get; set; }
+        public DateTime? BirthDate { get; set; }
+        #endregion
         public string? Address { get; set; }
         public string? ProfileImagePath { get; set; }
         public string? ImageId { get; set; } 

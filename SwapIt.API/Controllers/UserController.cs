@@ -35,7 +35,7 @@ namespace SwapIt.API.Controllers
 
         [HttpGet]
         [Route("IsUserNameExists")]
-        public async Task<IActionResult> IsUserNameExists([FromBody] UsernameDto dto)
+        public async Task<IActionResult> IsUserNameExists([FromQuery] UsernameDto dto)
         {
             return Ok(await _userService.IsUserNameExists(dto.Username, null));
         }

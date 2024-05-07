@@ -69,7 +69,10 @@ namespace SwapIt.BL.Services
         {
             var user = new ApplicationUser()
             {
-                Email = dto.Username,
+                BirthDate = dto.DateOfBirth,
+                Email = dto.Email,
+                Gender = dto.Gender,
+                PhoneNumber = dto.PhoneNumber,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 ApplicationUserId = Guid.NewGuid(),
                 UserName = dto.Username,
@@ -83,12 +86,24 @@ namespace SwapIt.BL.Services
                 var errors = string.Join(",", result.Errors.Select(x => x.Description));
                 throw new Exception(errors);
             }
-
+            
             dto.UserId = user.Id;
             try
             {
+                if (string.IsNullOrEmpty(dto.RoleId))
+                {
+                    await _userManager.AddToRoleAsync(user, RolesNames.ServiceProvider);
+                    await _userManager.AddToRoleAsync(user, RolesNames.ServiceConsumer);
 
-                await _userManager.AddToRoleAsync(user, dto.RoleId);
+                }
+                else if (dto.RoleId == RolesNames.Admin || dto.RoleId == RolesNames.SuperAdmin)
+                {
+                    await _userManager.AddToRoleAsync(user, dto.RoleId); 
+                }
+                else
+                {
+                    throw new Exception("You provided a Role name that doesn't exist");
+                }
             }
             catch (Exception ex)
             {

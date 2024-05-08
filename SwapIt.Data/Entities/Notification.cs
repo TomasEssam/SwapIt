@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SwapIt.Data.Entities.NewEntities
+namespace SwapIt.Data.Entities
 {
     public class Notification
     {

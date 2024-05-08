@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SwapIt.BL.DTOs.Identity;
 using SwapIt.BL.IServices.Identity;
+using SwapIt.Data.Constants;
 
 namespace SwapIt.API.Controllers
 {

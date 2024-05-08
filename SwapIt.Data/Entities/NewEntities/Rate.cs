@@ -13,7 +13,7 @@ namespace SwapIt.Data.Entities.NewEntities
         public int Id { get; set; }
         public byte RateValue { get; set; }
         public DateTime RateDate { get; set; }
-        public string Feedback { get; set; }
+        public string? Feedback { get; set; }
         // ??????
         [ForeignKey("ApplicationUser")]
         public int ServiceProviderId { get; set; }

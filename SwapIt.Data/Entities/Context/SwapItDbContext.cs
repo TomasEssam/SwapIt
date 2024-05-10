@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
-using SwapIt.Data.Configurations.Entities;
 using SwapIt.Data.Configurations.Identity;
 using SwapIt.Data.Entities.Common;
 using SwapIt.Data.Entities.Identity;

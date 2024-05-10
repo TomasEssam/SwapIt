@@ -3,6 +3,7 @@ using SwapIt.Data.Entities.Common;
 using SwapIt.Data.Entities.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ namespace SwapIt.Data.Entities
 {
     public class ServiceRequest : IDeletedEntity, IAuditEntity
     {
+        [Key]
         public int Id { get; set; }
         public DateTime RequestDate { get; set; }
         public string RequestState { get; set; }
@@ -27,7 +29,7 @@ namespace SwapIt.Data.Entities
         public DateTime? ModificationDate { get; set; }
 
         [ForeignKey("ServiceId")]
-        public Service Service { get; set; } 
+        public Service Service { get; set; }
         [ForeignKey("CustomerId")]
         public ApplicationUser Customer { get; set; }
     }

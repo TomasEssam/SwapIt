@@ -1,6 +1,7 @@
 ﻿using SwapIt.Data.Entities.Common;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ namespace SwapIt.Data.Entities
 {
     public class Category : IDeletedEntity, IAuditEntity
     {
+        [Key]
         public int Id { get; set; }
         public string Name { get; set; } = null!;
         public bool IsDeleted { get; set; }
@@ -18,5 +20,6 @@ namespace SwapIt.Data.Entities
         public DateTime CreationDate { get; set; }
         public string ModificationUser { get; set; }
         public DateTime? ModificationDate { get; set; }
+        public ICollection<Service> Services { get; set; } = null!;
     }
 }

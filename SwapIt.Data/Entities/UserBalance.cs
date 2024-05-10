@@ -3,6 +3,7 @@ using SwapIt.Data.Entities.Common;
 using SwapIt.Data.Entities.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ namespace SwapIt.Data.Entities
 {
     public class UserBalance : IDeletedEntity, IAuditEntity
     {
+        [Key]
         public int Id { get; set; }
         public float Amount { get; set; }
         public int Points { get; set; }

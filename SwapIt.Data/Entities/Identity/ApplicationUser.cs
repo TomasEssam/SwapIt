@@ -26,11 +26,11 @@ namespace SwapIt.Data.Entities.Identity
         public DateTime CreationDate { get; set; }
         public string ModificationUser { get; set; }
         public DateTime? ModificationDate { get; set; }
-        public ICollection<Service> services { get; set; } = null!;
-        public ICollection<UserNotification> UserNotifications { get; set; } = null!;
-        public ServiceRequest ServiceRequest { get; set; } 
-        public UserBalance UserBalance { get; set; }
-        public ICollection<Rate> Rates { get; set; } = null!;
 
+        public ICollection<UserNotification> UserNotifications { get; set; }
+        public UserBalance UserBalance { get; set; }
+        public ICollection<ServiceRequest> ServiceRequests { get; set; }
+        public ICollection<Rate> Rates { get; set; }
+        public ICollection<Service> Services { get; set; }
     }
 }

@@ -19,10 +19,10 @@ namespace SwapIt.Data.Entities.Context
         ApplicationUserRole, ApplicationUserLogin, ApplicationRoleClaim, ApplicationUserToken>
     {
         public SwapItDbContext(DbContextOptions<SwapItDbContext> options) : base(options) { }
-        
+
         public DbSet<Service> Services { get; set; }
-        public DbSet<ServiceRequest> Requests { get; set; }
-        public DbSet<UserBalance> Balances { get; set; }
+        public DbSet<ServiceRequest> ServiceRequests { get; set; }
+        public DbSet<UserBalance> UserBalances { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Rate> Rates { get; set; }
         public DbSet<UserNotification> UserNotifications { get; set; }
@@ -32,6 +32,37 @@ namespace SwapIt.Data.Entities.Context
         {
             base.OnModelCreating(modelBuilder);
             ApplyConfigurationsToModel(modelBuilder);
+            modelBuilder.Entity<Rate>().HasOne(c => c.Customer)
+                .WithMany(x => x.Rates).OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Rate>().HasOne(c => c.Service)
+               .WithMany(x => x.Rates).OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Service>().HasOne(s => s.ServiceProvider)
+               .WithMany(x => x.Services).OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Service>().HasOne(c => c.Category)
+               .WithMany(x => x.Services).OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<ServiceRequest>().HasOne(c => c.Customer)
+               .WithMany(x => x.ServiceRequests).OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<ServiceRequest>().HasOne(c => c.Service)
+               .WithMany(x => x.ServiceRequests).OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<UserBalance>().HasOne(c => c.User)
+               .WithOne(x => x.UserBalance).OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<UserNotification>().HasOne(c => c.Notification)
+               .WithMany(x => x.UserNotifications).OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<UserNotification>().HasOne(c => c.User)
+               .WithMany(x => x.UserNotifications).OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Category>().HasQueryFilter(e => !e.IsDeleted);
+            modelBuilder.Entity<Notification>().HasQueryFilter(e => !e.IsDeleted);
+            modelBuilder.Entity<Rate>().HasQueryFilter(e => !e.IsDeleted);
+            modelBuilder.Entity<Service>().HasQueryFilter(e => !e.IsDeleted);
+            modelBuilder.Entity<ServiceRequest>().HasQueryFilter(e => !e.IsDeleted);
+            modelBuilder.Entity<UserBalance>().HasQueryFilter(e => !e.IsDeleted);
+            modelBuilder.Entity<UserNotification>().HasQueryFilter(e => !e.IsDeleted);
+
         }
         public override int SaveChanges()
         {
@@ -103,13 +134,13 @@ namespace SwapIt.Data.Entities.Context
             #endregion
 
             #region Entities 
-            modelBuilder.ApplyConfiguration(new ServiceConfiguration());
-            modelBuilder.ApplyConfiguration(new ServiceRequestConfiguration());
-            modelBuilder.ApplyConfiguration(new NotificationConfiguration());
-            modelBuilder.ApplyConfiguration(new RateConfiguration());
-            modelBuilder.ApplyConfiguration(new UserBalanceConfiguration());
-            modelBuilder.ApplyConfiguration(new UserNotificationConfiguration());
-            modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+            //modelBuilder.ApplyConfiguration(new ServiceConfiguration());
+            //modelBuilder.ApplyConfiguration(new ServiceRequestConfiguration());
+            //modelBuilder.ApplyConfiguration(new NotificationConfiguration());
+            //modelBuilder.ApplyConfiguration(new RateConfiguration());
+            //modelBuilder.ApplyConfiguration(new UserBalanceConfiguration());
+            //modelBuilder.ApplyConfiguration(new UserNotificationConfiguration());
+            //modelBuilder.ApplyConfiguration(new CategoryConfiguration());
 
             #endregion
 

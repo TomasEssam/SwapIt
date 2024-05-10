@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SwapIt.Data.Entities.Context;
 
@@ -11,9 +12,10 @@ using SwapIt.Data.Entities.Context;
 namespace SwapIt.Data.Migrations
 {
     [DbContext(typeof(SwapItDbContext))]
-    partial class SwapItDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240510172141_addProjectEntities")]
+    partial class addProjectEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

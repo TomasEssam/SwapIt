@@ -3,6 +3,7 @@ using SwapIt.Data.Entities.Common;
 using SwapIt.Data.Entities.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ namespace SwapIt.Data.Entities
 {
     public class UserNotification : IDeletedEntity, IAuditEntity
     {
+        [Key]
         public int Id { get; set; }
         public bool IsRead { get; set; }
         public int ApplicationUserId { get; set; }
@@ -24,9 +26,9 @@ namespace SwapIt.Data.Entities
         public DateTime? ModificationDate { get; set; }
 
         [ForeignKey("ApplicationUserId")]
-        public ApplicationUser Users { get; set; }
+        public ApplicationUser User { get; set; } = null!;
 
         [ForeignKey("NotificationId")]
-        public Notification Notifications { get; set; }
+        public Notification Notification { get; set; } = null!;
     }
 }

@@ -10,15 +10,12 @@ using System.Threading.Tasks;
 
 namespace SwapIt.Data.Entities
 {
-    public class ServiceRequest : IDeletedEntity, IAuditEntity
+    public class UserBalance : IDeletedEntity, IAuditEntity
     {
         public int Id { get; set; }
-        public DateTime RequestDate { get; set; }
-        public string RequestState { get; set; }
-        public float ExecutionTime { get; set; }
-        public float PaidFund { get; set; }
-        public int CustomerId { get; set; }
-        public int ServiceId { get; set; }
+        public float Amount { get; set; }
+        public int Points { get; set; }
+        public int UserId { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime? DeletionDate { get; set; }
         public string CreationUser { get; set; }
@@ -26,9 +23,7 @@ namespace SwapIt.Data.Entities
         public string ModificationUser { get; set; }
         public DateTime? ModificationDate { get; set; }
 
-        [ForeignKey("ServiceId")]
-        public Service Service { get; set; } 
-        [ForeignKey("CustomerId")]
-        public ApplicationUser Customer { get; set; }
+        [ForeignKey("UserId")]
+        public ApplicationUser User { get; set; }
     }
 }

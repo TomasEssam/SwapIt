@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
+using SwapIt.Data.Configurations.Entities;
 using SwapIt.Data.Configurations.Identity;
 using SwapIt.Data.Entities.Common;
 using SwapIt.Data.Entities.Identity;
@@ -18,6 +19,15 @@ namespace SwapIt.Data.Entities.Context
         ApplicationUserRole, ApplicationUserLogin, ApplicationRoleClaim, ApplicationUserToken>
     {
         public SwapItDbContext(DbContextOptions<SwapItDbContext> options) : base(options) { }
+        
+        public DbSet<Service> Services { get; set; }
+        public DbSet<ServiceRequest> Requests { get; set; }
+        public DbSet<UserBalance> Balances { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Rate> Rates { get; set; }
+        public DbSet<UserNotification> UserNotifications { get; set; }
+        public DbSet<Category> Categories { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -89,6 +99,17 @@ namespace SwapIt.Data.Entities.Context
             modelBuilder.ApplyConfiguration(new ApplicationUserTokenConfiguration());
             modelBuilder.ApplyConfiguration(new ApplicationUserLoginConfiguration());
             modelBuilder.ApplyConfiguration(new ApplicationRoleClaimConfiguration());
+
+            #endregion
+
+            #region Entities 
+            modelBuilder.ApplyConfiguration(new ServiceConfiguration());
+            modelBuilder.ApplyConfiguration(new ServiceRequestConfiguration());
+            modelBuilder.ApplyConfiguration(new NotificationConfiguration());
+            modelBuilder.ApplyConfiguration(new RateConfiguration());
+            modelBuilder.ApplyConfiguration(new UserBalanceConfiguration());
+            modelBuilder.ApplyConfiguration(new UserNotificationConfiguration());
+            modelBuilder.ApplyConfiguration(new CategoryConfiguration());
 
             #endregion
 

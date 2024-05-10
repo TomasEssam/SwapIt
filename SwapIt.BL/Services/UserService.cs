@@ -121,7 +121,7 @@ namespace SwapIt.BL.Services
         {
             var user = await _userManager.FindByIdAsync(dto.UserId.ToString());
             user.UserName = dto.Username;
-            user.Email = dto.Username;
+            user.Email = dto.Email;
             await _userManager.UpdateAsync(user);
             var inRole = await _userManager.IsInRoleAsync(user, dto.RoleId);
             if (!inRole)

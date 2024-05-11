@@ -10,20 +10,29 @@ using System.Threading.Tasks;
 
 namespace SwapIt.Data.Entities
 {
-    public class Notification : IDeletedEntity, IAuditEntity
+    public class PointsLogger : IDeletedEntity, IAuditEntity
     {
         [Key]
         public int Id { get; set; }
         [Required]
-        public string NotificationType { get; set; }
-        [MaxLength(1000)]
-        public string Content { get; set; }
+        public TransactionType Type { get; set; }
+        public float Amount { get; set; }
+        public int UserId { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime? DeletionDate { get; set; }
         public string CreationUser { get; set; }
         public DateTime CreationDate { get; set; }
         public string ModificationUser { get; set; }
         public DateTime? ModificationDate { get; set; }
-        public ICollection<UserNotification> UserNotifications { get; set; }
+
+        [ForeignKey("UserId")]
+        public ApplicationUser User { get; set; }
+    }
+
+    public enum TransactionType
+    {
+        Deposit,
+        Withdraw,
+        Hold
     }
 }

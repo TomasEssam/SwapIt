@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using SwapIt.BL.DTOs;
+using SwapIt.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +13,11 @@ namespace SwapIt.BL.Helpers
     {
         public GeneralProfile()
         {
+            CreateMap<ServiceDto, Service>().ReverseMap();
+            CreateMap<DropDownDto, Service>().ReverseMap();
+            CreateMap<DropDownDto, Category>().ReverseMap();
+            CreateMap<CategoryDto, Category>().ReverseMap();
+            CreateMap<UserBalanceDto, UserBalance>().ReverseMap();
         }
     }
 }

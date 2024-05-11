@@ -15,8 +15,11 @@ namespace SwapIt.Data.Entities
     {
         [Key]
         public int Id { get; set; }
+        [Required]
         public int RateValue { get; set; }
+        [Required]
         public DateTime RateDate { get; set; }
+        [MaxLength(1000)]
         public string? Feedback { get; set; }
         public int ServiceId { get; set; }
         public int CustomerId { get; set; }

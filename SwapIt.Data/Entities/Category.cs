@@ -13,6 +13,8 @@ namespace SwapIt.Data.Entities
     {
         [Key]
         public int Id { get; set; }
+        [Required]
+        [StringLength(50, MinimumLength = 2)]
         public string Name { get; set; } = null!;
         public bool IsDeleted { get; set; }
         public DateTime? DeletionDate { get; set; }

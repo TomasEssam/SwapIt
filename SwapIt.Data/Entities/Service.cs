@@ -15,8 +15,12 @@ namespace SwapIt.Data.Entities
     {
         [Key]
         public int Id { get; set; }
+        [Required]
+        [StringLength(50, MinimumLength = 2)]
         public string Name { get; set; }
+        [MaxLength(1000)]
         public string Description { get; set; }
+        [Required]
         public float Price { get; set; }
         public int TimeToExecute { get; set; }
         public string PreviousworkImagesUrl { get; set; }

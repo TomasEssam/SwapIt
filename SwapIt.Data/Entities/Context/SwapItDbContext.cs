@@ -26,7 +26,7 @@ namespace SwapIt.Data.Entities.Context
         public DbSet<Rate> Rates { get; set; }
         public DbSet<UserNotification> UserNotifications { get; set; }
         public DbSet<Category> Categories { get; set; }
-
+        public DbSet<PointsLogger> PointsLoggers { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -54,6 +54,9 @@ namespace SwapIt.Data.Entities.Context
             modelBuilder.Entity<UserNotification>().HasOne(c => c.User)
                .WithMany(x => x.UserNotifications).OnDelete(DeleteBehavior.NoAction);
 
+            modelBuilder.Entity<PointsLogger>().HasOne(p => p.User)
+                .WithMany(x => x.PointsLoggers).OnDelete(DeleteBehavior.NoAction);
+
             modelBuilder.Entity<Category>().HasQueryFilter(e => !e.IsDeleted);
             modelBuilder.Entity<Notification>().HasQueryFilter(e => !e.IsDeleted);
             modelBuilder.Entity<Rate>().HasQueryFilter(e => !e.IsDeleted);
@@ -61,6 +64,8 @@ namespace SwapIt.Data.Entities.Context
             modelBuilder.Entity<ServiceRequest>().HasQueryFilter(e => !e.IsDeleted);
             modelBuilder.Entity<UserBalance>().HasQueryFilter(e => !e.IsDeleted);
             modelBuilder.Entity<UserNotification>().HasQueryFilter(e => !e.IsDeleted);
+            modelBuilder.Entity<PointsLogger>().HasQueryFilter(e => !e.IsDeleted);
+
 
         }
         public override int SaveChanges()

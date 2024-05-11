@@ -32,5 +32,6 @@ namespace SwapIt.Data.Entities.Identity
         public ICollection<ServiceRequest> ServiceRequests { get; set; }
         public ICollection<Rate> Rates { get; set; }
         public ICollection<Service> Services { get; set; }
+        public ICollection<PointsLogger> PointsLoggers { get; set; }
     }
 }

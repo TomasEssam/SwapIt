@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using SwapIt.BL.DTOs;
+using SwapIt.BL.DTOs.Identity;
 using SwapIt.BL.IServices;
 using SwapIt.Data.Constants;
 using SwapIt.Data.Entities;
@@ -52,9 +54,35 @@ namespace SwapIt.BL.Services
         }
 
 
-        public async Task<bool> CancelServiceRequestAsync(int ServiceRequestId)
+        public async Task<bool> CancelServiceRequestAsync(int userId,  int ServiceRequestId)
         {
-            throw new NotImplementedException();
+            //case state>pending =======> return money
+            //case state=>accepted customer ==>return money - commession
+            //case state=>accepted provider ==> return money 
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+
+            if(user is null) 
+                return false;
+
+            var serviceRequest = await _serviceRequestRepository.GetByIdAsync(ServiceRequestId);
+           
+            if (serviceRequest is null)
+                return false;
+
+            if (serviceRequest.RequestState == RequestStateNames.Pending)
+            {
+                
+                serviceRequest.RequestState = RequestStateNames.Canceled;
+                //return money
+                var userBalance = await _UserBalanceRepository.GetByUserAsync(user);
+
+
+                //_UserBalanceRepository.AddPointsAsync()
+
+                //add notification
+
+            }
+            throw new Exception();
         }
 
 
@@ -76,18 +104,17 @@ namespace SwapIt.BL.Services
                 return false;
 
 
-
             //track points transaction
             var pointsLogger = new PointsLogger();
             pointsLogger.Amount = service.Price;
             pointsLogger.Type = TransactionTypes.Hold;
             pointsLogger.UserId = user.Id;
+            pointsLogger.ServiceRequestId = dto.ServiceRequestId; 
             await _pointsLoggerRepository.AddAsync(pointsLogger);
 
 
             dto.RequestState = RequestStateNames.Pending;
             return await _serviceRequestRepository.AddAsync(_mapper.Map<ServiceRequest>(dto));
-            
         }
 
         public async Task<bool> DeleteAsync(int serviceRequestId)

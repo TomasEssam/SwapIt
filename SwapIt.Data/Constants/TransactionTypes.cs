@@ -11,6 +11,7 @@ namespace SwapIt.Data.Constants
         public const string Deposit = "Deposit";
         public const string Withdraw = "Withdraw";
         public const string Hold = "Hold";
+        public const string Returned = "Returned";
 
     }
 }

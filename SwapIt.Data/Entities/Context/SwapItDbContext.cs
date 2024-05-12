@@ -56,6 +56,8 @@ namespace SwapIt.Data.Entities.Context
 
             modelBuilder.Entity<PointsLogger>().HasOne(p => p.User)
                 .WithMany(x => x.PointsLoggers).OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<PointsLogger>().HasOne(p => p.ServiceRequest)
+                .WithMany(x => x.PointsLoggers).OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Category>().HasQueryFilter(e => !e.IsDeleted);
             modelBuilder.Entity<Notification>().HasQueryFilter(e => !e.IsDeleted);

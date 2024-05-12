@@ -14,7 +14,7 @@ namespace SwapIt.BL.IServices
         Task<ServiceRequestDto> GetByIdAsync(int id);
         Task<bool> DeleteAsync(int serviceRequestId);
         Task<bool> UpdateAsync(ServiceRequestDto dto);
-        Task<bool> CancelServiceRequestAsync(int ServiceRequestId);
+        Task<bool> CancelServiceRequestAsync(int userId, int ServiceRequestId);
         Task<bool> AcceptServiceRequestAsync(int ServiceRequestId);
 
     }

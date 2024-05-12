@@ -19,6 +19,7 @@ namespace SwapIt.Data.Entities
         public string Type { get; set; }
         public float Amount { get; set; }
         public int UserId { get; set; }
+        public int? ServiceRequestId { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime? DeletionDate { get; set; }
         public string CreationUser { get; set; }
@@ -28,6 +29,8 @@ namespace SwapIt.Data.Entities
 
         [ForeignKey("UserId")]
         public ApplicationUser User { get; set; }
+        [ForeignKey("ServiceRequestId")]
+        public ServiceRequest ServiceRequest { get; set; }
     }
 
 }

@@ -36,5 +36,8 @@ namespace SwapIt.Data.Entities
         public Service Service { get; set; }
         [ForeignKey("CustomerId")]
         public ApplicationUser Customer { get; set; }
+
+        public ICollection<PointsLogger> PointsLoggers { get; set; }
+
     }
 }

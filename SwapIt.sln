@@ -5,9 +5,9 @@ VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SwapIt.API", "SwapIt.API\SwapIt.API.csproj", "{CB6A3AE1-1857-4B3B-B14A-2D29B2454D9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwapIt.Data", "SwapIt.Data\SwapIt.Data.csproj", "{1173B1C8-5528-4786-AB86-82F351DB5B8B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SwapIt.Data", "SwapIt.Data\SwapIt.Data.csproj", "{1173B1C8-5528-4786-AB86-82F351DB5B8B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwapIt.BL", "SwapIt.BL\SwapIt.BL.csproj", "{B35E0673-5819-404F-AD62-35F37D3A59C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SwapIt.BL", "SwapIt.BL\SwapIt.BL.csproj", "{B35E0673-5819-404F-AD62-35F37D3A59C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

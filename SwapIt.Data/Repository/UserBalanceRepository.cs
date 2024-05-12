@@ -2,6 +2,7 @@
 using SwapIt.Data.Constants;
 using SwapIt.Data.Entities;
 using SwapIt.Data.Entities.Context;
+using SwapIt.Data.Entities.Identity;
 using SwapIt.Data.IRepository;
 using System;
 using System.Collections.Generic;
@@ -21,11 +22,10 @@ namespace SwapIt.Data.Repository
         {
             Context = swapItDbContext ?? throw new ArgumentNullException(nameof(swapItDbContext));
         }
-        public async Task<UserBalance> AddAsync(UserBalance userBalance)
+        public async Task<bool> AddAsync(UserBalance userBalance)
         {
             Context.UserBalances.Add(userBalance);
-            await Context.SaveChangesAsync();
-            return userBalance;
+            return await Context.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> DeleteAsync(UserBalance userBalance)
@@ -54,12 +54,12 @@ namespace SwapIt.Data.Repository
             return await Context.UserBalances.FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        public async Task<UserBalance> UpdateAsync(UserBalance newUserBalance)
+        public async Task<bool> UpdateAsync(UserBalance newUserBalance)
         {
             var userBalnce = await GetByIdAsync(newUserBalance.Id);
             if (userBalnce == null)
             {
-                return null;
+                return false;
             }
             else
             {
@@ -67,7 +67,7 @@ namespace SwapIt.Data.Repository
                 throw new Exception();
                 userBalnce = newUserBalance;
                 await Context.SaveChangesAsync();
-                return newUserBalance;
+                return true;
             }
         }
         public async Task<bool> AddPointsAsync(UserBalance userBalance, int points)
@@ -75,9 +75,7 @@ namespace SwapIt.Data.Repository
             if (points > 0)
             {
                 userBalance.Points += points;
-                await UpdateAsync(userBalance);
-
-                return true;
+                return await UpdateAsync(userBalance);
             }
             return false;
         }
@@ -87,14 +85,19 @@ namespace SwapIt.Data.Repository
             if (points > 0 && userBalance.Points >= points)
             {
                 userBalance.Points -= points;
-                await UpdateAsync(userBalance);
+                return await UpdateAsync(userBalance);
 
-
-                return true;
             }
             return false;
         }
 
-
+        public async Task<UserBalance> GetByUserIdAsync(int id)
+        {
+            return await Context.UserBalances.FirstOrDefaultAsync(c => c.UserId == id);
+        }
+        public async Task<UserBalance> GetByUserAsync(ApplicationUser user)
+        {
+            return await Context.UserBalances.FirstOrDefaultAsync(c => c.UserId == user.Id);
+        }
     }
 }

@@ -12,7 +12,7 @@ namespace SwapIt.BL.IServices
     {
         Task<bool> CreateAsync(UserBalanceDto dto);
         Task<bool> DeleteAsync(int userBalanceId);
-        Task<UserBalanceDto> UpdateAsync(UserBalanceDto dto);
+        Task<bool> UpdateAsync(UserBalanceDto dto);
         Task<UserBalanceDto> GetByIdAsync(int userBalanceId);
         Task<bool> AddPointsAsync(UserBalanceDto dto, int points);
         Task<bool> SubstractPointsAsync(UserBalanceDto dto, int points);

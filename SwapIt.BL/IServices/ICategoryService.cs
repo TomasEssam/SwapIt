@@ -12,7 +12,7 @@ namespace SwapIt.BL.IServices
     {
         Task<bool> CreateAsync(CategoryDto dto);
         Task<bool> DeleteAsync(int categoryId);
-        Task<CategoryDto> UpdateAsync(CategoryDto dto);
+        Task<bool> UpdateAsync(CategoryDto dto);
         Task<CategoryDto> GetByIdAsync(int categoryId);
         Task<List<DropDownDto>> GetCategoryDDAsync();
     }

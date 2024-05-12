@@ -30,14 +30,14 @@ namespace SwapIt.BL.Services
         public async Task<bool> CreateAsync(CategoryDto dto)
         {
             var model = _mapper.Map<Category>(dto);
-            await _categoryRepository.AddAsync(model);
-            return true;
+            return await _categoryRepository.AddAsync(model);
+
         }
 
         public async Task<bool> DeleteAsync(int categoryId)
         {
-            await _categoryRepository.DeleteByIdAsync(categoryId);
-            return true;
+            return await _categoryRepository.DeleteByIdAsync(categoryId);
+            
         }
 
 
@@ -47,11 +47,11 @@ namespace SwapIt.BL.Services
             return _mapper.Map<List<DropDownDto>>(model);
         }
 
-        public async Task<CategoryDto> UpdateAsync(CategoryDto dto)
+        public async Task<bool> UpdateAsync(CategoryDto dto)
         {
             var model = _mapper.Map<Category>(dto);
-            await _categoryRepository.UpdateAsync(model);
-            return dto;
+            return await _categoryRepository.UpdateAsync(model);
+             
         }
     }
 }

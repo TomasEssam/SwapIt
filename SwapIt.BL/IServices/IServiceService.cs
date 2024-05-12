@@ -14,7 +14,7 @@ namespace SwapIt.BL.IServices
     {
         Task<bool> CreateAsync(ServiceDto dto);
         Task<bool> DeleteAsync(int serviceId);
-        Task<ServiceDto> UpdateAsync(ServiceDto dto);
+        Task<bool> UpdateAsync(ServiceDto dto);
         Task<List<ServiceDto>> GetAllAcceptedAsync();
         Task<List<ServiceDto>> GetAllFinshiedAsync();
         Task<List<ServiceDto>> GetAllAsync();

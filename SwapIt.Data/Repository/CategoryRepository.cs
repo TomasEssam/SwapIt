@@ -19,11 +19,10 @@ namespace SwapIt.Data.Repository
         {
             Context = swapItDbContext ?? throw new ArgumentNullException(nameof(swapItDbContext));
         }
-        public async Task<Category> AddAsync(Category category)
+        public async Task<bool> AddAsync(Category category)
         {
             Context.Categories.Add(category);
-            await Context.SaveChangesAsync();
-            return category;
+            return await Context.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> DeleteAsync(Category category)
@@ -52,20 +51,18 @@ namespace SwapIt.Data.Repository
             return await Context.Categories.FirstOrDefaultAsync(c => c.Id == id);
         }
         //Ask about it
-        public async Task<Category> UpdateAsync(Category newCategory)
+        public async Task<bool> UpdateAsync(Category newCategory)
         {
             var category = await GetByIdAsync(newCategory.Id);
             if (category == null)
-            {
-                return null;
-            }
+                return false;
+
             else
             {
-                //we need to use Auto mapper
                 throw new Exception();
                 category = newCategory;
                 await Context.SaveChangesAsync();
-                return newCategory;
+                return true;
             }
         }
     }

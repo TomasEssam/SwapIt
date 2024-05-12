@@ -70,39 +70,40 @@ namespace SwapIt.BL.Services
 
             if (user is null)
                 return false;
-            
-            //var userBalance = await _UserBalanceRepository.GetByIdAsync(user.user;
+
+            bool substracted = await _UserBalanceRepository.SubstractPointsAsync(await _UserBalanceRepository.GetByUserAsync(user), (int)service.Price);
+            if(!substracted) 
+                return false;
 
 
-            //if(_userBalanceService(UserBalance))
 
-            ////track points
-            //var pointsLogger = new PointsLogger();
-            //pointsLogger.Amount = points;
-            //pointsLogger.Type = TransactionTypes.Deposit;
-            //pointsLogger.UserId = dto.UserId;
-            //await _pointsLoggerRepository.AddAsync(pointsLogger);
+            //track points transaction
+            var pointsLogger = new PointsLogger();
+            pointsLogger.Amount = service.Price;
+            pointsLogger.Type = TransactionTypes.Hold;
+            pointsLogger.UserId = user.Id;
+            await _pointsLoggerRepository.AddAsync(pointsLogger);
 
 
             dto.RequestState = RequestStateNames.Pending;
+            return await _serviceRequestRepository.AddAsync(_mapper.Map<ServiceRequest>(dto));
             
-            await _serviceRequestRepository.AddAsync(_mapper.Map<ServiceRequest>(dto));
-            return true;
         }
 
         public async Task<bool> DeleteAsync(int serviceRequestId)
         {
-            throw new NotImplementedException();
+            return await _serviceRequestRepository.DeleteByIdAsync(serviceRequestId);
         }
 
         public async Task<ServiceRequestDto> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return  _mapper.Map<ServiceRequestDto>(await _serviceRequestRepository.GetByIdAsync(id));
         }
 
-        public async Task<ServiceRequestDto> UpdateAsync(ServiceRequestDto dto)
+        public async Task<bool> UpdateAsync(ServiceRequestDto dto)
         {
-            throw new NotImplementedException();
+            return await _serviceRequestRepository.UpdateAsync(_mapper.Map<ServiceRequest>(dto));
+
         }
     }
 }

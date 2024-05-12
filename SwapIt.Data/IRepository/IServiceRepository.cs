@@ -11,8 +11,8 @@ namespace SwapIt.Data.IRepository
     {
         Task<Service> GetByIdAsync(int id);
         Task<IEnumerable<Service>> GetAllAsync();
-        Task<Service> AddAsync(Service entity);
-        Task<Service> UpdateAsync(Service entity);
+        Task<bool> AddAsync(Service entity);
+        Task<bool> UpdateAsync(Service entity);
         Task<bool> DeleteAsync(Service entity);
         Task<bool> DeleteByIdAsync(int id);
     }

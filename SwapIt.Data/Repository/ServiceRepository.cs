@@ -18,11 +18,10 @@ namespace SwapIt.Data.Repository
         {
             Context = swapItDbContext ?? throw new ArgumentNullException(nameof(swapItDbContext));
         }
-        public async Task<Service> AddAsync(Service service)
+        public async Task<bool> AddAsync(Service service)
         {
             Context.Services.Add(service);
-            await Context.SaveChangesAsync();
-            return service;
+            return await Context.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> DeleteAsync(Service service)
@@ -51,12 +50,12 @@ namespace SwapIt.Data.Repository
             return await Context.Services.FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        public async Task<Service> UpdateAsync(Service newService)
+        public async Task<bool> UpdateAsync(Service newService)
         {
             var service = await GetByIdAsync(newService.Id);
             if (service == null)
             {
-                return null;
+                return false;
             }
             else
             {
@@ -64,7 +63,7 @@ namespace SwapIt.Data.Repository
                 throw new Exception();
                 service = newService;
                 await Context.SaveChangesAsync();
-                return newService;
+                return true;
             }
         }
     }

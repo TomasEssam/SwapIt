@@ -34,14 +34,14 @@ namespace SwapIt.BL.Services
         public async Task<bool> CreateAsync(ServiceDto dto)
         {
             var model = _mapper.Map<Service>(dto);
-            await _serviceRepository.AddAsync(model);
-            return true;
+            return await _serviceRepository.AddAsync(model);
+
         }
 
         public async Task<bool> DeleteAsync(int serviceId)
         {
-            await _serviceRepository.DeleteByIdAsync(serviceId);
-            return true;
+            return await _serviceRepository.DeleteByIdAsync(serviceId);
+            
         }
 
         public async Task<List<ServiceDto>> GetAllAcceptedAsync()
@@ -95,11 +95,10 @@ namespace SwapIt.BL.Services
         }
 
 
-        public async Task<ServiceDto> UpdateAsync(ServiceDto dto)
+        public async Task<bool> UpdateAsync(ServiceDto dto)
         {
             var model = _mapper.Map<Service>(dto);
-            await _serviceRepository.UpdateAsync(model);
-            return dto;
+            return await _serviceRepository.UpdateAsync(model);
         }
 
         public async Task<List<DropDownDto>> GetServiceDDAsync()

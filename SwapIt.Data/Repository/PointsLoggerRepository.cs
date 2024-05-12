@@ -19,11 +19,10 @@ namespace SwapIt.Data.Repository
             Context = context;
         }
 
-        public async Task<PointsLogger> AddAsync(PointsLogger pointsLogger)
+        public async Task<bool> AddAsync(PointsLogger pointsLogger)
         {
             Context.PointsLoggers.Add(pointsLogger);
-            await Context.SaveChangesAsync();
-            return pointsLogger;
+            return await Context.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> DeleteAsync(PointsLogger pointsLogger)
@@ -52,12 +51,12 @@ namespace SwapIt.Data.Repository
             return await Context.PointsLoggers.FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        public async Task<PointsLogger> UpdateAsync(PointsLogger newPointsLogger)
+        public async Task<bool> UpdateAsync(PointsLogger newPointsLogger)
         {
             var pointsLogger = await GetByIdAsync(newPointsLogger.Id);
             if (pointsLogger == null)
             {
-                return null;
+                return false;
             }
             else
             {
@@ -65,7 +64,7 @@ namespace SwapIt.Data.Repository
                 throw new Exception();
                 pointsLogger = newPointsLogger;
                 await Context.SaveChangesAsync();
-                return newPointsLogger;
+                return true;
             }
         }
     }

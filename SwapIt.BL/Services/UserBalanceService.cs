@@ -33,22 +33,21 @@ namespace SwapIt.BL.Services
         public async Task<bool> CreateAsync(UserBalanceDto dto)
         {
             var model = _mapper.Map<UserBalance>(dto);
-            await _userBalanceRepository.AddAsync(model);
-            return true;
+            return await _userBalanceRepository.AddAsync(model);
         }
 
         public async Task<bool> DeleteAsync(int UserBalanceId)
         {
-            await _userBalanceRepository.DeleteByIdAsync(UserBalanceId);
-            return true;
+            return await _userBalanceRepository.DeleteByIdAsync(UserBalanceId);
+            
         }
 
 
-        public async Task<UserBalanceDto> UpdateAsync(UserBalanceDto dto)
+        public async Task<bool> UpdateAsync(UserBalanceDto dto)
         {
             var model = _mapper.Map<UserBalance>(dto);
-            await _userBalanceRepository.UpdateAsync(model);
-            return dto;
+            return await _userBalanceRepository.UpdateAsync(model);
+            
         }
 
         public async Task<bool> AddPointsAsync(UserBalanceDto dto, int points)

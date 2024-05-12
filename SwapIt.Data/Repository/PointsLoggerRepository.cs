@@ -28,7 +28,7 @@ namespace SwapIt.Data.Repository
 
         public async Task<bool> DeleteAsync(PointsLogger pointsLogger)
         {
-            Context.PointsLoggers.Remove(pointsLogger);
+            pointsLogger.IsDeleted = true;
             return await Context.SaveChangesAsync() > 0;
         }
 
@@ -38,7 +38,7 @@ namespace SwapIt.Data.Repository
             if (pointsLogger == null)
                 return false;
 
-            Context.PointsLoggers.Remove(pointsLogger);
+            pointsLogger.IsDeleted = true;
             return await Context.SaveChangesAsync() > 0;
         }
 

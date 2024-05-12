@@ -27,7 +27,7 @@ namespace SwapIt.Data.Repository
 
         public async Task<bool> DeleteAsync(Service service)
         {
-            Context.Services.Remove(service);
+            service.IsDeleted = true;
             return await Context.SaveChangesAsync() > 0;
         }
 
@@ -37,7 +37,7 @@ namespace SwapIt.Data.Repository
             if (service == null)
                 return false;
 
-            Context.Services.Remove(service);
+            service.IsDeleted = true;
             return await Context.SaveChangesAsync() > 0;
         }
 

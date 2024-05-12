@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using SwapIt.Data.Constants;
 using SwapIt.Data.Entities.Common;
 using SwapIt.Data.Entities.Identity;
 using System;
@@ -18,11 +19,10 @@ namespace SwapIt.Data.Entities
         [Required]
         public DateTime RequestDate { get; set; }
         [Required]
-        public string RequestState { get; set; }
+        public string RequestState { get; set; } 
         public float? ExecutionTime { get; set; }
         [MaxLength(500)]
         public string? Notes { get; set; }
-        public float PaidFund { get; set; } = 0;
         public int CustomerId { get; set; }
         public int ServiceId { get; set; }
         public bool IsDeleted { get; set; }

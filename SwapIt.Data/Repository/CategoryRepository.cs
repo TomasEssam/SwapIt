@@ -28,7 +28,7 @@ namespace SwapIt.Data.Repository
 
         public async Task<bool> DeleteAsync(Category category)
         {
-            Context.Categories.Remove(category);
+            category.IsDeleted = true;
             return await Context.SaveChangesAsync() > 0;
         }
 
@@ -38,7 +38,7 @@ namespace SwapIt.Data.Repository
             if (category == null)
                 return false;
 
-            Context.Categories.Remove(category);
+            category.IsDeleted = true;
             return await Context.SaveChangesAsync() > 0;
         }
 

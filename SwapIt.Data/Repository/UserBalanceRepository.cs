@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SwapIt.Data.Constants;
 using SwapIt.Data.Entities;
 using SwapIt.Data.Entities.Context;
 using SwapIt.Data.IRepository;
@@ -14,6 +15,7 @@ namespace SwapIt.Data.Repository
     public class UserBalanceRepository : IUserBalanceRepository
     {
         private readonly SwapItDbContext Context;
+        
 
         public UserBalanceRepository(SwapItDbContext swapItDbContext)
         {
@@ -28,7 +30,7 @@ namespace SwapIt.Data.Repository
 
         public async Task<bool> DeleteAsync(UserBalance userBalance)
         {
-            Context.UserBalances.Remove(userBalance);
+            userBalance.IsDeleted = true;
             return await Context.SaveChangesAsync() > 0;
         }
 
@@ -38,7 +40,7 @@ namespace SwapIt.Data.Repository
             if (userBalance == null)
                 return false;
 
-            Context.UserBalances.Remove(userBalance);
+            userBalance.IsDeleted = true;
             return await Context.SaveChangesAsync() > 0;
         }
 
@@ -68,5 +70,31 @@ namespace SwapIt.Data.Repository
                 return newUserBalance;
             }
         }
+        public async Task<bool> AddPointsAsync(UserBalance userBalance, int points)
+        {
+            if (points > 0)
+            {
+                userBalance.Points += points;
+                await UpdateAsync(userBalance);
+
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> SubstractPointsAsync(UserBalance userBalance, int points)
+        {
+            if (points > 0 && userBalance.Points >= points)
+            {
+                userBalance.Points -= points;
+                await UpdateAsync(userBalance);
+
+
+                return true;
+            }
+            return false;
+        }
+
+
     }
 }

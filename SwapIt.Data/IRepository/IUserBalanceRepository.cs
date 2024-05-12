@@ -15,5 +15,7 @@ namespace SwapIt.Data.IRepository
         Task<UserBalance> UpdateAsync(UserBalance entity);
         Task<bool> DeleteAsync(UserBalance entity);
         Task<bool> DeleteByIdAsync(int id);
+        Task<bool> AddPointsAsync(UserBalance userBalance, int points);
+        Task<bool> SubstractPointsAsync(UserBalance userBalance, int points);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using SwapIt.BL.DTOs;
 using SwapIt.BL.IServices;
+using SwapIt.Data.Constants;
 using SwapIt.Data.Entities;
 using SwapIt.Data.IRepository;
 using SwapIt.Data.Repository;
@@ -16,11 +17,12 @@ namespace SwapIt.BL.Services
     {
         readonly IMapper _mapper;
         readonly IUserBalanceRepository _userBalanceRepository;
-
-        public UserBalanceService(IMapper mapper, IUserBalanceRepository userBalanceRepository)
+        readonly IPointsLoggerRepository _pointsLoggerRepository;
+        public UserBalanceService(IMapper mapper, IUserBalanceRepository userBalanceRepository, IPointsLoggerRepository pointsLoggerRepository)
         {
             _mapper = mapper;
             _userBalanceRepository = userBalanceRepository;
+            _pointsLoggerRepository = pointsLoggerRepository;
         }
         public async Task<UserBalanceDto> GetByIdAsync(int userBalanceId)
         {
@@ -47,6 +49,16 @@ namespace SwapIt.BL.Services
             var model = _mapper.Map<UserBalance>(dto);
             await _userBalanceRepository.UpdateAsync(model);
             return dto;
+        }
+
+        public async Task<bool> AddPointsAsync(UserBalanceDto dto, int points)
+        {
+            return await _userBalanceRepository.AddPointsAsync(_mapper.Map<UserBalance>(dto), points);
+        }
+
+        public async Task<bool> SubstractPointsAsync(UserBalanceDto dto, int points)
+        {
+            return await _userBalanceRepository.SubstractPointsAsync(_mapper.Map<UserBalance>(dto), points);
         }
     }
 }

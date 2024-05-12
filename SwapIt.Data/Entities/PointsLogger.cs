@@ -15,7 +15,8 @@ namespace SwapIt.Data.Entities
         [Key]
         public int Id { get; set; }
         [Required]
-        public TransactionType Type { get; set; }
+        [MaxLength(20)]
+        public string Type { get; set; }
         public float Amount { get; set; }
         public int UserId { get; set; }
         public bool IsDeleted { get; set; }
@@ -29,10 +30,4 @@ namespace SwapIt.Data.Entities
         public ApplicationUser User { get; set; }
     }
 
-    public enum TransactionType
-    {
-        Deposit,
-        Withdraw,
-        Hold
-    }
 }

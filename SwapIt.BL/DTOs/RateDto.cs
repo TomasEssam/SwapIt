@@ -9,7 +9,7 @@ namespace SwapIt.BL.DTOs
 {
     public class RateDto
     {
-        public int RateId { get; set; }
+        public int Id { get; set; }
         [Required]
         public int RateValue { get; set; }
         [Required]

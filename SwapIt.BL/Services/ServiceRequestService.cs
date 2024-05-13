@@ -136,7 +136,7 @@ namespace SwapIt.BL.Services
             pointsLogger.Points = service.Price;
             pointsLogger.Type = TransactionTypes.Hold;
             pointsLogger.UserId = user.Id;
-            pointsLogger.ServiceRequestId = dto.ServiceRequestId; 
+            pointsLogger.ServiceRequestId = dto.Id; 
             await _pointsLoggerRepository.AddAsync(pointsLogger);
 
 

@@ -95,8 +95,16 @@ namespace SwapIt.Data.Entities.Context
             }
 
             //When adding and edititng entities
+
+            //var addEditEntities = ChangeTracker.Entries<IDeletedEntity>()
+            //    .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified);
+            //foreach (var entity in addEditEntities)
+            //{
+            //    entity.Entity.IsDeleted = false;
+            //}
+
             var addEditEntities = ChangeTracker.Entries<IDeletedEntity>()
-                .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified);
+               .Where(e => e.State == EntityState.Added);
             foreach (var entity in addEditEntities)
             {
                 entity.Entity.IsDeleted = false;

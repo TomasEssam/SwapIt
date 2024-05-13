@@ -9,7 +9,7 @@ using SwapIt.BL.Services;
 
 namespace SwapIt.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/serviceRequests")]
     [ApiController]
     [AllowAnonymous]
     public class ServicRequestController : ControllerBase
@@ -27,6 +27,7 @@ namespace SwapIt.API.Controllers
             _serviceRequestService = serviceRequestService;
         }
         #endregion
+
         #region Actions
         [HttpGet]
         [Route("AcceptServiceRequestAsync")]

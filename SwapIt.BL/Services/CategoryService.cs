@@ -36,8 +36,7 @@ namespace SwapIt.BL.Services
 
         public async Task<bool> DeleteAsync(int categoryId)
         {
-            return await _categoryRepository.DeleteByIdAsync(categoryId);
-            
+            return await _categoryRepository.DeleteByIdAsync(categoryId);  
         }
 
 

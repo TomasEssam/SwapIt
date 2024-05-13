@@ -10,7 +10,7 @@ namespace SwapIt.BL.DTOs
 {
     public class ServiceDto
     {
-        public int ServiceId { get; set; }
+        public int Id { get; set; }
         [Required]
         [StringLength(50, MinimumLength = 2)]
         public string Name { get; set; }
@@ -23,7 +23,7 @@ namespace SwapIt.BL.DTOs
         public int ServiceProviderId { get; set; }
         public int CategoryId { get; set; }
         //Ask about it 
-        public ICollection<RateDto>? Rates { get; set; }
-        public ICollection<ServiceRequestDto>? ServiceRequests { get; set; }
+        //public ICollection<RateDto>? Rates { get; set; }
+        //public ICollection<ServiceRequestDto>? ServiceRequests { get; set; }
     }
 }

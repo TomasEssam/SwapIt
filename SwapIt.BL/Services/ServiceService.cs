@@ -61,7 +61,7 @@ namespace SwapIt.BL.Services
                 .Where(x => x.RequestState == RequestStateNames.Accepted && x.Service.ServiceProviderId == userId)
                 .Select(x => new SearchResultDto
                 {
-                    ServiceId = x.ServiceId,
+                    Id = x.ServiceId,
                     CategoryName = x.Service.Category.Name,
                     ProfileImagePath = x.Service.ServiceProvider.ProfileImagePath,
                     ServiceDescription = x.Service.Description,
@@ -90,7 +90,7 @@ namespace SwapIt.BL.Services
                 .Where(x => x.RequestState == RequestStateNames.Finished && x.Service.ServiceProviderId == userId)
                 .Select(x => new SearchResultDto
                 {
-                    ServiceId = x.ServiceId,
+                    Id = x.ServiceId,
                     CategoryName = x.Service.Category.Name,
                     ProfileImagePath = x.Service.ServiceProvider.ProfileImagePath,
                     ServiceDescription = x.Service.Description,
@@ -137,7 +137,7 @@ namespace SwapIt.BL.Services
 
             return query.Select(x=> new SearchResultDto
             {
-                ServiceId = x.Id,
+                Id = x.Id,
                 ServiceName = x.Name,
                 ServiceDescription = x.Description,
                 ServicePrice = x.Price,
@@ -166,7 +166,7 @@ namespace SwapIt.BL.Services
                 .Select(x => new RateDto
                 {
                     ServiceId = x.ServiceId,
-                    RateId = x.Id,
+                    Id = x.Id,
                     Feedback = x.Feedback,
                     CustomerName = x.Customer.UserName,
                     RateDate = x.RateDate,

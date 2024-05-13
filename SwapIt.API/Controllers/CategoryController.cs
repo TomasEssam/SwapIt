@@ -7,7 +7,7 @@ using SwapIt.BL.Services;
 
 namespace SwapIt.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/categories")]
     [ApiController]
     [AllowAnonymous]
     public class CategoryController : ControllerBase

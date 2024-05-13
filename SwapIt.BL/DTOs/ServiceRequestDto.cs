@@ -14,7 +14,7 @@ namespace SwapIt.BL.DTOs
     public class ServiceRequestDto
     {
 
-        public int ServiceRequestId { get; set; }
+        public int Id { get; set; }
         [Required]
         public DateTime RequestDate { get; set; }
         [Required]

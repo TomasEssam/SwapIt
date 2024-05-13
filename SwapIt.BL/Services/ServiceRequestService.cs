@@ -26,8 +26,9 @@ namespace SwapIt.BL.Services
         readonly IPointsLoggerRepository _pointsLoggerRepository;
         readonly UserManager<ApplicationUser> _userManager;
         readonly IUserBalanceRepository _UserBalanceRepository;
+        readonly SwapItDbContext _context;
 
-        public ServiceRequestService(IMapper mapper, IServiceRequestRepository serviceRequestRepository, IPointsLoggerRepository pointsLoggerRepository, IServiceRepository serviceRepository, UserManager<ApplicationUser> userManager, IUserBalanceRepository userBalanceRepository)
+        public ServiceRequestService(IMapper mapper, IServiceRequestRepository serviceRequestRepository, IPointsLoggerRepository pointsLoggerRepository, IServiceRepository serviceRepository, UserManager<ApplicationUser> userManager, IUserBalanceRepository userBalanceRepository, SwapItDbContext swapItDbContext)
         {
             _mapper = mapper;
             _serviceRequestRepository = serviceRequestRepository;
@@ -35,6 +36,7 @@ namespace SwapIt.BL.Services
             _serviceRepository = serviceRepository;
             _userManager = userManager;
             _UserBalanceRepository = userBalanceRepository;
+            _context = swapItDbContext;
         }
         [Authorize(Roles =RolesNames.Admin+ ","+RolesNames.ServiceProvider)]
         public async Task<bool> AcceptServiceRequestAsync(int ServiceRequestId)
@@ -59,6 +61,7 @@ namespace SwapIt.BL.Services
             //state>pending =======> return money
             //state=>accepted customer ==>return money - commession
             //state=>accepted provider ==> return money 
+
             var user = await _userManager.FindByIdAsync(userId.ToString());
 
             if(user is null) 
@@ -76,18 +79,37 @@ namespace SwapIt.BL.Services
 
                 //return money
                 var userBalance = await _UserBalanceRepository.GetByUserAsync(user);
-                var holdAmount = _pointsLoggerRepository.GetByServiceRequestIdAsync(ServiceRequestId).Result.Points;
+                var holdAmount = _context.PointsLoggers
+                    .Where(x => x.UserId == user.Id && x.ServiceRequestId == serviceRequest.Id)
+                    .FirstOrDefault();
+                    
+                if (holdAmount is null)
+                    return false;
 
-                await _UserBalanceRepository.AddPointsAsync(userBalance,holdAmount);
-
-                //add notification
-                Notification n = new Notification();
-                n.NotificationType = NotificationTypes.RequestCanceled;
-                n.Content = "";
-                
-
+                holdAmount.IsDeleted = true;
+                userBalance.Points += holdAmount.Points;
+                _context.SaveChanges();
             }
-            throw new Exception();
+            if (serviceRequest.RequestState == RequestStateNames.Accepted)
+            {
+                serviceRequest.RequestState = RequestStateNames.Canceled;
+
+                var userBalance = await _UserBalanceRepository.GetByUserAsync(user);
+
+                var holdAmount = _context.PointsLoggers
+                    .Where(x => x.UserId == user.Id && x.ServiceRequestId == serviceRequest.Id)
+                    .FirstOrDefault();
+
+                holdAmount.IsDeleted = true;
+
+                if (userBalance.Points < 5)
+                    return false;
+
+                userBalance.Points += holdAmount.Points - 5;
+                //To Do create table for system balance auditing  -- Adding 5 points to our system
+                _context.SaveChanges();
+            }
+            return true;
         }
 
 

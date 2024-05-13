@@ -57,13 +57,10 @@ namespace SwapIt.Data.Repository
             if (category == null)
                 return false;
 
-            else
-            {
-                throw new Exception();
-                category = newCategory;
-                await Context.SaveChangesAsync();
-                return true;
-            }
+            category.Name = newCategory.Name;
+            await Context.SaveChangesAsync();
+            return true;
+          
         }
     }
 }

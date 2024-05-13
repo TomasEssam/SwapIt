@@ -17,6 +17,6 @@ namespace SwapIt.BL.DTOs
         [MaxLength(1000)]
         public string? Feedback { get; set; }
         public int ServiceId { get; set; }
-        public int CustomerId { get; set; }
+        public string CustomerName { get; set; }
     }
 }

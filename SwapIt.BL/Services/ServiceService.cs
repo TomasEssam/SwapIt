@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using SwapIt.BL.DTOs;
 using SwapIt.BL.IServices;
+using SwapIt.Data.Constants;
 using SwapIt.Data.Entities;
 using SwapIt.Data.Entities.Context;
 using SwapIt.Data.Entities.Identity;
@@ -19,17 +21,15 @@ namespace SwapIt.BL.Services
     {
         private readonly IMapper _mapper;
         readonly IServiceRepository _serviceRepository;
-        readonly ICategoryRepository _categoryRepository;
-        readonly UserManager<ApplicationUser> _userManager;
+        readonly IRateRepository _rateRepository;
         readonly SwapItDbContext _context;
 
-        public ServiceService(IMapper mapper, IServiceRepository serviceRepository, SwapItDbContext context, ICategoryRepository categoryRepository, UserManager<ApplicationUser> userManager)
+        public ServiceService(IMapper mapper, IServiceRepository serviceRepository, SwapItDbContext context, IRateRepository rateRepository)
         {
             _mapper = mapper;
             _serviceRepository = serviceRepository;
             _context = context;
-            _categoryRepository = categoryRepository;
-            _userManager = userManager;
+            _rateRepository = rateRepository;
         }
         public async Task<ServiceDto> GetServiceByIdAsync(int serviceId)
         {
@@ -50,9 +50,27 @@ namespace SwapIt.BL.Services
             
         }
 
-        public async Task<List<ServiceDto>> GetAllAcceptedAsync()
+        public async Task<List<SearchResultDto>> GetAllAcceptedAsync(int userId)
         {
-            throw new NotImplementedException();
+          return await _context.ServiceRequests.Include(x => x.Service)
+                .ThenInclude(x => x.Category)
+                .Include(x => x.Service)
+                .ThenInclude(x => x.ServiceProvider)
+                .Include(x => x.Service)
+                .ThenInclude(x => x.Rates)
+                .Where(x => x.RequestState == RequestStateNames.Accepted && x.Service.ServiceProviderId == userId)
+                .Select(x => new SearchResultDto
+                {
+                    ServiceId = x.ServiceId,
+                    CategoryName = x.Service.Category.Name,
+                    ProfileImagePath = x.Service.ServiceProvider.ProfileImagePath,
+                    ServiceDescription = x.Service.Description,
+                    ServiceName = x.Service.Name,
+                    ServicePrice = x.Service.Price,
+                    totalRate = x.Service.Rates.Select(x => x.RateValue).Sum() / x.Service.Rates.Count(),
+                    Username = x.Service.ServiceProvider.UserName
+                }).ToListAsync();
+           
         }
 
         public async Task<List<ServiceDto>> GetAllAsync()
@@ -61,9 +79,26 @@ namespace SwapIt.BL.Services
             return _mapper.Map<List<ServiceDto>>(model);
         }
 
-        public async Task<List<ServiceDto>> GetAllFinshiedAsync()
+        public async Task<List<SearchResultDto>> GetAllFinshiedAsync(int userId)
         {
-            throw new NotImplementedException();
+            return await _context.ServiceRequests.Include(x => x.Service)
+                .ThenInclude(x => x.Category)
+                .Include(x => x.Service)
+                .ThenInclude(x => x.ServiceProvider)
+                .Include(x => x.Service)
+                .ThenInclude(x => x.Rates)
+                .Where(x => x.RequestState == RequestStateNames.Finished && x.Service.ServiceProviderId == userId)
+                .Select(x => new SearchResultDto
+                {
+                    ServiceId = x.ServiceId,
+                    CategoryName = x.Service.Category.Name,
+                    ProfileImagePath = x.Service.ServiceProvider.ProfileImagePath,
+                    ServiceDescription = x.Service.Description,
+                    ServiceName = x.Service.Name,
+                    ServicePrice = x.Service.Price,
+                    totalRate = x.Service.Rates.Select(x => x.RateValue).Sum() / x.Service.Rates.Count(),
+                    Username = x.Service.ServiceProvider.UserName
+                }).ToListAsync();
         }
 
         public async Task<List<string>> GetAllPreviousWorkImageUrlAsync(int userId)
@@ -78,7 +113,10 @@ namespace SwapIt.BL.Services
 
         public async Task<List<SearchResultDto>> SearchServiceAsync(ServiceFilterDto dto)
         {
-            var query = _context.Services.AsQueryable();
+            var query = _context.Services.Include(x => x.ServiceProvider)
+                .Include(x => x.Category)
+                .Include(x => x.Rates)
+                .AsQueryable();
             var services = new List<Service>();
             if (String.IsNullOrEmpty(dto.ServiceName))
             {
@@ -96,39 +134,18 @@ namespace SwapIt.BL.Services
             {
                 query = _context.Services.Where(x => x.CategoryId == dto.CategoryId);
             }
-            services = query.ToList();
 
-
-            var result = new List<SearchResultDto>();
-            SearchResultDto serviceWithProvidersDTO;
-
-            
-            foreach (var service in services)
+            return query.Select(x=> new SearchResultDto
             {
-                var category = await _categoryRepository.GetByIdAsync(service.CategoryId);
-                var user = await _userManager.FindByIdAsync(service.ServiceProviderId.ToString());
-
-                serviceWithProvidersDTO = new SearchResultDto()
-                {
-                    ServiceId = service.Id,
-                    ServiceName = service.Name,
-                    ServiceDescription = service.Description,
-                    ServicePrice = service.Price,
-                    CategoryName = category.Name,
-                    Username = user.UserName,
-                    ProfileImagePath = user.ProfileImagePath,
-                    //totalRate 
-                };
-            }
-            
-
-            return result;
-
-
-
-
-
-            //return _mapper.Map<List<ServiceDto>>(services);
+                ServiceId = x.Id,
+                ServiceName = x.Name,
+                ServiceDescription = x.Description,
+                ServicePrice = x.Price,
+                CategoryName = x.Category.Name,
+                Username = x.ServiceProvider.UserName,
+                ProfileImagePath = x.ServiceProvider.ProfileImagePath,
+                totalRate = x.Rates.Select(x => x.RateValue).Sum() / x.Rates.Count() ,
+            }).ToList();
         }
 
         public async Task<bool> UpdateAsync(ServiceDto dto)
@@ -143,6 +160,18 @@ namespace SwapIt.BL.Services
             return _mapper.Map<List<DropDownDto>>(model);
         }
 
-
+        public async Task<List<RateDto>> GetRatesAsync(int serviceId)
+        {
+            return await _context.Rates.Where(r => r.ServiceId == serviceId)
+                .Select(x => new RateDto
+                {
+                    ServiceId = x.ServiceId,
+                    RateId = x.Id,
+                    Feedback = x.Feedback,
+                    CustomerName = x.Customer.UserName,
+                    RateDate = x.RateDate,
+                    RateValue = x.RateValue
+                }).ToListAsync();
+        }
     }
 }

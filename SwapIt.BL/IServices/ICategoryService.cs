@@ -15,5 +15,6 @@ namespace SwapIt.BL.IServices
         Task<bool> UpdateAsync(CategoryDto dto);
         Task<CategoryDto> GetByIdAsync(int categoryId);
         Task<List<DropDownDto>> GetCategoryDDAsync();
+        Task<List<CategoryDto>> GetAllAsync();
     }
 }

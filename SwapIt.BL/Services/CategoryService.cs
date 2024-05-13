@@ -53,5 +53,11 @@ namespace SwapIt.BL.Services
             return await _categoryRepository.UpdateAsync(model);
              
         }
+
+        public async Task<List<CategoryDto>> GetAllAsync()
+        {
+            var model = await _categoryRepository.GetAllAsync();
+            return _mapper.Map<List<CategoryDto>>(model); 
+        }
     }
 }

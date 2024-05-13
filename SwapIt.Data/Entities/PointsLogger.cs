@@ -17,7 +17,7 @@ namespace SwapIt.Data.Entities
         [Required]
         [MaxLength(20)]
         public string Type { get; set; }
-        public float Amount { get; set; }
+        public int Points { get; set; }
         public int UserId { get; set; }
         public int? ServiceRequestId { get; set; }
         public bool IsDeleted { get; set; }

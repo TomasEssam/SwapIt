@@ -56,9 +56,9 @@ namespace SwapIt.BL.Services
 
         public async Task<bool> CancelServiceRequestAsync(int userId,  int ServiceRequestId)
         {
-            //case state>pending =======> return money
-            //case state=>accepted customer ==>return money - commession
-            //case state=>accepted provider ==> return money 
+            //state>pending =======> return money
+            //state=>accepted customer ==>return money - commession
+            //state=>accepted provider ==> return money 
             var user = await _userManager.FindByIdAsync(userId.ToString());
 
             if(user is null) 
@@ -73,13 +73,18 @@ namespace SwapIt.BL.Services
             {
                 
                 serviceRequest.RequestState = RequestStateNames.Canceled;
+
                 //return money
                 var userBalance = await _UserBalanceRepository.GetByUserAsync(user);
+                var holdAmount = _pointsLoggerRepository.GetByServiceRequestIdAsync(ServiceRequestId).Result.Points;
 
-
-                //_UserBalanceRepository.AddPointsAsync()
+                await _UserBalanceRepository.AddPointsAsync(userBalance,holdAmount);
 
                 //add notification
+                Notification n = new Notification();
+                n.NotificationType = NotificationTypes.RequestCanceled;
+                n.Content = "";
+                
 
             }
             throw new Exception();
@@ -99,14 +104,14 @@ namespace SwapIt.BL.Services
             if (user is null)
                 return false;
 
-            bool substracted = await _UserBalanceRepository.SubstractPointsAsync(await _UserBalanceRepository.GetByUserAsync(user), (int)service.Price);
+            bool substracted = await _UserBalanceRepository.SubstractPointsAsync(await _UserBalanceRepository.GetByUserAsync(user), service.Price);
             if(!substracted) 
                 return false;
 
 
             //track points transaction
             var pointsLogger = new PointsLogger();
-            pointsLogger.Amount = service.Price;
+            pointsLogger.Points = service.Price;
             pointsLogger.Type = TransactionTypes.Hold;
             pointsLogger.UserId = user.Id;
             pointsLogger.ServiceRequestId = dto.ServiceRequestId; 

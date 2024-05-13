@@ -67,5 +67,11 @@ namespace SwapIt.Data.Repository
                 return true;
             }
         }
+
+
+        public async Task<PointsLogger> GetByServiceRequestIdAsync(int requestId)
+        {
+            return await Context.PointsLoggers.FirstOrDefaultAsync(c => c.ServiceRequestId == requestId);
+        }
     }
 }

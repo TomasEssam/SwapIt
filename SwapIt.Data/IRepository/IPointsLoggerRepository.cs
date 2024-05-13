@@ -15,5 +15,6 @@ namespace SwapIt.Data.IRepository
         Task<bool> UpdateAsync(PointsLogger entity);
         Task<bool> DeleteAsync(PointsLogger entity);
         Task<bool> DeleteByIdAsync(int id);
+        Task<PointsLogger> GetByServiceRequestIdAsync(int requestId);
     }
 }

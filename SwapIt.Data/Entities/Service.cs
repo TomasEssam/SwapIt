@@ -21,7 +21,7 @@ namespace SwapIt.Data.Entities
         [MaxLength(1000)]
         public string Description { get; set; }
         [Required]
-        public float Price { get; set; }
+        public int Price { get; set; }
         public int TimeToExecute { get; set; }
         public string PreviousworkImagesUrl { get; set; }
         public int ServiceProviderId { get; set; }

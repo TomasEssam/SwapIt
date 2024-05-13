@@ -47,7 +47,7 @@ namespace SwapIt.Data.Repository
 
         public async Task<UserNotification> GetByIdAsync(int id)
         {
-            return await Context.UserNotifications.FirstOrDefaultAsync(c => c.Id == id);
+            return await Context.UserNotifications.FindAsync(id);
         }
 
         public async Task<bool> UpdateAsync(UserNotification newUserNotification)

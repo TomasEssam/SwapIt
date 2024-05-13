@@ -42,12 +42,17 @@ namespace SwapIt.Data.Repository
 
         public async Task<IEnumerable<Service>> GetAllAsync()
         {
-          return await Context.Services.ToListAsync();
+            return await Context.Services.ToListAsync();
         }
 
+        public async Task<IEnumerable<Service>> GetAllWithServiceProviderAsync()
+        {
+            return await Context.Services.Include(s => s.ServiceProvider).ToListAsync(); 
+        }
+    
         public async Task<Service> GetByIdAsync(int id)
         {
-            return await Context.Services.FirstOrDefaultAsync(c => c.Id == id);
+            return await Context.Services.FindAsync(id);
         }
 
         public async Task<bool> UpdateAsync(Service newService)

@@ -48,7 +48,7 @@ namespace SwapIt.Data.Repository
 
         public async Task<PointsLogger> GetByIdAsync(int id)
         {
-            return await Context.PointsLoggers.FirstOrDefaultAsync(c => c.Id == id);
+            return await Context.PointsLoggers.FindAsync(id);
         }
 
         public async Task<bool> UpdateAsync(PointsLogger newPointsLogger)

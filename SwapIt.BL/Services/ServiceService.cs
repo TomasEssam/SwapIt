@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using SwapIt.BL.DTOs;
 using SwapIt.BL.IServices;
 using SwapIt.Data.Entities;
 using SwapIt.Data.Entities.Context;
+using SwapIt.Data.Entities.Identity;
 using SwapIt.Data.IRepository;
 using System;
 using System.Collections.Generic;
@@ -17,13 +19,17 @@ namespace SwapIt.BL.Services
     {
         private readonly IMapper _mapper;
         readonly IServiceRepository _serviceRepository;
+        readonly ICategoryRepository _categoryRepository;
+        readonly UserManager<ApplicationUser> _userManager;
         readonly SwapItDbContext _context;
 
-        public ServiceService(IMapper mapper, IServiceRepository serviceRepository, SwapItDbContext context)
+        public ServiceService(IMapper mapper, IServiceRepository serviceRepository, SwapItDbContext context, ICategoryRepository categoryRepository, UserManager<ApplicationUser> userManager)
         {
             _mapper = mapper;
             _serviceRepository = serviceRepository;
             _context = context;
+            _categoryRepository = categoryRepository;
+            _userManager = userManager;
         }
         public async Task<ServiceDto> GetServiceByIdAsync(int serviceId)
         {
@@ -70,7 +76,7 @@ namespace SwapIt.BL.Services
 
 
 
-        public async Task<List<ServiceDto>> SearchServiceAsync(ServiceFilterDto dto)
+        public async Task<List<SearchResultDto>> SearchServiceAsync(ServiceFilterDto dto)
         {
             var query = _context.Services.AsQueryable();
             var services = new List<Service>();
@@ -91,9 +97,39 @@ namespace SwapIt.BL.Services
                 query = _context.Services.Where(x => x.CategoryId == dto.CategoryId);
             }
             services = query.ToList();
-            return _mapper.Map<List<ServiceDto>>(services);
-        }
 
+
+            var result = new List<SearchResultDto>();
+            SearchResultDto serviceWithProvidersDTO;
+
+            
+            foreach (var service in services)
+            {
+                var category = await _categoryRepository.GetByIdAsync(service.CategoryId);
+                var user = await _userManager.FindByIdAsync(service.ServiceProviderId.ToString());
+
+                serviceWithProvidersDTO = new SearchResultDto()
+                {
+                    ServiceId = service.Id,
+                    ServiceName = service.Name,
+                    ServiceDescription = service.Description,
+                    ServicePrice = service.Price,
+                    CategoryName = category.Name,
+                    Username = user.UserName,
+                    ProfileImagePath = user.ProfileImagePath,
+                    //totalRate 
+                };
+            }
+            
+
+            return result;
+
+
+
+
+
+            //return _mapper.Map<List<ServiceDto>>(services);
+        }
 
         public async Task<bool> UpdateAsync(ServiceDto dto)
         {
@@ -106,5 +142,7 @@ namespace SwapIt.BL.Services
             var model = await _serviceRepository.GetAllAsync();
             return _mapper.Map<List<DropDownDto>>(model);
         }
+
+
     }
 }

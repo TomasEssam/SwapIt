@@ -48,7 +48,7 @@ namespace SwapIt.Data.Repository
 
         public async Task<Category> GetByIdAsync(int id)
         {
-            return await Context.Categories.FirstOrDefaultAsync(c => c.Id == id);
+            return await Context.Categories.FindAsync(id);
         }
         //Ask about it
         public async Task<bool> UpdateAsync(Category newCategory)

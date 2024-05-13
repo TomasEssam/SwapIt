@@ -48,7 +48,7 @@ namespace SwapIt.Data.Repository
 
         public async Task<Notification> GetByIdAsync(int id)
         {
-            return await Context.Notifications.FirstOrDefaultAsync(c => c.Id == id);
+            return await Context.Notifications.FindAsync(id);
         }
 
         public async Task<bool> UpdateAsync(Notification newNotification)
@@ -62,7 +62,7 @@ namespace SwapIt.Data.Repository
             {
                 //we need to change itttt
                 throw new Exception();
-                notification = newService;
+                notification = newNotification;
                 await Context.SaveChangesAsync();
                 return true;
             }

@@ -47,7 +47,7 @@ namespace SwapIt.Data.Repository
 
         public async Task<Rate> GetByIdAsync(int id)
         {
-            return await Context.Rates.FirstOrDefaultAsync(c => c.Id == id);
+            return await Context.Rates.FindAsync(id);
         }
 
         public async Task<bool> UpdateAsync(Rate newService)

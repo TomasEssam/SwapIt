@@ -51,7 +51,7 @@ namespace SwapIt.Data.Repository
 
         public async Task<UserBalance> GetByIdAsync(int id)
         {
-            return await Context.UserBalances.FirstOrDefaultAsync(c => c.Id == id);
+            return await Context.UserBalances.FindAsync(id);
         }
 
         public async Task<bool> UpdateAsync(UserBalance newUserBalance)

@@ -34,6 +34,11 @@ namespace SwapIt.API
             services.AddScoped<IServiceRepository, ServiceRepository>();
             services.AddScoped<IServiceRequestRepository, ServiceRequestRepository>();
             services.AddScoped<IUserBalanceRepository, UserBalanceRepository>();
+            services.AddScoped<INotificationRepository, NotificationRepository>();
+            services.AddScoped<IRateRepository, RateRepository>();
+            services.AddScoped<IPointsLoggerRepository, PointsLoggerRepository>();
+            services.AddScoped<IUserNotificationRepository, UserNotificationRepository>();
+
             services.AddScoped<IUserBalanceService, UserBalanceService>();
             services.AddScoped<IServiceService, ServiceService>();
             services.AddScoped<IServiceRequestService, ServiceRequestService>();

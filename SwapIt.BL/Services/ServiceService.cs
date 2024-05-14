@@ -47,30 +47,30 @@ namespace SwapIt.BL.Services
         public async Task<bool> DeleteAsync(int serviceId)
         {
             return await _serviceRepository.DeleteByIdAsync(serviceId);
-            
+
         }
 
         public async Task<List<SearchResultDto>> GetAllAcceptedAsync(int userId)
         {
-          return await _context.ServiceRequests.Include(x => x.Service)
-                .ThenInclude(x => x.Category)
-                .Include(x => x.Service)
-                .ThenInclude(x => x.ServiceProvider)
-                .Include(x => x.Service)
-                .ThenInclude(x => x.Rates)
-                .Where(x => x.RequestState == RequestStateNames.Accepted && x.Service.ServiceProviderId == userId)
-                .Select(x => new SearchResultDto
-                {
-                    Id = x.ServiceId,
-                    CategoryName = x.Service.Category.Name,
-                    ProfileImagePath = x.Service.ServiceProvider.ProfileImagePath,
-                    ServiceDescription = x.Service.Description,
-                    ServiceName = x.Service.Name,
-                    ServicePrice = x.Service.Price,
-                    totalRate = x.Service.Rates.Select(x => x.RateValue).Sum() / x.Service.Rates.Count(),
-                    Username = x.Service.ServiceProvider.UserName
-                }).ToListAsync();
-           
+            return await _context.ServiceRequests.Include(x => x.Service)
+                  .ThenInclude(x => x.Category)
+                  .Include(x => x.Service)
+                  .ThenInclude(x => x.ServiceProvider)
+                  .Include(x => x.Service)
+                  .ThenInclude(x => x.Rates)
+                  .Where(x => x.RequestState == RequestStateNames.Accepted && x.Service.ServiceProviderId == userId)
+                  .Select(x => new SearchResultDto
+                  {
+                      Id = x.ServiceId,
+                      CategoryName = x.Service.Category.Name,
+                      ProfileImagePath = x.Service.ServiceProvider.ProfileImagePath,
+                      ServiceDescription = x.Service.Description,
+                      ServiceName = x.Service.Name,
+                      ServicePrice = x.Service.Price,
+                      totalRate = x.Service.Rates.Select(x => x.RateValue).Sum() / x.Service.Rates.Count(),
+                      Username = x.Service.ServiceProvider.UserName
+                  }).ToListAsync();
+
         }
 
         public async Task<List<ServiceDto>> GetAllAsync()
@@ -118,7 +118,7 @@ namespace SwapIt.BL.Services
                 .Include(x => x.Rates)
                 .AsQueryable();
             var services = new List<Service>();
-            if (String.IsNullOrEmpty(dto.ServiceName))
+            if (!String.IsNullOrEmpty(dto.ServiceName))
             {
                 query = _context.Services.Where(x => x.Name.Contains(dto.ServiceName));
             }
@@ -135,7 +135,7 @@ namespace SwapIt.BL.Services
                 query = _context.Services.Where(x => x.CategoryId == dto.CategoryId);
             }
 
-            return query.Select(x=> new SearchResultDto
+            var result = query.Select(x => new SearchResultDto
             {
                 Id = x.Id,
                 ServiceName = x.Name,
@@ -144,8 +144,11 @@ namespace SwapIt.BL.Services
                 CategoryName = x.Category.Name,
                 Username = x.ServiceProvider.UserName,
                 ProfileImagePath = x.ServiceProvider.ProfileImagePath,
-                totalRate = x.Rates.Select(x => x.RateValue).Sum() / x.Rates.Count() ,
+                totalRate = (x.Rates.Count() == 0) ? 0 : x.Rates.Select(x => x.RateValue).Sum() / x.Rates.Count(),
             }).ToList();
+
+            return result;
+
         }
 
         public async Task<bool> UpdateAsync(ServiceDto dto)

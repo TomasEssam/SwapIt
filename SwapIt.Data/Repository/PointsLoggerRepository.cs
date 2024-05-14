@@ -58,14 +58,14 @@ namespace SwapIt.Data.Repository
             {
                 return false;
             }
-            else
-            {
-                //we need to use Auto mapper
-                throw new Exception();
-                pointsLogger = newPointsLogger;
-                await Context.SaveChangesAsync();
+
+            pointsLogger.Type = newPointsLogger.Type;
+            pointsLogger.Points = newPointsLogger.Points;
+            pointsLogger.ModificationDate = DateTime.Now;
+
+            await Context.SaveChangesAsync();
                 return true;
-            }
+            
         }
 
 

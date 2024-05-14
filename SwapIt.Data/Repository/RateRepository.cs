@@ -50,18 +50,20 @@ namespace SwapIt.Data.Repository
             return await Context.Rates.FindAsync(id);
         }
 
-        public async Task<bool> UpdateAsync(Rate newService)
+        public async Task<bool> UpdateAsync(Rate newRate)
         {
-            var rate = await GetByIdAsync(newService.Id);
+            var rate = await GetByIdAsync(newRate.Id);
             if (rate == null)
             {
                 return false;
             }
             else
             {
-                //we need to change itttt
-                throw new Exception();
-                rate = newService;
+                rate.RateValue = newRate.RateValue;
+                rate.Feedback = newRate.Feedback;
+                rate.ModificationDate = DateTime.Now;
+
+
                 await Context.SaveChangesAsync();
                 return true;
             }

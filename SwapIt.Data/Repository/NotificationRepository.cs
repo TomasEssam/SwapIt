@@ -60,9 +60,11 @@ namespace SwapIt.Data.Repository
             }
             else
             {
-                //we need to change itttt
-                throw new Exception();
-                notification = newNotification;
+                notification.NotificationType = newNotification.NotificationType;
+                notification.Content = newNotification.Content;
+                notification.ModificationDate = DateTime.Now;
+
+
                 await Context.SaveChangesAsync();
                 return true;
             }

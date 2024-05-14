@@ -30,41 +30,41 @@ namespace SwapIt.API.Controllers
 
         #region Actions
         [HttpGet]
-        [Route("AcceptServiceRequestAsync")]
+        [Route("AcceptServiceRequest")]
         public async Task<IActionResult> AcceptServiceRequestAsync(int ServiceRequestId)
         {
             return Ok(await _serviceRequestService.AcceptServiceRequestAsync(ServiceRequestId));
         }
 
         [HttpGet]
-        [Route("CancelServiceRequestAsync")]
+        [Route("CancelServiceRequest")]
         public async Task<IActionResult> CancelServiceRequestAsync(int userId, int ServiceRequestId)
         {
             return Ok(await _serviceRequestService.CancelServiceRequestAsync(userId, ServiceRequestId));
         }
 
         [HttpPost]
-        [Route("CreateAsync")]
+        [Route("Create")]
         public async Task<IActionResult> CreateAsync(ServiceRequestDto dto)
         {
             return Ok(await _serviceRequestService.CreateAsync(dto));
         }
 
         [HttpGet]
-        [Route("DeleteAsync")]
+        [Route("Delete")]
         public async Task<IActionResult> DeleteAsync(int serviceRequestId)
         {
             return Ok(await _serviceRequestService.DeleteAsync(serviceRequestId));
         }
 
         [HttpGet]
-        [Route("GetByIdAsync")]
+        [Route("GetById")]
         public async Task<IActionResult> GetByIdAsync(int id)
         {
             return Ok(await _serviceRequestService.GetByIdAsync(id));
         }
         [HttpPost]
-        [Route("UpdateAsync")]
+        [Route("Update")]
         public async Task<IActionResult> UpdateAsync(ServiceRequestDto dto)
         {
             return Ok(await _serviceRequestService.UpdateAsync(dto));

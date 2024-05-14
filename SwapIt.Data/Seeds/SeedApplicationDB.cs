@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SwapIt.Data.Constants;
+using SwapIt.Data.Entities;
 using SwapIt.Data.Entities.Context;
 using SwapIt.Data.Entities.Identity;
 using System;
@@ -79,6 +80,15 @@ namespace SwapIt.Data.Seeds
 
                 await userManager.CreateAsync(superAdminUser, "P@$$w0rd");
                 await userManager.AddToRoleAsync(superAdminUser, RolesNames.SuperAdmin);
+               
+                UserBalance userBalance = new UserBalance()
+                {
+                    Amount = 150,
+                    Points = 30,
+                    UserId = serviceConsumerUser.Id
+                };
+                context.UserBalances.Add(userBalance);
+                context.SaveChanges();
             }
 
             //this part is for the UserRoles table to assign User Id with Role Id

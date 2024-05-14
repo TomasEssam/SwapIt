@@ -52,16 +52,17 @@ namespace SwapIt.Data.Repository
 
         public async Task<bool> UpdateAsync(UserNotification newUserNotification)
         {
-            var service = await GetByIdAsync(newUserNotification.Id);
-            if (service == null)
+            var userNotification = await GetByIdAsync(newUserNotification.Id);
+            if (userNotification == null)
             {
                 return false;
             }
             else
             {
-                //we need to change itttt
-                throw new Exception();
-                service = newUserNotification;
+                userNotification.IsRead = newUserNotification.IsRead;
+                userNotification.NotificationId = newUserNotification.NotificationId;
+                userNotification.ModificationDate = DateTime.Now;
+
                 await Context.SaveChangesAsync();
                 return true;
             }

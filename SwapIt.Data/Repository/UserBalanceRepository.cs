@@ -12,11 +12,11 @@ using System.Threading.Tasks;
 
 namespace SwapIt.Data.Repository
 {
-    
+
     public class UserBalanceRepository : IUserBalanceRepository
     {
         private readonly SwapItDbContext Context;
-        
+
 
         public UserBalanceRepository(SwapItDbContext swapItDbContext)
         {
@@ -63,9 +63,10 @@ namespace SwapIt.Data.Repository
             }
             else
             {
-                //we need to use Auto mapper
-                throw new Exception();
-                userBalnce = newUserBalance;
+                userBalnce.Amount = newUserBalance.Amount;
+                userBalnce.Points = newUserBalance.Points;
+                userBalnce.ModificationDate = DateTime.Now;
+
                 await Context.SaveChangesAsync();
                 return true;
             }

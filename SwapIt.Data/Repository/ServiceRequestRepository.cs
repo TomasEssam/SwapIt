@@ -59,9 +59,11 @@ namespace SwapIt.Data.Repository
             }
             else
             {
-                //we need to use Auto mapper
-                throw new Exception();
-                serviceRequest = newServiceRequest;
+                serviceRequest.Notes = newServiceRequest.Notes;
+                serviceRequest.RequestState = newServiceRequest.RequestState;
+                serviceRequest.ExecutionTime = newServiceRequest.ExecutionTime;
+                serviceRequest.ModificationDate = DateTime.Now;
+
                 await Context.SaveChangesAsync();
                 return true;
             }

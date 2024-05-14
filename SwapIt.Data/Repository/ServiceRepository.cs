@@ -47,9 +47,9 @@ namespace SwapIt.Data.Repository
 
         public async Task<IEnumerable<Service>> GetAllWithServiceProviderAsync()
         {
-            return await Context.Services.Include(s => s.ServiceProvider).ToListAsync(); 
+            return await Context.Services.Include(s => s.ServiceProvider).ToListAsync();
         }
-    
+
         public async Task<Service> GetByIdAsync(int id)
         {
             return await Context.Services.FindAsync(id);
@@ -64,9 +64,14 @@ namespace SwapIt.Data.Repository
             }
             else
             {
-                //we need to change itttt
-                throw new Exception();
-                service = newService;
+                service.Name = newService.Name;
+                service.Price = newService.Price;
+                service.Description = newService.Description;
+                service.CategoryId = newService.CategoryId;
+                service.PreviousworkImagesUrl = newService.PreviousworkImagesUrl;
+                service.TimeToExecute = newService.TimeToExecute;
+                service.ModificationDate = DateTime.Now;
+
                 await Context.SaveChangesAsync();
                 return true;
             }

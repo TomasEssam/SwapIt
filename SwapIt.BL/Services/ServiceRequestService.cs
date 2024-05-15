@@ -152,6 +152,39 @@ namespace SwapIt.BL.Services
             return await _serviceRequestRepository.DeleteByIdAsync(serviceRequestId);
         }
 
+        public async Task<bool> FinishServiceRequestAsync(int serviceRequestId)
+        {
+            var serviceRequest = await _serviceRequestRepository.GetByIdAsync(serviceRequestId);
+
+            if (serviceRequest is null)
+                return false;
+
+            if (serviceRequest.RequestState == RequestStateNames.Accepted)
+            {
+                var service = await _serviceRepository.GetByIdAsync(serviceRequest.ServiceId);
+
+                var userBalance = await _UserBalanceRepository.GetByUserIdAsync(service.ServiceProviderId);
+
+                var pointsLogger = await _pointsLoggerRepository.GetByServiceRequestIdAsync(serviceRequestId);
+
+                await _UserBalanceRepository.AddPointsAsync(userBalance, pointsLogger.Points);
+
+                await _pointsLoggerRepository.AddAsync(new PointsLogger()
+                {
+                    ServiceRequestId = serviceRequestId,
+                    UserId = service.ServiceProviderId,
+                    Type = TransactionTypes.Transfared,
+                    Points = pointsLogger.Points
+                });
+
+                serviceRequest.RequestState = RequestStateNames.Finished;
+                
+                await _serviceRequestRepository.UpdateAsync(serviceRequest);
+                return true;
+            }
+            return false;
+        }
+
         public async Task<List<ServiceRequestDto>> GetAllAsync()
         {
             var requests = await _serviceRequestRepository.GetAllAsync();

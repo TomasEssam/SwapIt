@@ -12,6 +12,7 @@ namespace SwapIt.Data.Constants
         public const string Withdraw = "Withdraw";
         public const string Hold = "Hold";
         public const string Returned = "Returned";
+        public const string Transfared = "Transfared";
 
     }
 }

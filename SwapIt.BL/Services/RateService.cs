@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SwapIt.BL.Services
 {
-    internal class RateService : IRateService
+    public class RateService : IRateService
     {
         private readonly IRateRepository _rateRepository;
         private readonly IMapper _mapper;

@@ -43,6 +43,13 @@ namespace SwapIt.API.Controllers
             return Ok(await _serviceRequestService.CancelServiceRequestAsync(userId, ServiceRequestId));
         }
 
+        [HttpGet]
+        [Route("FinishServiceRequest")]
+        public async Task<IActionResult> FinishServiceRequestAsync( int ServiceRequestId)
+        {
+            return Ok(await _serviceRequestService.FinishServiceRequestAsync(ServiceRequestId));
+        }
+
         [HttpPost]
         [Route("Create")]
         public async Task<IActionResult> CreateAsync(ServiceRequestDto dto)
@@ -70,7 +77,7 @@ namespace SwapIt.API.Controllers
             return Ok(await _serviceRequestService.UpdateAsync(dto));
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("GetAll")]
         public async Task<IActionResult> GetAll()
         {

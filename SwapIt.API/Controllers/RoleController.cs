@@ -32,7 +32,7 @@ namespace SwapIt.API.Controllers
         {
             return Ok(_roleService.GetRoles());
         }
-        [HttpGet]
+        [HttpPost]
         [Route("AddUserRole")]
         public async Task<IActionResult> AddUserRolesRow([FromBody] UserRolesDto userRole)
         {

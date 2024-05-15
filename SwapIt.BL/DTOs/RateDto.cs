@@ -18,6 +18,6 @@ namespace SwapIt.BL.DTOs
         public string? Feedback { get; set; }
         public int ServiceId { get; set; }
         public int CustomerId { get; set; }
-        public string CustomerName { get; set; }
+        public string? CustomerName { get; set; }
     }
 }

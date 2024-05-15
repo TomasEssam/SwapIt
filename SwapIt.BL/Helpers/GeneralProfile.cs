@@ -20,8 +20,10 @@ namespace SwapIt.BL.Helpers
             CreateMap<UserBalanceDto, UserBalance>().ReverseMap();
             CreateMap<ServiceRequestDto, ServiceRequest>().ReverseMap();
             CreateMap<RateDto, Rate>().ReverseMap();
+            CreateMap<NotificationDto, Notification>().ReverseMap();
+            CreateMap<UserNotificationDto, UserNotification>().ReverseMap();
 
-           
+
         }
     }
 }

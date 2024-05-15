@@ -6,7 +6,7 @@ using SwapIt.BL.IServices;
 
 namespace SwapIt.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/rates")]
     [ApiController]
     [AllowAnonymous]
     public class RateController : ControllerBase

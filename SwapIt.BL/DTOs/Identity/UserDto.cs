@@ -36,8 +36,6 @@ namespace SwapIt.BL.DTOs.Identity
         public string PhoneNumber { get; set; }
   
         public string? RoleId { get; set; }
-        public ICollection<ServiceRequestDto> ServiceRequests { get; set; }
-        public ICollection<RateDto> Rates { get; set; }
-        public ICollection<ServiceDto> Services { get; set; }
+      
     }
 }

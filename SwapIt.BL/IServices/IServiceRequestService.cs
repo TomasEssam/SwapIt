@@ -16,7 +16,8 @@ namespace SwapIt.BL.IServices
         Task<bool> DeleteAsync(int serviceRequestId);
         Task<bool> UpdateAsync(ServiceRequestDto dto);
         Task<bool> CancelServiceRequestAsync(int userId, int ServiceRequestId);
-        Task<bool> AcceptServiceRequestAsync(int ServiceRequestId);
+        Task<bool> AcceptServiceRequestAsync(int serviceRequestId);
+        Task<bool> FinishServiceRequestAsync(int serviceRequestId);
         Task<ServiceRequest?> GetAsync(int serviceId, int userId);
 
         Task<List<ServiceRequestDto>> GetAllAsync();

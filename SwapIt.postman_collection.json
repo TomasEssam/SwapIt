@@ -1,0 +1,588 @@
+{
+	"info": {
+		"_postman_id": "37ace4dc-5a97-41ec-832b-01a137454ce0",
+		"name": "SwapIt",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "33097770"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"TomasEssam\",\r\n  \"password\": \"To@@ma$1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://localhost:7064/api/users/authenticate"
+					},
+					"response": []
+				},
+				{
+					"name": "IsUserExist",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7064/api/users/IsUserNameExists?username=TomasEssam",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"users",
+								"IsUserNameExists"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "TomasEssam"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "RestPassword",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiVG9tYXNFc3NhbSIsInVzZXJfaWQiOiIxIiwidXNlcl9uYW1lIjoiVG9tYXNFc3NhbSIsInJvbGVzIjoiQWRtaW4iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsIm5iZiI6MTcxMzEwNTEwNiwiZXhwIjoxNzEzMTM1MTA2LCJpc3MiOiJtcnMtaXNzdWVyIiwiYXVkIjoibXJzLWF1ZGllbmNlIn0.Uf3kKpAWcpzzU3mkuNyYZcKNOHHDCCGINCNz_1JRDQU"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userid\": 1,\r\n  \"username\": \"TomasEssam\",\r\n  \"password\": \"To@@ma$1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://localhost:7064/api/users/ResetPassword"
+					},
+					"response": []
+				},
+				{
+					"name": "CreateUser",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"Geoooo\",\r\n  \"password\": \"P@$$w0rd\",\r\n  \"email\": \"Geooo@Gmail.com\",\r\n  \"dateOfBirth\": \"2002-04-14\",\r\n  \"gender\": \"Male\",\r\n  \"phoneNumber\": \"012423278\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://localhost:7064/api/users/create"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Role",
+			"item": [
+				{
+					"name": "AddRole",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"UserName\": \"Lily\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://localhost:7064/api/roles/AddUserRole"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Category",
+			"item": [
+				{
+					"name": "CreateCategory",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Decorates\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://localhost:7064/api/categories/create"
+					},
+					"response": []
+				},
+				{
+					"name": "GetAllCategories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "https://localhost:7064/api/categories/getall"
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteCategory",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7064/api/categories/Delete?categoryId=1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"categories",
+								"Delete"
+							],
+							"query": [
+								{
+									"key": "categoryId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DropDown",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "https://localhost:7064/api/categories/CategoryDropDown"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Service",
+			"item": [
+				{
+					"name": "CreateService",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Coashing\",\r\n  \"description\": \"I coash in private Session\",\r\n  \"price\": 20,\r\n  \"timeToExecute\": 15,\r\n  \"previousworkImagesUrl\": \"2.jpg\",\r\n  \"serviceProviderId\": 2,\r\n  \"categoryId\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://localhost:7064/api/services/Create"
+					},
+					"response": []
+				},
+				{
+					"name": "GetAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "https://localhost:7064/api/services/getall"
+					},
+					"response": []
+				},
+				{
+					"name": "Search",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"serviceName\": \"Editing\",\r\n  \"servicePrice\": 0,\r\n  \"serviceProviderId\": 0,\r\n  \"categoryId\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://localhost:7064/api/services/Search"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7064/api/services/delete?serviceId=2",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"services",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "serviceId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Accepted Service Provider",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7064/api/services/GetAllAcceptedServiceProvider?serviceProviderId=6",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"services",
+								"GetAllAcceptedServiceProvider"
+							],
+							"query": [
+								{
+									"key": "serviceProviderId",
+									"value": "6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Finished Service Provider",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7064/api/services/GetAllFinishedServiceProvider?serviceProviderId=6",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"services",
+								"GetAllFinishedServiceProvider"
+							],
+							"query": [
+								{
+									"key": "serviceProviderId",
+									"value": "6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pending Service Provider",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7064/api/services/GetAllPendingServiceProvider?serviceProviderId=6",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"services",
+								"GetAllPendingServiceProvider"
+							],
+							"query": [
+								{
+									"key": "serviceProviderId",
+									"value": "6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Canceled Service Provider",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7064/api/services/GetAllCanceledServiceProvider?serviceProviderId=6",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"services",
+								"GetAllCanceledServiceProvider"
+							],
+							"query": [
+								{
+									"key": "serviceProviderId",
+									"value": "6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Accepted Customer",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7064/api/services/GetAllAcceptedCustomer?customerId=7",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"services",
+								"GetAllAcceptedCustomer"
+							],
+							"query": [
+								{
+									"key": "customerId",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Finished Customer",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7064/api/services/GetAllFinishedCustomer?customerId=7",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"services",
+								"GetAllFinishedCustomer"
+							],
+							"query": [
+								{
+									"key": "customerId",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pending Customer",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7064/api/services/GetAllPendingCustomer?customerId=7",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"services",
+								"GetAllPendingCustomer"
+							],
+							"query": [
+								{
+									"key": "customerId",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Canceled Customer",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7064/api/services/GetAllCanceledCustomer?customerId=7",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"services",
+								"GetAllCanceledCustomer"
+							],
+							"query": [
+								{
+									"key": "customerId",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Service Request",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"requestDate\": \"2024-05-14T22:17:36.217Z\",\r\n  \"requestState\": \"Pending\",\r\n  \"executionTime\": 30,\r\n  \"customerId\": 7,\r\n  \"serviceId\": 4,\r\n  \"notes\": \"I slkajdfldslk \"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://localhost:7064/api/serviceRequests/Create"
+					},
+					"response": []
+				},
+				{
+					"name": "Accept a Service",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7064/api/serviceRequests/AcceptServiceRequest?ServiceRequestId=1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"serviceRequests",
+								"AcceptServiceRequest"
+							],
+							"query": [
+								{
+									"key": "ServiceRequestId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel a Service",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7064/api/serviceRequests/CancelServiceRequest?ServiceRequestId=1&userId=7",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"serviceRequests",
+								"CancelServiceRequest"
+							],
+							"query": [
+								{
+									"key": "ServiceRequestId",
+									"value": "1"
+								},
+								{
+									"key": "userId",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -38,25 +38,25 @@ namespace SwapIt.BL.Services
             _UserBalanceRepository = userBalanceRepository;
             _context = swapItDbContext;
         }
-        [Authorize(Roles =RolesNames.Admin+ ","+RolesNames.ServiceProvider)]
+        [Authorize(Roles = RolesNames.Admin + "," + RolesNames.ServiceProvider)]
         public async Task<bool> AcceptServiceRequestAsync(int ServiceRequestId)
         {
             var serviceRequest = await _serviceRequestRepository.GetByIdAsync(ServiceRequestId);
-            
-            if(serviceRequest is null)
+
+            if (serviceRequest is null)
                 return false;
 
             if (serviceRequest.RequestState != RequestStateNames.Pending)
                 return false;
 
             serviceRequest.RequestState = RequestStateNames.Accepted;
-
+            await _serviceRequestRepository.UpdateAsync(serviceRequest);
             return true;
 
         }
 
 
-        public async Task<bool> CancelServiceRequestAsync(int userId,  int ServiceRequestId)
+        public async Task<bool> CancelServiceRequestAsync(int userId, int ServiceRequestId)
         {
             //state>pending =======> return money
             //state=>accepted customer ==>return money - commession
@@ -64,17 +64,17 @@ namespace SwapIt.BL.Services
 
             var user = await _userManager.FindByIdAsync(userId.ToString());
 
-            if(user is null) 
+            if (user is null)
                 return false;
 
             var serviceRequest = await _serviceRequestRepository.GetByIdAsync(ServiceRequestId);
-           
+
             if (serviceRequest is null)
                 return false;
 
             if (serviceRequest.RequestState == RequestStateNames.Pending)
             {
-                
+
                 serviceRequest.RequestState = RequestStateNames.Canceled;
 
                 //return money
@@ -82,7 +82,7 @@ namespace SwapIt.BL.Services
                 var holdAmount = _context.PointsLoggers
                     .Where(x => x.UserId == user.Id && x.ServiceRequestId == serviceRequest.Id)
                     .FirstOrDefault();
-                    
+
                 if (holdAmount is null)
                     return false;
 
@@ -127,21 +127,24 @@ namespace SwapIt.BL.Services
                 return false;
 
             bool substracted = await _UserBalanceRepository.SubstractPointsAsync(await _UserBalanceRepository.GetByUserAsync(user), service.Price);
-            if(!substracted) 
+            if (!substracted)
                 return false;
 
+
+            dto.RequestState = RequestStateNames.Pending;
+
+
+            var serviceRequest = await _serviceRequestRepository.AddAndReturnAsync(_mapper.Map<ServiceRequest>(dto));
 
             //track points transaction
             var pointsLogger = new PointsLogger();
             pointsLogger.Points = service.Price;
             pointsLogger.Type = TransactionTypes.Hold;
             pointsLogger.UserId = user.Id;
-            pointsLogger.ServiceRequestId = dto.Id; 
+            pointsLogger.ServiceRequestId = serviceRequest.Id;
             await _pointsLoggerRepository.AddAsync(pointsLogger);
 
-
-            dto.RequestState = RequestStateNames.Pending;
-            return await _serviceRequestRepository.AddAsync(_mapper.Map<ServiceRequest>(dto));
+            return true;
         }
 
         public async Task<bool> DeleteAsync(int serviceRequestId)
@@ -151,7 +154,7 @@ namespace SwapIt.BL.Services
 
         public async Task<ServiceRequestDto> GetByIdAsync(int id)
         {
-            return  _mapper.Map<ServiceRequestDto>(await _serviceRequestRepository.GetByIdAsync(id));
+            return _mapper.Map<ServiceRequestDto>(await _serviceRequestRepository.GetByIdAsync(id));
         }
 
         public async Task<bool> UpdateAsync(ServiceRequestDto dto)

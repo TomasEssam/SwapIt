@@ -50,19 +50,59 @@ namespace SwapIt.API.Controllers
         }
 
         [HttpGet]
-        [Route("GetAllAccepted")]
-        public async Task<IActionResult> GetAllAccepted([FromQuery] int userId)
+        [Route("GetAllAcceptedServiceProvider")]
+        public async Task<IActionResult> GetAllAcceptedServiceProvider([FromQuery] int serviceProviderId)
         {
-            return Ok(await _serviceService.GetAllAcceptedAsync(userId));
+            return Ok(await _serviceService.GetAllAcceptedServiceProviderSideAsync(serviceProviderId));
         }
 
         [HttpGet]
-        [Route("GetAllFinished")]
-        public async Task<IActionResult> GetAllFinished([FromQuery] int userId)
+        [Route("GetAllFinishedServiceProvider")]
+        public async Task<IActionResult> GetAllFinishedServiceProvider([FromQuery] int serviceProviderId)
         {
-            return Ok(await _serviceService.GetAllFinshiedAsync(userId));
+            return Ok(await _serviceService.GetAllFinshiedServiceProviderSideAsync(serviceProviderId));
         }
 
+        [HttpGet]
+        [Route("GetAllPendingServiceProvider")]
+        public async Task<IActionResult> GetAllPendingServiceProvider([FromQuery] int serviceProviderId)
+        {
+            return Ok(await _serviceService.GetAllPendingServiceProviderSideAsync(serviceProviderId));
+        }
 
+        [HttpGet]
+        [Route("GetAllCanceledServiceProvider")]
+        public async Task<IActionResult> GetAllCanceledServiceProvider([FromQuery] int serviceProviderId)
+        {
+            return Ok(await _serviceService.GetAllCanceledServiceProviderSideAsync(serviceProviderId));
+        }
+
+        [HttpGet]
+        [Route("GetAllPendingCustomer")]
+        public async Task<IActionResult> GetAllPendingCustomer([FromQuery] int customerId)
+        {
+            return Ok(await _serviceService.GetAllPendingCustomerSideAsync(customerId));
+        }
+
+        [HttpGet]
+        [Route("GetAllAcceptedCustomer")]
+        public async Task<IActionResult> GetAllAcceptedCustomer([FromQuery] int customerId)
+        {
+            return Ok(await _serviceService.GetAllAcceptedCustomerSideAsync(customerId));
+        }
+
+        [HttpGet]
+        [Route("GetAllCanceledCustomer")]
+        public async Task<IActionResult> GetAllCanceledCustomer([FromQuery] int customerId)
+        {
+            return Ok(await _serviceService.GetAllCanceledCustomerSideAsync(customerId));
+        }
+
+        [HttpGet]
+        [Route("GetAllFinishedCustomer")]
+        public async Task<IActionResult> GetAllFinishedCustomer([FromQuery] int customerId)
+        {
+            return Ok(await _serviceService.GetAllFinishiedCustomerSideAsync(customerId));
+        }
     }
 }

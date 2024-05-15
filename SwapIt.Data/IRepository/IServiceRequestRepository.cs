@@ -15,5 +15,7 @@ namespace SwapIt.Data.IRepository
         Task<bool> UpdateAsync(ServiceRequest entity);
         Task<bool> DeleteAsync(ServiceRequest entity);
         Task<bool> DeleteByIdAsync(int id);
+        Task<ServiceRequest> AddAndReturnAsync(ServiceRequest serviceRequest);
+
     }
 }

@@ -50,7 +50,7 @@ namespace SwapIt.BL.Services
 
         }
 
-        public async Task<List<SearchResultDto>> GetAllAcceptedAsync(int userId)
+        public async Task<List<SearchResultDto>> GetAllAcceptedServiceProviderSideAsync(int serviceProviderId)
         {
             return await _context.ServiceRequests.Include(x => x.Service)
                   .ThenInclude(x => x.Category)
@@ -58,7 +58,7 @@ namespace SwapIt.BL.Services
                   .ThenInclude(x => x.ServiceProvider)
                   .Include(x => x.Service)
                   .ThenInclude(x => x.Rates)
-                  .Where(x => x.RequestState == RequestStateNames.Accepted && x.Service.ServiceProviderId == userId)
+                  .Where(x => x.RequestState == RequestStateNames.Accepted && x.Service.ServiceProviderId == serviceProviderId)
                   .Select(x => new SearchResultDto
                   {
                       Id = x.ServiceId,
@@ -67,7 +67,7 @@ namespace SwapIt.BL.Services
                       ServiceDescription = x.Service.Description,
                       ServiceName = x.Service.Name,
                       ServicePrice = x.Service.Price,
-                      totalRate = x.Service.Rates.Select(x => x.RateValue).Sum() / x.Service.Rates.Count(),
+                      totalRate = (x.Service.Rates.Count() == 0) ? 0 : x.Service.Rates.Select(x => x.RateValue).Sum() / x.Service.Rates.Count(),
                       Username = x.Service.ServiceProvider.UserName
                   }).ToListAsync();
 
@@ -79,7 +79,7 @@ namespace SwapIt.BL.Services
             return _mapper.Map<List<ServiceDto>>(model);
         }
 
-        public async Task<List<SearchResultDto>> GetAllFinshiedAsync(int userId)
+        public async Task<List<SearchResultDto>> GetAllFinshiedServiceProviderSideAsync(int serviceProviderId)
         {
             return await _context.ServiceRequests.Include(x => x.Service)
                 .ThenInclude(x => x.Category)
@@ -87,7 +87,7 @@ namespace SwapIt.BL.Services
                 .ThenInclude(x => x.ServiceProvider)
                 .Include(x => x.Service)
                 .ThenInclude(x => x.Rates)
-                .Where(x => x.RequestState == RequestStateNames.Finished && x.Service.ServiceProviderId == userId)
+                .Where(x => x.RequestState == RequestStateNames.Finished && x.Service.ServiceProviderId == serviceProviderId)
                 .Select(x => new SearchResultDto
                 {
                     Id = x.ServiceId,
@@ -96,15 +96,15 @@ namespace SwapIt.BL.Services
                     ServiceDescription = x.Service.Description,
                     ServiceName = x.Service.Name,
                     ServicePrice = x.Service.Price,
-                    totalRate = x.Service.Rates.Select(x => x.RateValue).Sum() / x.Service.Rates.Count(),
+                    totalRate = (x.Service.Rates.Count() == 0) ? 0 : x.Service.Rates.Select(x => x.RateValue).Sum() / x.Service.Rates.Count(),
                     Username = x.Service.ServiceProvider.UserName
                 }).ToListAsync();
         }
 
-        public async Task<List<string>> GetAllPreviousWorkImageUrlAsync(int userId)
+        public async Task<List<string>> GetAllPreviousWorkImageUrlAsync(int serviceProviderId)
         {
             var servicesList = await _serviceRepository.GetAllAsync();
-            var userServicesUrls = servicesList.Where(x => x.ServiceProviderId == userId)
+            var userServicesUrls = servicesList.Where(x => x.ServiceProviderId == serviceProviderId)
                 .Select(x => x.PreviousworkImagesUrl).ToList();
             return userServicesUrls;
         }
@@ -174,6 +174,138 @@ namespace SwapIt.BL.Services
                     CustomerName = x.Customer.UserName,
                     RateDate = x.RateDate,
                     RateValue = x.RateValue
+                }).ToListAsync();
+        }
+
+        public async Task<List<SearchResultDto>> GetAllPendingServiceProviderSideAsync(int serviceProviderId)
+        {
+                return await _context.ServiceRequests.Include(x => x.Service)
+                    .ThenInclude(x => x.Category)
+                    .Include(x => x.Service)
+                    .ThenInclude(x => x.ServiceProvider)
+                    .Include(x => x.Service)
+                    .ThenInclude(x => x.Rates)
+                    .Where(x => x.RequestState == RequestStateNames.Pending && x.Service.ServiceProviderId == serviceProviderId)
+                    .Select(x => new SearchResultDto
+                    {
+                        Id = x.ServiceId,
+                        CategoryName = x.Service.Category.Name,
+                        ProfileImagePath = x.Service.ServiceProvider.ProfileImagePath,
+                        ServiceDescription = x.Service.Description,
+                        ServiceName = x.Service.Name,
+                        ServicePrice = x.Service.Price,
+                        totalRate = (x.Service.Rates.Count() == 0) ? 0 : x.Service.Rates.Select(x => x.RateValue).Sum() / x.Service.Rates.Count(),
+                        Username = x.Service.ServiceProvider.UserName
+                    }).ToListAsync();
+        }
+
+        public async Task<List<SearchResultDto>> GetAllCanceledServiceProviderSideAsync(int serviceProviderId)
+        {
+            return await _context.ServiceRequests.Include(x => x.Service)
+                .ThenInclude(x => x.Category)
+                .Include(x => x.Service)
+                .ThenInclude(x => x.ServiceProvider)
+                .Include(x => x.Service)
+                .ThenInclude(x => x.Rates)
+                .Where(x => x.RequestState == RequestStateNames.Canceled && x.Service.ServiceProviderId == serviceProviderId)
+                .Select(x => new SearchResultDto
+                {
+                    Id = x.ServiceId,
+                    CategoryName = x.Service.Category.Name,
+                    ProfileImagePath = x.Service.ServiceProvider.ProfileImagePath,
+                    ServiceDescription = x.Service.Description,
+                    ServiceName = x.Service.Name,
+                    ServicePrice = x.Service.Price,
+                    totalRate = (x.Service.Rates.Count() == 0) ? 0 : x.Service.Rates.Select(x => x.RateValue).Sum() / x.Service.Rates.Count(),
+                    Username = x.Service.ServiceProvider.UserName
+                }).ToListAsync();
+        }
+
+        public async Task<List<SearchResultDto>> GetAllAcceptedCustomerSideAsync(int customerId)
+        {
+            return await _context.ServiceRequests.Include(x => x.Service)
+                 .ThenInclude(x => x.Category)
+                 .Include(x => x.Service)
+                 .ThenInclude(x => x.ServiceProvider)
+                 .Include(x => x.Service)
+                 .ThenInclude(x => x.Rates)
+                 .Where(x => x.RequestState == RequestStateNames.Accepted && x.CustomerId == customerId)
+                 .Select(x => new SearchResultDto
+                 {
+                     Id = x.ServiceId,
+                     CategoryName = x.Service.Category.Name,
+                     ProfileImagePath = x.Service.ServiceProvider.ProfileImagePath,
+                     ServiceDescription = x.Service.Description,
+                     ServiceName = x.Service.Name,
+                     ServicePrice = x.Service.Price,
+                     totalRate = (x.Service.Rates.Count() == 0) ? 0 : x.Service.Rates.Select(x => x.RateValue).Sum() / x.Service.Rates.Count(),
+                     Username = x.Service.ServiceProvider.UserName
+                 }).ToListAsync();
+        }
+
+        public async Task<List<SearchResultDto>> GetAllFinishiedCustomerSideAsync(int customerId)
+        {
+            return await _context.ServiceRequests.Include(x => x.Service)
+                .ThenInclude(x => x.Category)
+                .Include(x => x.Service)
+                .ThenInclude(x => x.ServiceProvider)
+                .Include(x => x.Service)
+                .ThenInclude(x => x.Rates)
+                .Where(x => x.RequestState == RequestStateNames.Finished && x.CustomerId == customerId)
+                .Select(x => new SearchResultDto
+                {
+                    Id = x.ServiceId,
+                    CategoryName = x.Service.Category.Name,
+                    ProfileImagePath = x.Service.ServiceProvider.ProfileImagePath,
+                    ServiceDescription = x.Service.Description,
+                    ServiceName = x.Service.Name,
+                    ServicePrice = x.Service.Price,
+                    totalRate = (x.Service.Rates.Count() == 0) ? 0 : x.Service.Rates.Select(x => x.RateValue).Sum() / x.Service.Rates.Count(),
+                    Username = x.Service.ServiceProvider.UserName
+                }).ToListAsync();
+        }
+
+        public async Task<List<SearchResultDto>> GetAllPendingCustomerSideAsync(int customerId)
+        {
+            return await _context.ServiceRequests.Include(x => x.Service)
+                .ThenInclude(x => x.Category)
+                .Include(x => x.Service)
+                .ThenInclude(x => x.ServiceProvider)
+                .Include(x => x.Service)
+                .ThenInclude(x => x.Rates)
+                .Where(x => x.RequestState == RequestStateNames.Pending && x.CustomerId == customerId)
+                .Select(x => new SearchResultDto
+                {
+                    Id = x.ServiceId,
+                    CategoryName = x.Service.Category.Name,
+                    ProfileImagePath = x.Service.ServiceProvider.ProfileImagePath,
+                    ServiceDescription = x.Service.Description,
+                    ServiceName = x.Service.Name,
+                    ServicePrice = x.Service.Price,
+                    totalRate = (x.Service.Rates.Count() == 0) ? 0 : x.Service.Rates.Select(x => x.RateValue).Sum() / x.Service.Rates.Count(),
+                    Username = x.Service.ServiceProvider.UserName
+                }).ToListAsync();
+        }
+
+        public async Task<List<SearchResultDto>> GetAllCanceledCustomerSideAsync(int customerId)
+        {
+            return await _context.ServiceRequests.Include(x => x.Service)
+                .ThenInclude(x => x.Category)
+                .Include(x => x.Service)
+                .ThenInclude(x => x.ServiceProvider)
+                .Include(x => x.Service)
+                .ThenInclude(x => x.Rates)
+                .Where(x => x.RequestState == RequestStateNames.Canceled && x.CustomerId == customerId)
+                .Select(x => new SearchResultDto
+                {
+                    Id = x.ServiceId,
+                    CategoryName = x.Service.Category.Name,
+                    ProfileImagePath = x.Service.ServiceProvider.ProfileImagePath,
+                    ServiceDescription = x.Service.Description,
+                    ServiceName = x.Service.Name,
+                    ServicePrice = x.Service.Price,
+                    totalRate = (x.Service.Rates.Count() == 0) ? 0 : x.Service.Rates.Select(x => x.RateValue).Sum() / x.Service.Rates.Count(),
+                    Username = x.Service.ServiceProvider.UserName
                 }).ToListAsync();
         }
     }

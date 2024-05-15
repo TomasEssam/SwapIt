@@ -15,11 +15,19 @@ namespace SwapIt.BL.IServices
         Task<bool> CreateAsync(ServiceDto dto);
         Task<bool> DeleteAsync(int serviceId);
         Task<bool> UpdateAsync(ServiceDto dto);
-        Task<List<SearchResultDto>> GetAllAcceptedAsync(int userId);
-        Task<List<SearchResultDto>> GetAllFinshiedAsync(int userId);
+        Task<List<SearchResultDto>> GetAllAcceptedServiceProviderSideAsync(int serviceProviderId);
+        Task<List<SearchResultDto>> GetAllFinshiedServiceProviderSideAsync(int serviceProviderId);
+        Task<List<SearchResultDto>> GetAllPendingServiceProviderSideAsync(int serviceProviderId);
+        Task<List<SearchResultDto>> GetAllCanceledServiceProviderSideAsync(int serviceProviderId);
+
+        Task<List<SearchResultDto>> GetAllAcceptedCustomerSideAsync(int customerId);
+        Task<List<SearchResultDto>> GetAllFinishiedCustomerSideAsync(int customerId);
+        Task<List<SearchResultDto>> GetAllPendingCustomerSideAsync(int customerId);
+        Task<List<SearchResultDto>> GetAllCanceledCustomerSideAsync(int customerId);
+
         Task<List<ServiceDto>> GetAllAsync();
         Task<List<SearchResultDto>> SearchServiceAsync(ServiceFilterDto Filter);
-        Task<List<string>> GetAllPreviousWorkImageUrlAsync(int userId);
+        Task<List<string>> GetAllPreviousWorkImageUrlAsync(int serviceProviderId);
         Task<ServiceDto> GetServiceByIdAsync(int serviceId);
         Task<List<DropDownDto>> GetServiceDDAsync();
         Task<List<RateDto>> GetRatesAsync(int serviceId);

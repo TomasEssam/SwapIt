@@ -24,6 +24,13 @@ namespace SwapIt.Data.Repository
             return await Context.SaveChangesAsync() > 0;
         }
 
+        public async Task<ServiceRequest> AddAndReturnAsync(ServiceRequest serviceRequest)
+        {
+            Context.ServiceRequests.Add(serviceRequest);
+            await Context.SaveChangesAsync();
+            return serviceRequest;
+        }
+
         public async Task<bool> DeleteAsync(ServiceRequest serviceRequest)
         {
             serviceRequest.IsDeleted = true;

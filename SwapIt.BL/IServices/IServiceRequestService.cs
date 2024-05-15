@@ -1,5 +1,6 @@
 ﻿using SwapIt.BL.DTOs;
 using SwapIt.BL.DTOs.Identity;
+using SwapIt.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace SwapIt.BL.IServices
         Task<bool> UpdateAsync(ServiceRequestDto dto);
         Task<bool> CancelServiceRequestAsync(int userId, int ServiceRequestId);
         Task<bool> AcceptServiceRequestAsync(int ServiceRequestId);
-
+        Task<ServiceRequest?> GetAsync(int serviceId, int userId);
+        
     }
 }

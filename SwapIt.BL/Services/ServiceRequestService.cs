@@ -152,6 +152,13 @@ namespace SwapIt.BL.Services
             return await _serviceRequestRepository.DeleteByIdAsync(serviceRequestId);
         }
 
+        public async Task<ServiceRequest?> GetAsync(int serviceId, int userId)
+        {
+            var serviceRequest = await _serviceRequestRepository.GetAllAsync();
+
+            return serviceRequest.Where(s=>s.ServiceId==serviceId &&s.CustomerId==userId).FirstOrDefault();
+        }
+
         public async Task<ServiceRequestDto> GetByIdAsync(int id)
         {
             return _mapper.Map<ServiceRequestDto>(await _serviceRequestRepository.GetByIdAsync(id));
@@ -162,5 +169,7 @@ namespace SwapIt.BL.Services
             return await _serviceRequestRepository.UpdateAsync(_mapper.Map<ServiceRequest>(dto));
 
         }
+
+
     }
 }

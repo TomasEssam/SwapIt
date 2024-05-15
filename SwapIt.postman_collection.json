@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"username\": \"TomasEssam\",\r\n  \"password\": \"To@@ma$1\"\r\n}",
+							"raw": "{\r\n  \"username\": \"TomasEssam\",\r\n  \"password\": \"P@$$w0rd\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -103,7 +103,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"username\": \"Geoooo\",\r\n  \"password\": \"P@$$w0rd\",\r\n  \"email\": \"Geooo@Gmail.com\",\r\n  \"dateOfBirth\": \"2002-04-14\",\r\n  \"gender\": \"Male\",\r\n  \"phoneNumber\": \"012423278\"\r\n}",
+							"raw": "{\r\n  \"username\": \"Geoooo\",\r\n  \"password\": \"P@$$w0rd\",\r\n  \"email\": \"Geooo@Gmail.com\",\r\n  \"dateOfBirth\": \"2002-04-14\",\r\n  \"gender\": \"Male\",\r\n  \"phoneNumber\": \"01223205919\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -121,11 +121,8 @@
 			"item": [
 				{
 					"name": "AddRole",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
-						"method": "GET",
+						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
@@ -220,7 +217,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"name\": \"Coashing\",\r\n  \"description\": \"I coash in private Session\",\r\n  \"price\": 20,\r\n  \"timeToExecute\": 15,\r\n  \"previousworkImagesUrl\": \"2.jpg\",\r\n  \"serviceProviderId\": 2,\r\n  \"categoryId\": 3\r\n}",
+							"raw": "{\r\n  \"name\": \"Coashing\",\r\n  \"description\": \"I coash in private Session\",\r\n  \"price\": 20,\r\n  \"timeToExecute\": 15,\r\n  \"previousworkImagesUrl\": \"2.jpg\",\r\n  \"serviceProviderId\": 9,\r\n  \"categoryId\": 3\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -513,7 +510,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"requestDate\": \"2024-05-14T22:17:36.217Z\",\r\n  \"requestState\": \"Pending\",\r\n  \"executionTime\": 30,\r\n  \"customerId\": 7,\r\n  \"serviceId\": 4,\r\n  \"notes\": \"I slkajdfldslk \"\r\n}",
+							"raw": "{\r\n  \"requestDate\": \"2024-05-14T22:17:36.217Z\",\r\n  \"requestState\": \"Pending\",\r\n  \"executionTime\": 30,\r\n  \"customerId\": 7,\r\n  \"serviceId\": 5,\r\n  \"notes\": \"I slkajdfldslk \"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -530,7 +527,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:7064/api/serviceRequests/AcceptServiceRequest?ServiceRequestId=1",
+							"raw": "https://localhost:7064/api/serviceRequests/AcceptServiceRequest?ServiceRequestId=3",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -544,7 +541,7 @@
 							"query": [
 								{
 									"key": "ServiceRequestId",
-									"value": "1"
+									"value": "3"
 								}
 							]
 						}
@@ -579,6 +576,141 @@
 								}
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all for test",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "https://localhost:7064/api/serviceRequests/GetAll"
+					},
+					"response": []
+				},
+				{
+					"name": "Finish a Service",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7064/api/serviceRequests/FinishServiceRequest?ServiceRequestId=3",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"serviceRequests",
+								"FinishServiceRequest"
+							],
+							"query": [
+								{
+									"key": "ServiceRequestId",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payment",
+			"item": [
+				{
+					"name": "Deposite",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7064/api/payment/Deposite?userId=9&points=30",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"payment",
+								"Deposite"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "9"
+								},
+								{
+									"key": "points",
+									"value": "30"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "WithDraw",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7064/api/payment/Withdraw?userId=9&points=30",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"payment",
+								"Withdraw"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "9"
+								},
+								{
+									"key": "points",
+									"value": "30"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Rate",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n  \"rateValue\": 4,\r\n  \"rateDate\": \"2024-05-15T20:53:46.825Z\",\r\n  \"feedback\": \"this with shit\",\r\n  \"serviceId\": 5,\r\n  \"customerId\": 6\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://localhost:7064/api/rates/Create"
 					},
 					"response": []
 				}

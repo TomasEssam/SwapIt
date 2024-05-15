@@ -18,6 +18,8 @@ namespace SwapIt.BL.IServices
         Task<bool> CancelServiceRequestAsync(int userId, int ServiceRequestId);
         Task<bool> AcceptServiceRequestAsync(int ServiceRequestId);
         Task<ServiceRequest?> GetAsync(int serviceId, int userId);
-        
+
+        Task<List<ServiceRequestDto>> GetAllAsync();
+
     }
 }

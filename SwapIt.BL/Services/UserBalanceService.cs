@@ -59,5 +59,12 @@ namespace SwapIt.BL.Services
         {
             return await _userBalanceRepository.SubstractPointsAsync(_mapper.Map<UserBalance>(dto), points);
         }
+
+        public async Task<UserBalanceDto> GetByUser(int userId)
+        {
+
+            var model = await _userBalanceRepository.GetByUserIdAsync(userId);
+            return _mapper.Map<UserBalanceDto>(model);
+        }
     }
 }

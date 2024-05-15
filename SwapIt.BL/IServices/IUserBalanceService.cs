@@ -16,5 +16,6 @@ namespace SwapIt.BL.IServices
         Task<UserBalanceDto> GetByIdAsync(int userBalanceId);
         Task<bool> AddPointsAsync(UserBalanceDto dto, int points);
         Task<bool> SubstractPointsAsync(UserBalanceDto dto, int points);
+        Task<UserBalanceDto> GetByUser(int userId);
     }
 }

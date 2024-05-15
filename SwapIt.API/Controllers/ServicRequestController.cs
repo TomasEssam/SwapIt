@@ -69,6 +69,14 @@ namespace SwapIt.API.Controllers
         {
             return Ok(await _serviceRequestService.UpdateAsync(dto));
         }
+
+        [HttpPost]
+        [Route("GetAll")]
+        public async Task<IActionResult> GetAll()
+        {
+            return Ok(await _serviceRequestService.GetAllAsync());
+        }
+
         #endregion
     }
 }

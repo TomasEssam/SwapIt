@@ -3,10 +3,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using SwapIt.BL.DTOs.Identity;
+using SwapIt.BL.IServices;
 using SwapIt.BL.IServices.Identity;
 using SwapIt.Data.Constants;
+using SwapIt.Data.Entities;
 using SwapIt.Data.Entities.Identity;
 using SwapIt.Data.Helpers;
+using SwapIt.Data.IRepository;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -20,18 +23,20 @@ namespace SwapIt.BL.Services
         private readonly SignInManager<ApplicationUser> _signinManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
-   
+        private readonly IUserBalanceRepository _userBalanceRepository;
+
 
         public UserService(IConfiguration configuration,
     SignInManager<ApplicationUser> signinManager,
     UserManager<ApplicationUser> userManager,
-    IHttpContextAccessor httpContextAccessor)
+    IHttpContextAccessor httpContextAccessor,
+    IUserBalanceRepository userBalanceRepository)
         {
             _configuration = configuration;
             _userManager = userManager;
             _signinManager = signinManager;
             _httpContextAccessor = httpContextAccessor;
-           
+            _userBalanceRepository = userBalanceRepository;
         }
         public async Task<LoginResultDto> Authenticate(LoginDto dto)
         {
@@ -78,6 +83,7 @@ namespace SwapIt.BL.Services
                 UserName = dto.Username,
                 IsActive = true
             };
+            
 
             var result = await _userManager.CreateAsync(user, dto.Password);
 
@@ -86,6 +92,14 @@ namespace SwapIt.BL.Services
                 var errors = string.Join(",", result.Errors.Select(x => x.Description));
                 throw new Exception(errors);
             }
+
+            await _userBalanceRepository.AddAsync(
+                new UserBalance()
+                {
+                    Amount = 0,
+                    Points = 0,
+                    UserId = user.Id
+                });
             
             dto.UserId = user.Id;
             try

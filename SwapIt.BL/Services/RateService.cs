@@ -28,9 +28,21 @@ namespace SwapIt.BL.Services
             _serviceRepository = serviceRepository;
             _serviceRequestService = serviceRequestService;
         }
-        public async Task<bool> CreateAsync(RateDto dto)
+        public async Task<bool> CreateAsync(RateDto newRate)
         {
-           return await _rateRepository.AddAsync(_mapper.Map<Rate>(dto));
+            var user = await _userManager.FindByIdAsync(newRate.CustomerId.ToString());
+            if (user is null)
+                return false;
+
+            var service = await _serviceRepository.GetByIdAsync(newRate.ServiceId);
+            if (service is null)
+                return false;
+
+            var serviceRequest = _serviceRequestService.GetAsync(newRate.ServiceId, newRate.CustomerId);
+            if (serviceRequest is null)
+                return false;
+
+            return await _rateRepository.AddAsync(_mapper.Map<Rate>(newRate));
         }
 
         public async Task<bool> DeleteAsync(int rateId)
@@ -43,7 +55,11 @@ namespace SwapIt.BL.Services
             var rates = await _rateRepository.GetAllAsync();
             return _mapper.Map<List<RateDto>>(rates);
         }
-
+        public async Task<List<RateDto>> GetByServiceIdAsync(int serviceId)
+        {
+            var rates = await _rateRepository.GetAllAsync();
+            return _mapper.Map<List<RateDto>>(rates.Where(r => r.ServiceId == serviceId));
+        }
         public async Task<RateDto> GetByIdAsync(int rateId)
         {
             var rate = await _rateRepository.GetByIdAsync(rateId);
@@ -53,23 +69,6 @@ namespace SwapIt.BL.Services
         public async Task<bool> UpdateAsync(RateDto dto)
         {
             return await _rateRepository.UpdateAsync(_mapper.Map<Rate>(dto));
-        }
-
-        public async Task<bool> Rate(RateDto newRate)
-        {
-            var user = await _userManager.FindByIdAsync(newRate.CustomerId.ToString());
-            if (user is null)
-                return false;
-
-            var service = await _serviceRepository.GetByIdAsync(user.Id);
-            if (service is null)
-                return false;
-
-            var serviceRequest =  _serviceRequestService.GetAsync(newRate.ServiceId, newRate.CustomerId);
-            if (serviceRequest is null)
-                return false;
-
-            return await _rateRepository.AddAsync(_mapper.Map<Rate>(newRate));
         }
 
     }

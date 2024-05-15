@@ -10,11 +10,11 @@ namespace SwapIt.BL.IServices
 {
     public interface IRateService
     {
-        Task<bool> CreateAsync(RateDto dto);
+        Task<bool> CreateAsync(RateDto newRate);
         Task<bool> DeleteAsync(int rateId);
         Task<bool> UpdateAsync(RateDto dto);
         Task<RateDto> GetByIdAsync(int rateId);
         Task<List<RateDto>> GetAllAsync();
-        Task<bool> Rate(RateDto newRate);
+        Task<List<RateDto>> GetByServiceIdAsync(int serviceId);
     }
 }

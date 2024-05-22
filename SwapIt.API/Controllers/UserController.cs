@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SwapIt.BL.DTOs.Identity;
+using SwapIt.BL.IServices;
 using SwapIt.BL.IServices.Identity;
 using SwapIt.Data.Constants;
 
@@ -14,13 +15,15 @@ namespace SwapIt.API.Controllers
         #region Fields
 
         private readonly IUserService _userService;
+        private readonly IServiceService _serviceService;
 
         #endregion
 
         #region Ctor
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IServiceService serviceService)
         {
             _userService = userService;
+            _serviceService = serviceService;
         }
         #endregion
 
@@ -55,6 +58,20 @@ namespace SwapIt.API.Controllers
         {
             await _userService.CreateUserAsync(dto);
             return Ok();
+        }
+
+        [HttpGet]
+        [Route("GetUser")]
+        public async Task<IActionResult> GetUser(int userId)
+        {
+           return Ok(await _userService.GetUserAsync(userId));
+        }
+
+        [HttpGet]
+        [Route("GetServicesImages")]
+        public async Task<IActionResult> GetServicesImages(int userId)
+        {
+            return Ok(await _serviceService.GetAllPreviousWorkImageUrlAsync(userId));
         }
 
         #endregion

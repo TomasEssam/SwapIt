@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.JSInterop.Infrastructure;
+using SwapIt.BL.DTOs;
 using SwapIt.BL.DTOs.Identity;
 using SwapIt.BL.IServices;
 using SwapIt.BL.IServices.Identity;
@@ -70,6 +72,26 @@ namespace SwapIt.BL.Services
             }
             throw new Exception("Invalid User name or password");
         }
+
+        public async Task<ProfileDto> GetUserAsync(int userId)
+        {
+         var user =   await _userManager.FindByIdAsync(userId.ToString());
+            if(user == null)
+            {
+                throw new Exception("There is no user with this Id");
+            }
+
+            ProfileDto dto = new ProfileDto();
+            dto.UserId = user.Id;
+            dto.Username = user.UserName;
+            dto.Email = user.Email;
+            dto.JobTitle = user.JobTitle;
+            dto.PhoneNumber = user.PhoneNumber;
+            dto.ProfileImagePath = user.ProfileImagePath;
+            dto.DateOfBirth = user.BirthDate;
+            dto.Address = user.Address;
+            return(dto);
+        }
         public async Task CreateUserAsync(UserDto dto)
         {
             var user = new ApplicationUser()
@@ -78,6 +100,9 @@ namespace SwapIt.BL.Services
                 Email = dto.Email,
                 Gender = dto.Gender,
                 PhoneNumber = dto.PhoneNumber,
+                JobTitle = dto.JobTitle,
+                Address = dto.Address,
+                ProfileImagePath = dto.ProfileImagePath,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 ApplicationUserId = Guid.NewGuid(),
                 UserName = dto.Username,

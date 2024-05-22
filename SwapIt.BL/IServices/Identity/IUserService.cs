@@ -1,4 +1,5 @@
-﻿using SwapIt.BL.DTOs.Identity;
+﻿using SwapIt.BL.DTOs;
+using SwapIt.BL.DTOs.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,5 +18,6 @@ namespace SwapIt.BL.IServices.Identity
         Task<string> GetUserRole(int userId);
         Task ResetPasswordAsync(ResetPasswordDto dto);
         Task<LoginResultDto> RefreshToken(string authenticationToken, string refreshToken);
+        Task<ProfileDto> GetUserAsync(int userId);
     }
 }

@@ -34,8 +34,12 @@ namespace SwapIt.BL.DTOs.Identity
 
         [RegularExpression("^01[0-9]{9}$", ErrorMessage = "Phone number must be 11 digits and start with '01'.")]
         public string PhoneNumber { get; set; }
-  
+        [StringLength(100, MinimumLength = 2)]
+        public string? Address { get; set; }
+        public string? JobTitle { get; set; }
+        public string? ProfileImagePath { get; set; }
         public string? RoleId { get; set; }
+
       
     }
 }

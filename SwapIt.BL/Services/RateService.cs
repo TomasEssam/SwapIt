@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using SwapIt.BL.DTOs;
 using SwapIt.BL.IServices;
 using SwapIt.Data.Entities;
+using SwapIt.Data.Entities.Context;
 using SwapIt.Data.Entities.Identity;
 using SwapIt.Data.IRepository;
 using System;
@@ -20,13 +22,15 @@ namespace SwapIt.BL.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IServiceRepository _serviceRepository;
         private readonly IServiceRequestService _serviceRequestService;
-        public RateService(IRateRepository rateRepository, IMapper mapper, UserManager<ApplicationUser> userManager, IServiceRepository serviceRepository, IServiceRequestService serviceRequestService)
+        private readonly SwapItDbContext _context;
+        public RateService(IRateRepository rateRepository, IMapper mapper, UserManager<ApplicationUser> userManager, IServiceRepository serviceRepository, IServiceRequestService serviceRequestService, SwapItDbContext context)
         {
             _rateRepository = rateRepository;
             _mapper = mapper;
             _userManager = userManager;
             _serviceRepository = serviceRepository;
             _serviceRequestService = serviceRequestService;
+            _context = context;
         }
         public async Task<bool> CreateAsync(RateDto newRate)
         {
@@ -59,6 +63,21 @@ namespace SwapIt.BL.Services
         {
             var rates = await _rateRepository.GetAllAsync();
             return _mapper.Map<List<RateDto>>(rates.Where(r => r.ServiceId == serviceId));
+        }
+
+        public async Task<int> GetTotalRateForUser(int userId)
+        {
+            
+            var totalRateList = 
+            await _context.Services
+                .Include(x => x.Rates)
+                .Where(x => x.ServiceProviderId == userId)
+                .Select(x => new ProfileDto
+                {
+                   TotalRate  = (x.Rates.Count() == 0) ? 0 : x.Rates.Select(x => x.RateValue).Sum() / x.Rates.Count()
+                }).ToListAsync();
+            return (totalRateList.Count == 0) ? 0 : (int)totalRateList.Select(x => x.TotalRate).Average();
+             
         }
         public async Task<RateDto> GetByIdAsync(int rateId)
         {

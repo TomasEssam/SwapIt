@@ -16,5 +16,6 @@ namespace SwapIt.BL.IServices
         Task<RateDto> GetByIdAsync(int rateId);
         Task<List<RateDto>> GetAllAsync();
         Task<List<RateDto>> GetByServiceIdAsync(int serviceId);
+        Task<int> GetTotalRateForUser(int userId);
     }
 }

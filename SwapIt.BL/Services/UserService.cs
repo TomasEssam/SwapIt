@@ -26,19 +26,22 @@ namespace SwapIt.BL.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUserBalanceRepository _userBalanceRepository;
+        public readonly IRateService _rateService;
 
 
         public UserService(IConfiguration configuration,
     SignInManager<ApplicationUser> signinManager,
     UserManager<ApplicationUser> userManager,
     IHttpContextAccessor httpContextAccessor,
-    IUserBalanceRepository userBalanceRepository)
+    IUserBalanceRepository userBalanceRepository,
+    IRateService rateService)
         {
             _configuration = configuration;
             _userManager = userManager;
             _signinManager = signinManager;
             _httpContextAccessor = httpContextAccessor;
             _userBalanceRepository = userBalanceRepository;
+            _rateService = rateService;
         }
         public async Task<LoginResultDto> Authenticate(LoginDto dto)
         {
@@ -90,6 +93,7 @@ namespace SwapIt.BL.Services
             dto.ProfileImagePath = user.ProfileImagePath;
             dto.DateOfBirth = user.BirthDate;
             dto.Address = user.Address;
+            dto.TotalRate = await _rateService.GetTotalRateForUser(user.Id);
             return(dto);
         }
         public async Task CreateUserAsync(UserDto dto)

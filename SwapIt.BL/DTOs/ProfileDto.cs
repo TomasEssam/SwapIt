@@ -17,6 +17,7 @@ namespace SwapIt.BL.DTOs
         public string PhoneNumber { get; set; }
         public string? JobTitle { get; set; }
         public string? ProfileImagePath { get; set; }
+        public int? TotalRate { get; set; }
 
     }
 }

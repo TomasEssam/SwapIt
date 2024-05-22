@@ -95,7 +95,7 @@ namespace SwapIt.Data.Repository
 
             if (userBalance is null)
                 return false;
-            if (userBalance.Points <= points)
+            if (userBalance.Points < points)
                 return false;
 
 

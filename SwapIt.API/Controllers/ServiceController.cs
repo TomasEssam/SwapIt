@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SwapIt.BL.DTOs;
 using SwapIt.BL.DTOs.Identity;
 using SwapIt.BL.IServices;
+using System.Security.Claims;
 
 namespace SwapIt.API.Controllers
 {
@@ -46,6 +47,7 @@ namespace SwapIt.API.Controllers
         [Route("Search")]
         public async Task<IActionResult> Search([FromBody] ServiceFilterDto serviceFilterDto )
         {
+            //var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             return Ok(await _serviceService.SearchServiceAsync(serviceFilterDto));
         }
 

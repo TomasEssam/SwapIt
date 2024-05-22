@@ -17,6 +17,7 @@ namespace SwapIt.BL.DTOs
         public float totalRate { get; set; }
         public string Username { get; set; }
         public string? ProfileImagePath { get; set; }
-
+        public string? Notes { get; set; }
+        public int? ServiceRequestId { get; set; }
     }
 }

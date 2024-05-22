@@ -58,6 +58,7 @@ namespace SwapIt.BL.Services
                   .ThenInclude(x => x.ServiceProvider)
                   .Include(x => x.Service)
                   .ThenInclude(x => x.Rates)
+                  .Include(x => x.Customer)
                   .Where(x => x.RequestState == RequestStateNames.Accepted && x.Service.ServiceProviderId == serviceProviderId)
                   .Select(x => new SearchResultDto
                   {
@@ -68,7 +69,9 @@ namespace SwapIt.BL.Services
                       ServiceName = x.Service.Name,
                       ServicePrice = x.Service.Price,
                       totalRate = (x.Service.Rates.Count() == 0) ? 0 : x.Service.Rates.Select(x => x.RateValue).Sum() / x.Service.Rates.Count(),
-                      Username = x.Service.ServiceProvider.UserName
+                      Username = x.Customer.UserName, 
+                      Notes = x.Notes,
+                      ServiceRequestId = x.Id
                   }).ToListAsync();
 
         }
@@ -87,6 +90,7 @@ namespace SwapIt.BL.Services
                 .ThenInclude(x => x.ServiceProvider)
                 .Include(x => x.Service)
                 .ThenInclude(x => x.Rates)
+                .Include(x => x.Customer)
                 .Where(x => x.RequestState == RequestStateNames.Finished && x.Service.ServiceProviderId == serviceProviderId)
                 .Select(x => new SearchResultDto
                 {
@@ -97,7 +101,9 @@ namespace SwapIt.BL.Services
                     ServiceName = x.Service.Name,
                     ServicePrice = x.Service.Price,
                     totalRate = (x.Service.Rates.Count() == 0) ? 0 : x.Service.Rates.Select(x => x.RateValue).Sum() / x.Service.Rates.Count(),
-                    Username = x.Service.ServiceProvider.UserName
+                    Username = x.Customer.UserName,
+                    Notes = x.Notes,
+                    ServiceRequestId = x.Id
                 }).ToListAsync();
         }
 
@@ -185,6 +191,7 @@ namespace SwapIt.BL.Services
                     .ThenInclude(x => x.ServiceProvider)
                     .Include(x => x.Service)
                     .ThenInclude(x => x.Rates)
+                    .Include(x => x.Customer)
                     .Where(x => x.RequestState == RequestStateNames.Pending && x.Service.ServiceProviderId == serviceProviderId)
                     .Select(x => new SearchResultDto
                     {
@@ -195,7 +202,9 @@ namespace SwapIt.BL.Services
                         ServiceName = x.Service.Name,
                         ServicePrice = x.Service.Price,
                         totalRate = (x.Service.Rates.Count() == 0) ? 0 : x.Service.Rates.Select(x => x.RateValue).Sum() / x.Service.Rates.Count(),
-                        Username = x.Service.ServiceProvider.UserName
+                        Username = x.Customer.UserName,
+                        Notes = x.Notes,
+                        ServiceRequestId = x.Id
                     }).ToListAsync();
         }
 
@@ -207,6 +216,7 @@ namespace SwapIt.BL.Services
                 .ThenInclude(x => x.ServiceProvider)
                 .Include(x => x.Service)
                 .ThenInclude(x => x.Rates)
+                .Include(x => x.Customer)
                 .Where(x => x.RequestState == RequestStateNames.Canceled && x.Service.ServiceProviderId == serviceProviderId)
                 .Select(x => new SearchResultDto
                 {
@@ -217,7 +227,9 @@ namespace SwapIt.BL.Services
                     ServiceName = x.Service.Name,
                     ServicePrice = x.Service.Price,
                     totalRate = (x.Service.Rates.Count() == 0) ? 0 : x.Service.Rates.Select(x => x.RateValue).Sum() / x.Service.Rates.Count(),
-                    Username = x.Service.ServiceProvider.UserName
+                    Username = x.Customer.UserName,
+                    Notes = x.Notes,
+                    ServiceRequestId = x.Id
                 }).ToListAsync();
         }
 
@@ -239,7 +251,9 @@ namespace SwapIt.BL.Services
                      ServiceName = x.Service.Name,
                      ServicePrice = x.Service.Price,
                      totalRate = (x.Service.Rates.Count() == 0) ? 0 : x.Service.Rates.Select(x => x.RateValue).Sum() / x.Service.Rates.Count(),
-                     Username = x.Service.ServiceProvider.UserName
+                     Username = x.Service.ServiceProvider.UserName,
+                     Notes = x.Notes,
+                     ServiceRequestId = x.Id
                  }).ToListAsync();
         }
 
@@ -261,7 +275,9 @@ namespace SwapIt.BL.Services
                     ServiceName = x.Service.Name,
                     ServicePrice = x.Service.Price,
                     totalRate = (x.Service.Rates.Count() == 0) ? 0 : x.Service.Rates.Select(x => x.RateValue).Sum() / x.Service.Rates.Count(),
-                    Username = x.Service.ServiceProvider.UserName
+                    Username = x.Service.ServiceProvider.UserName,
+                    Notes = x.Notes,
+                    ServiceRequestId = x.Id
                 }).ToListAsync();
         }
 
@@ -283,7 +299,9 @@ namespace SwapIt.BL.Services
                     ServiceName = x.Service.Name,
                     ServicePrice = x.Service.Price,
                     totalRate = (x.Service.Rates.Count() == 0) ? 0 : x.Service.Rates.Select(x => x.RateValue).Sum() / x.Service.Rates.Count(),
-                    Username = x.Service.ServiceProvider.UserName
+                    Username = x.Service.ServiceProvider.UserName,
+                    Notes = x.Notes,
+                    ServiceRequestId = x.Id
                 }).ToListAsync();
         }
 
@@ -305,7 +323,9 @@ namespace SwapIt.BL.Services
                     ServiceName = x.Service.Name,
                     ServicePrice = x.Service.Price,
                     totalRate = (x.Service.Rates.Count() == 0) ? 0 : x.Service.Rates.Select(x => x.RateValue).Sum() / x.Service.Rates.Count(),
-                    Username = x.Service.ServiceProvider.UserName
+                    Username = x.Service.ServiceProvider.UserName,
+                    Notes = x.Notes,
+                    ServiceRequestId = x.Id
                 }).ToListAsync();
         }
     }

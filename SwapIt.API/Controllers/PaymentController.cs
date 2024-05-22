@@ -31,5 +31,12 @@ namespace SwapIt.API.Controllers
         {
             return Ok(await _userBalanceService.SubstractPointsAsync(userId,points));
         }
+
+        [HttpGet]
+        [Route("MyPoints")]
+        public async Task<IActionResult> GetMyPoints(int userId)
+        {
+            return Ok(await _userBalanceService.GetMyPoints(userId));
+        }
     }
 }

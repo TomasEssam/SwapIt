@@ -14,5 +14,7 @@ namespace SwapIt.BL.IServices
         Task<bool> SubstractPointsAsync(int userId, int points);
         Task<bool> Deposite(int userId, int points);
         Task<bool> Withdraw(int userId, int points);
+        Task<int> GetMyPoints(int userId);
+
     }
 }

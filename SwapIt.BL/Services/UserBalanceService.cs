@@ -73,5 +73,11 @@ namespace SwapIt.BL.Services
 
 
         }
+
+        public async Task<int> GetMyPoints(int userId)
+        {
+            var userBalance = await _userBalanceRepository.GetByUserIdAsync(userId);
+            return userBalance.Points;
+        }
     }
 }

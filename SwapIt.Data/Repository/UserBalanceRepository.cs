@@ -71,25 +71,36 @@ namespace SwapIt.Data.Repository
                 return true;
             }
         }
-        public async Task<bool> AddPointsAsync(UserBalance userBalance, int points)
+        public async Task<bool> AddPointsAsync(int userId, int points)
         {
-            if (points > 0)
-            {
-                userBalance.Points += points;
-                return await UpdateAsync(userBalance);
-            }
-            return false;
+            if (points < 0)
+                return false;
+
+            var userBalance = await GetByIdAsync(userId);
+            if (userBalance is null)
+                return false;
+
+            userBalance.Points += points;
+            return await UpdateAsync(userBalance);
+
+
         }
 
-        public async Task<bool> SubstractPointsAsync(UserBalance userBalance, int points)
+        public async Task<bool> SubstractPointsAsync(int userId, int points)
         {
-            if (points > 0 && userBalance.Points >= points)
-            {
+            if (points < 0)
+                return false;
+
+            var userBalance = await GetByIdAsync(userId);
+
+            if (userBalance is null)
+                return false;
+            if (userBalance.Points <= points)
+                return false;
+
+
                 userBalance.Points -= points;
                 return await UpdateAsync(userBalance);
-
-            }
-            return false;
         }
 
         public async Task<UserBalance> GetByUserIdAsync(int id)

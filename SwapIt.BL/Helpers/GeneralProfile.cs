@@ -17,7 +17,7 @@ namespace SwapIt.BL.Helpers
             CreateMap<DropDownDto, Service>().ReverseMap();
             CreateMap<DropDownDto, Category>().ReverseMap();
             CreateMap<CategoryDto, Category>().ReverseMap();
-            CreateMap<UserBalanceDto, UserBalance>().ReverseMap();
+            //CreateMap<UserBalanceDto, UserBalance>().ReverseMap();
             CreateMap<ServiceRequestDto, ServiceRequest>().ReverseMap();
             CreateMap<RateDto, Rate>().ReverseMap();
             CreateMap<NotificationDto, Notification>().ReverseMap();

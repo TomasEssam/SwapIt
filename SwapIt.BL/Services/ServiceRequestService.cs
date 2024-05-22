@@ -126,7 +126,7 @@ namespace SwapIt.BL.Services
             if (user is null)
                 return false;
 
-            bool substracted = await _UserBalanceRepository.SubstractPointsAsync(await _UserBalanceRepository.GetByUserAsync(user), service.Price);
+            bool substracted = await _UserBalanceRepository.SubstractPointsAsync(user.Id, service.Price);
             if (!substracted)
                 return false;
 
@@ -167,7 +167,7 @@ namespace SwapIt.BL.Services
 
                 var pointsLogger = await _pointsLoggerRepository.GetByServiceRequestIdAsync(serviceRequestId);
 
-                await _UserBalanceRepository.AddPointsAsync(userBalance, pointsLogger.Points);
+                await _UserBalanceRepository.AddPointsAsync(service.ServiceProviderId, pointsLogger.Points);
 
                 await _pointsLoggerRepository.AddAsync(new PointsLogger()
                 {

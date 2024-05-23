@@ -21,14 +21,16 @@ namespace SwapIt.BL.Services
     public class ServiceRequestService : IServiceRequestService
     {
         private readonly IMapper _mapper;
-        readonly IServiceRequestRepository _serviceRequestRepository;
-        readonly IServiceRepository _serviceRepository;
-        readonly IPointsLoggerRepository _pointsLoggerRepository;
-        readonly UserManager<ApplicationUser> _userManager;
-        readonly IUserBalanceRepository _UserBalanceRepository;
-        readonly SwapItDbContext _context;
+        private readonly IServiceRequestRepository _serviceRequestRepository;
+        private readonly IServiceRepository _serviceRepository;
+        private readonly IPointsLoggerRepository _pointsLoggerRepository;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUserBalanceRepository _UserBalanceRepository;
+        private readonly SwapItDbContext _context;
+        private readonly INotificationService _notificationService;
 
-        public ServiceRequestService(IMapper mapper, IServiceRequestRepository serviceRequestRepository, IPointsLoggerRepository pointsLoggerRepository, IServiceRepository serviceRepository, UserManager<ApplicationUser> userManager, IUserBalanceRepository userBalanceRepository, SwapItDbContext swapItDbContext)
+
+        public ServiceRequestService(IMapper mapper, IServiceRequestRepository serviceRequestRepository, IPointsLoggerRepository pointsLoggerRepository, IServiceRepository serviceRepository, UserManager<ApplicationUser> userManager, IUserBalanceRepository userBalanceRepository, SwapItDbContext swapItDbContext, INotificationService notificationService)
         {
             _mapper = mapper;
             _serviceRequestRepository = serviceRequestRepository;
@@ -37,6 +39,7 @@ namespace SwapIt.BL.Services
             _userManager = userManager;
             _UserBalanceRepository = userBalanceRepository;
             _context = swapItDbContext;
+            _notificationService = notificationService;
         }
         [Authorize(Roles = RolesNames.Admin + "," + RolesNames.ServiceProvider)]
         public async Task<bool> AcceptServiceRequestAsync(int ServiceRequestId)
@@ -51,6 +54,22 @@ namespace SwapIt.BL.Services
 
             serviceRequest.RequestState = RequestStateNames.Accepted;
             await _serviceRequestRepository.UpdateAsync(serviceRequest);
+
+            var customer = await _userManager.FindByIdAsync(serviceRequest.CustomerId.ToString());
+            var service = await _serviceRepository.GetByIdAsync(serviceRequest.ServiceId);
+            //for Notification
+            await _notificationService.CreateAsync(new NotificationDto
+            {
+                Content = $"You have been accepted a request from user {customer.UserName}.",
+                NotificationType = NotificationTypes.AcceptRequest
+            }, service.ServiceProviderId);
+
+            await _notificationService.CreateAsync(new NotificationDto
+            {
+                Content = $"Your request for a service {service.Name} has been accepted.",
+                NotificationType = NotificationTypes.AcceptRequest
+            }, customer.Id);
+
             return true;
 
         }
@@ -72,6 +91,8 @@ namespace SwapIt.BL.Services
             if (serviceRequest is null)
                 return false;
 
+            var service = await _serviceRepository.GetByIdAsync(serviceRequest.ServiceId);
+
             if (serviceRequest.RequestState == RequestStateNames.Pending)
             {
 
@@ -89,6 +110,20 @@ namespace SwapIt.BL.Services
                 holdAmount.IsDeleted = true;
                 userBalance.Points += holdAmount.Points;
                 _context.SaveChanges();
+
+                //for Notification
+                await _notificationService.CreateAsync(new NotificationDto
+                {
+                    Content = $"The request has been canceled",
+                    NotificationType = NotificationTypes.RequestCanceled
+                }, serviceRequest.CustomerId);
+
+                await _notificationService.CreateAsync(new NotificationDto
+                {
+                    Content = $"The request has been canceled",
+                    NotificationType = NotificationTypes.RequestCanceled
+                },service.ServiceProviderId);
+
             }
             if (serviceRequest.RequestState == RequestStateNames.Accepted)
             {
@@ -102,10 +137,46 @@ namespace SwapIt.BL.Services
 
                 holdAmount.IsDeleted = true;
 
-                if (userBalance.Points < 5)
-                    return false;
 
-                userBalance.Points += holdAmount.Points - 5;
+                if (userId == service.ServiceProviderId)
+                {
+                    if (userBalance.Points < 5)
+                        return false;
+
+                    userBalance.Points -= 5;
+
+                    //for Notification
+                    await _notificationService.CreateAsync(new NotificationDto
+                    {
+                        Content = $"The request has been canceled",
+                        NotificationType = NotificationTypes.RequestCanceled
+                    }, serviceRequest.CustomerId);
+
+                    await _notificationService.CreateAsync(new NotificationDto
+                    {
+                        Content = $"The request has been canceled /n" +
+                        $"And Unfortunatly there is 5 points shortage in your account",
+                        NotificationType = NotificationTypes.RequestCanceled
+                    }, service.ServiceProviderId);
+                }
+                else
+                {
+                    userBalance.Points += holdAmount.Points - 5;
+                    //for Notification
+                    await _notificationService.CreateAsync(new NotificationDto
+                    {
+                        Content = $"The request has been canceled /n" +
+                       $"And your money has been retrivied to your account with shortage 5 points",
+                        NotificationType = NotificationTypes.RequestCanceled
+                    }, serviceRequest.CustomerId);
+
+                    await _notificationService.CreateAsync(new NotificationDto
+                    {
+                        Content = $"The request has been canceled",
+                        NotificationType = NotificationTypes.RequestCanceled
+                    }, service.ServiceProviderId);
+                }
+
                 //To Do create table for system balance auditing  -- Adding 5 points to our system
                 _context.SaveChanges();
             }
@@ -144,6 +215,20 @@ namespace SwapIt.BL.Services
             pointsLogger.ServiceRequestId = serviceRequest.Id;
             await _pointsLoggerRepository.AddAsync(pointsLogger);
 
+            //for Notification
+            await _notificationService.CreateAsync(new NotificationDto
+            {
+                Content = $"your Service {service.Name} has been requested by {user.UserName}",
+                NotificationType = NotificationTypes.Request
+            }, service.ServiceProviderId);
+
+            await _notificationService.CreateAsync(new NotificationDto
+            {
+                Content = $"you have been create a request to service {service.Name}/n" +
+                $"and the money of the service is in the hold phase waiting for the request to be accepted",
+                NotificationType = NotificationTypes.RequestCreated
+            }, user.Id);
+
             return true;
         }
 
@@ -180,6 +265,23 @@ namespace SwapIt.BL.Services
                 serviceRequest.RequestState = RequestStateNames.Finished;
                 
                 await _serviceRequestRepository.UpdateAsync(serviceRequest);
+
+                var customer = await _userManager.FindByIdAsync(serviceRequest.CustomerId.ToString());
+                
+                //for Notification
+                await _notificationService.CreateAsync(new NotificationDto
+                {
+                    Content = $"You finished the service {service.Name} for {customer.UserName} /n" +
+                    $"and the money has been added successfully to your account.",
+                    NotificationType = NotificationTypes.RequestFinished
+                }, service.ServiceProviderId);
+
+                await _notificationService.CreateAsync(new NotificationDto
+                {
+                    Content = $"Your request for the service {service.Name} has been completed successfully.",
+                    NotificationType = NotificationTypes.RequestFinished
+                }, customer.Id);
+
                 return true;
             }
             return false;

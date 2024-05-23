@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SwapIt.BL.DTOs;
 using SwapIt.BL.IServices;
+using SwapIt.Data.Constants;
 using SwapIt.Data.Entities;
 using SwapIt.Data.Entities.Context;
 using SwapIt.Data.Entities.Identity;
@@ -23,7 +24,8 @@ namespace SwapIt.BL.Services
         private readonly IServiceRepository _serviceRepository;
         private readonly IServiceRequestService _serviceRequestService;
         private readonly SwapItDbContext _context;
-        public RateService(IRateRepository rateRepository, IMapper mapper, UserManager<ApplicationUser> userManager, IServiceRepository serviceRepository, IServiceRequestService serviceRequestService, SwapItDbContext context)
+        private readonly INotificationService _notificationService;
+        public RateService(IRateRepository rateRepository, IMapper mapper, UserManager<ApplicationUser> userManager, IServiceRepository serviceRepository, IServiceRequestService serviceRequestService, SwapItDbContext context, INotificationService notificationService)
         {
             _rateRepository = rateRepository;
             _mapper = mapper;
@@ -31,6 +33,7 @@ namespace SwapIt.BL.Services
             _serviceRepository = serviceRepository;
             _serviceRequestService = serviceRequestService;
             _context = context;
+            _notificationService = notificationService;
         }
         public async Task<bool> CreateAsync(RateDto newRate)
         {
@@ -42,9 +45,21 @@ namespace SwapIt.BL.Services
             if (service is null)
                 return false;
 
-            var serviceRequest = _serviceRequestService.GetAsync(newRate.ServiceId, newRate.CustomerId);
+            var serviceRequest = await _serviceRequestService.GetAsync(newRate.ServiceId, newRate.CustomerId);
             if (serviceRequest is null)
                 return false;
+            //for Notification 
+            await _notificationService.CreateAsync(new NotificationDto
+            {
+                Content = $"Your Service {service.Name} has been rated {newRate.RateValue} by {user.UserName}",
+                NotificationType = NotificationTypes.Rate
+            }, service.ServiceProviderId);
+
+            await _notificationService.CreateAsync(new NotificationDto
+            {
+                Content = $"You have rated service {service.Name} with rate value {newRate.RateValue}",
+                NotificationType = NotificationTypes.Rate
+            }, serviceRequest.CustomerId);
 
             return await _rateRepository.AddAsync(_mapper.Map<Rate>(newRate));
         }

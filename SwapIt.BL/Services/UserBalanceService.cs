@@ -21,14 +21,13 @@ namespace SwapIt.BL.Services
         readonly IUserBalanceRepository _userBalanceRepository;
         readonly IPointsLoggerRepository _pointsLoggerRepository;
         private readonly INotificationService _notificationService;
-        private readonly UserManager<ApplicationUser> _userManager;
-        public UserBalanceService(IMapper mapper, IUserBalanceRepository userBalanceRepository, IPointsLoggerRepository pointsLoggerRepository, INotificationService notificationService, UserManager<ApplicationUser> userManager)
+        public UserBalanceService(IMapper mapper, IUserBalanceRepository userBalanceRepository, IPointsLoggerRepository pointsLoggerRepository, INotificationService notificationService)
         {
             _mapper = mapper;
             _userBalanceRepository = userBalanceRepository;
             _pointsLoggerRepository = pointsLoggerRepository;
             _notificationService = notificationService;
-            _userManager = userManager;
+
         }
         public async Task<bool> AddPointsAsync(int userId, int points)
         {
@@ -59,17 +58,11 @@ namespace SwapIt.BL.Services
                 throw new Exception("Could not save logging info");
 
             //create notification 
-            var user = await _userManager.FindByIdAsync(userId.ToString());
-
-
-            successed = await _notificationService.CreateAsync(new NotificationDto()
+            await _notificationService.CreateAsync(new NotificationDto
             {
-                Content = $"{user.UserName} has added {points}",
+                Content=$"{points} has been added to your account",
                 NotificationType = NotificationTypes.Deposite
-            }, userId);
-
-            if(!successed)
-                return false;
+            },userId);
 
             return true;
         }
@@ -89,6 +82,12 @@ namespace SwapIt.BL.Services
             successed = await _pointsLoggerRepository.AddAsync(logger);
             if (!successed)
                 throw new Exception("Could not save logging info");
+
+            await _notificationService.CreateAsync(new NotificationDto
+            {
+                Content = $"{points} has been Substracted from your account",
+                NotificationType = NotificationTypes.Withdraw
+            }, userId);
 
             return true;
         }

@@ -38,7 +38,7 @@ namespace SwapIt.BL.Services
                 ApplicationUserId = userId,
                 NotificationId = notification.Id,
                 IsRead = false
-                
+
             };
             added = await _userNotificationRepository.AddAsync(userNotification);
 
@@ -65,9 +65,9 @@ namespace SwapIt.BL.Services
         }
 
         public async Task<List<UserNotificationDto>> GetAllAsync(int userId)
-        { 
+        {
             var result = new List<UserNotificationDto>();
-            
+
 
             //get notifications related to user
             var notifications = await _userNotificationRepository.GetAllAsync();

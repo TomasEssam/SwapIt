@@ -20,16 +20,18 @@ namespace SwapIt.BL.Services
     public class ServiceService : IServiceService
     {
         private readonly IMapper _mapper;
-        readonly IServiceRepository _serviceRepository;
-        readonly IRateRepository _rateRepository;
-        readonly SwapItDbContext _context;
+        private readonly IServiceRepository _serviceRepository;
+        private readonly IRateRepository _rateRepository;
+        private readonly SwapItDbContext _context;
+        private readonly INotificationService _notificationService;
 
-        public ServiceService(IMapper mapper, IServiceRepository serviceRepository, SwapItDbContext context, IRateRepository rateRepository)
+        public ServiceService(IMapper mapper, IServiceRepository serviceRepository, SwapItDbContext context, IRateRepository rateRepository, INotificationService notificationService)
         {
             _mapper = mapper;
             _serviceRepository = serviceRepository;
             _context = context;
             _rateRepository = rateRepository;
+            _notificationService = notificationService;
         }
         public async Task<ServiceDto> GetServiceByIdAsync(int serviceId)
         {
@@ -40,12 +42,26 @@ namespace SwapIt.BL.Services
         public async Task<bool> CreateAsync(ServiceDto dto)
         {
             var model = _mapper.Map<Service>(dto);
-            return await _serviceRepository.AddAsync(model);
 
+            //for Notification 
+            await _notificationService.CreateAsync(new NotificationDto
+            {
+                Content = $"You have been added a service {dto.Name} to your profile",
+                NotificationType = NotificationTypes.CreateService
+            }, dto.ServiceProviderId);
+
+            return await _serviceRepository.AddAsync(model);
+         
         }
 
         public async Task<bool> DeleteAsync(int serviceId)
         {
+            var service = await _serviceRepository.GetByIdAsync(serviceId);
+            await _notificationService.CreateAsync(new NotificationDto
+            {
+                Content = $"Your service {service.Name} have been deleted from your profile",
+                NotificationType = NotificationTypes.CreateService
+            }, service.ServiceProviderId);
             return await _serviceRepository.DeleteByIdAsync(serviceId);
 
         }

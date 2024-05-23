@@ -1,4 +1,5 @@
 ﻿using SwapIt.BL.DTOs;
+using SwapIt.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace SwapIt.BL.IServices
         Task<bool> CreateAsync(NotificationDto dto , int userId);
         Task<bool> DeleteAsync(int notificationId);
         Task<bool> UpdateAsync(NotificationDto dto);
-        Task<CategoryDto> GetByIdAsync(int notificationId);
-        Task<List<CategoryDto>> GetAllAsync();
+        Task<List<UserNotificationDto>> GetAllAsync(int userId);
+        Task<bool> ReadNotification(int notificationId);
     }
 }

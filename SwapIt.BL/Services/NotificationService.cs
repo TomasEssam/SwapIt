@@ -1,5 +1,7 @@
-﻿using SwapIt.BL.DTOs;
+﻿using AutoMapper;
+using SwapIt.BL.DTOs;
 using SwapIt.BL.IServices;
+using SwapIt.Data.Entities;
 using SwapIt.Data.IRepository;
 using System;
 using System.Collections.Generic;
@@ -13,37 +15,89 @@ namespace SwapIt.BL.Services
     {
         private readonly INotificationRepository _notificationRepository;
         private readonly IUserNotificationRepository _userNotificationRepository;
-        public NotificationService(INotificationRepository notificationRepository, IUserNotificationRepository userNotificationRepository)
+        private readonly IMapper _mapper;
+        public NotificationService(INotificationRepository notificationRepository, IUserNotificationRepository userNotificationRepository, IMapper mapper)
         {
             _notificationRepository = notificationRepository;
             _userNotificationRepository = userNotificationRepository;
+            _mapper = mapper;
         }
 
-
-
-        public Task<bool> CreateAsync(NotificationDto dto , int userId)
+        public async Task<bool> CreateAsync(NotificationDto dto , int userId)
         {
-            throw new NotImplementedException();
+            //Create general notification using Notification obj
+            var notification = _mapper.Map<Notification>(dto);
+            bool added = await _notificationRepository.AddAsync(notification);
+
+            if (!added)
+                throw new Exception("Could Not save the notification");
+
+            //attach notification to user
+            UserNotification userNotification = new UserNotification()
+            {
+                ApplicationUserId = userId,
+                NotificationId = notification.Id
+            };
+            added = await _userNotificationRepository.AddAsync(userNotification);
+
+            if (!added)
+                throw new Exception("Could Not attach the notification to the user");
+
+            return true;
         }
 
-        public Task<bool> DeleteAsync(int notificationId)
+        public async Task<bool> DeleteAsync(int notificationId)
         {
-            throw new NotImplementedException();
+            //deAttach notification from users
+            var userN = await _userNotificationRepository.GetAllAsync();
+            var relatedUserNotifications = userN.Where(un => un.NotificationId == notificationId);
+
+
+            foreach (var n in relatedUserNotifications)
+            {
+                await _userNotificationRepository.DeleteAsync(n);
+            }
+
+            //delete general notification
+            return await _notificationRepository.DeleteByIdAsync(notificationId);
         }
 
-        public Task<List<CategoryDto>> GetAllAsync()
+        public async Task<List<UserNotificationDto>> GetAllAsync(int userId)
+        { 
+            var result = new List<UserNotificationDto>();
+            
+
+            //get notifications related to user
+            var notifications = await _userNotificationRepository.GetAllAsync();
+            var notificationsForUser = notifications.Where(u => u.NotificationId == userId);
+
+            //fill result list
+            var relatedNotification = new Notification();
+            foreach (UserNotification n in notificationsForUser)
+            {
+                relatedNotification =await _notificationRepository.GetByIdAsync(n.NotificationId);
+
+                result.Add(new UserNotificationDto()
+                {
+                    NotificationId = n.NotificationId,
+                    ApplicationUserId = userId,
+                    Content = relatedNotification.Content,
+                    IsRead = n.IsRead,
+                    NotificationType = relatedNotification.NotificationType
+                });
+            }
+            return result;
+        }
+        public async Task<bool> ReadNotification(int notificationId)
         {
-            throw new NotImplementedException();
+            var userNotification = await _userNotificationRepository.GetByIdAsync(notificationId);
+            userNotification.IsRead = true;
+            return await _userNotificationRepository.UpdateAsync(userNotification);
         }
 
-        public Task<CategoryDto> GetByIdAsync(int notificationId)
+        public async Task<bool> UpdateAsync(NotificationDto dto)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> UpdateAsync(NotificationDto dto)
-        {
-            throw new NotImplementedException();
+            return await _notificationRepository.UpdateAsync(_mapper.Map<Notification>(dto));
         }
     }
 }

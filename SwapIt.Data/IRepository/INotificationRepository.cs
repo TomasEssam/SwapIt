@@ -12,6 +12,7 @@ namespace SwapIt.Data.IRepository
         Task<Notification> GetByIdAsync(int id);
         Task<IEnumerable<Notification>> GetAllAsync();
         Task<bool> AddAsync(Notification notification);
+        //Task<Notification> AddAndReturnAsync(Notification notification);
         Task<bool> UpdateAsync(Notification notification);
         Task<bool> DeleteAsync(Notification notification);
         Task<bool> DeleteByIdAsync(int id);

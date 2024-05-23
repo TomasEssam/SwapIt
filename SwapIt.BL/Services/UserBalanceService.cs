@@ -44,6 +44,7 @@ namespace SwapIt.BL.Services
 
             PointsLogger logger = new PointsLogger()
             {
+                UserId = userId,
                 Points = points,
                 Type = TransactionTypes.Deposit
             };

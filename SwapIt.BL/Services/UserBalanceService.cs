@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using SwapIt.BL.DTOs;
 using SwapIt.BL.IServices;
 using SwapIt.Data.Constants;
 using SwapIt.Data.Entities;
+using SwapIt.Data.Entities.Identity;
 using SwapIt.Data.IRepository;
 using SwapIt.Data.Repository;
 using System;
@@ -18,11 +20,15 @@ namespace SwapIt.BL.Services
         readonly IMapper _mapper;
         readonly IUserBalanceRepository _userBalanceRepository;
         readonly IPointsLoggerRepository _pointsLoggerRepository;
-        public UserBalanceService(IMapper mapper, IUserBalanceRepository userBalanceRepository, IPointsLoggerRepository pointsLoggerRepository)
+        private readonly INotificationService _notificationService;
+        private readonly UserManager<ApplicationUser> _userManager;
+        public UserBalanceService(IMapper mapper, IUserBalanceRepository userBalanceRepository, IPointsLoggerRepository pointsLoggerRepository, INotificationService notificationService, UserManager<ApplicationUser> userManager)
         {
             _mapper = mapper;
             _userBalanceRepository = userBalanceRepository;
             _pointsLoggerRepository = pointsLoggerRepository;
+            _notificationService = notificationService;
+            _userManager = userManager;
         }
         public async Task<bool> AddPointsAsync(int userId, int points)
         {
@@ -51,6 +57,19 @@ namespace SwapIt.BL.Services
             successed = await _pointsLoggerRepository.AddAsync(logger);
             if (!successed)
                 throw new Exception("Could not save logging info");
+
+            //create notification 
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+
+
+            successed = await _notificationService.CreateAsync(new NotificationDto()
+            {
+                Content = $"{user.UserName} has added {points}",
+                NotificationType = NotificationTypes.Deposite
+            }, userId);
+
+            if(!successed)
+                return false;
 
             return true;
         }

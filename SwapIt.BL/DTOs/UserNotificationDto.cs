@@ -9,7 +9,7 @@ namespace SwapIt.Data.Entities
 {
     public class UserNotificationDto
     {
-        public int NotificationId { get; set; }
+        public int UserNotificationId { get; set; }
         public bool IsRead { get; set; }
         public int ApplicationUserId { get; set; }
         public string? NotificationType { get; set; }

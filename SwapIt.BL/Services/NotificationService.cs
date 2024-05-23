@@ -36,7 +36,9 @@ namespace SwapIt.BL.Services
             UserNotification userNotification = new UserNotification()
             {
                 ApplicationUserId = userId,
-                NotificationId = notification.Id
+                NotificationId = notification.Id,
+                IsRead = false
+                
             };
             added = await _userNotificationRepository.AddAsync(userNotification);
 
@@ -48,7 +50,7 @@ namespace SwapIt.BL.Services
 
         public async Task<bool> DeleteAsync(int notificationId)
         {
-            //deAttach notification from users
+            //delete usernotification that has general notification
             var userN = await _userNotificationRepository.GetAllAsync();
             var relatedUserNotifications = userN.Where(un => un.NotificationId == notificationId);
 
@@ -69,7 +71,7 @@ namespace SwapIt.BL.Services
 
             //get notifications related to user
             var notifications = await _userNotificationRepository.GetAllAsync();
-            var notificationsForUser = notifications.Where(u => u.NotificationId == userId);
+            var notificationsForUser = notifications.Where(u => u.ApplicationUserId == userId);
 
             //fill result list
             var relatedNotification = new Notification();
@@ -79,7 +81,7 @@ namespace SwapIt.BL.Services
 
                 result.Add(new UserNotificationDto()
                 {
-                    NotificationId = n.NotificationId,
+                    UserNotificationId = n.Id,
                     ApplicationUserId = userId,
                     Content = relatedNotification.Content,
                     IsRead = n.IsRead,
@@ -88,9 +90,9 @@ namespace SwapIt.BL.Services
             }
             return result;
         }
-        public async Task<bool> ReadNotification(int notificationId)
+        public async Task<bool> ReadNotification(int userNotificationId)
         {
-            var userNotification = await _userNotificationRepository.GetByIdAsync(notificationId);
+            var userNotification = await _userNotificationRepository.GetByIdAsync(userNotificationId);
             userNotification.IsRead = true;
             return await _userNotificationRepository.UpdateAsync(userNotification);
         }

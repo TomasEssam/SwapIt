@@ -91,7 +91,7 @@ namespace SwapIt.Data.Repository
             if (points < 0)
                 return false;
 
-            var userBalance = await GetByIdAsync(userId);
+            var userBalance = await GetByUserIdAsync(userId);
 
             if (userBalance is null)
                 return false;

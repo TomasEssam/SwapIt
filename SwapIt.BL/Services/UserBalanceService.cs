@@ -63,6 +63,7 @@ namespace SwapIt.BL.Services
 
             PointsLogger logger = new PointsLogger()
             {
+                UserId = userId,
                 Points = points,
                 Type = TransactionTypes.Withdraw
             };
@@ -71,8 +72,6 @@ namespace SwapIt.BL.Services
                 throw new Exception("Could not save logging info");
 
             return true;
-
-
         }
 
         public async Task<int> GetMyPoints(int userId)

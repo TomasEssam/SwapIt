@@ -30,7 +30,7 @@ namespace SwapIt.Data.Entities
         [ForeignKey("UserId")]
         public ApplicationUser User { get; set; }
         [ForeignKey("ServiceRequestId")]
-        public ServiceRequest ServiceRequest { get; set; }
+        public ServiceRequest? ServiceRequest { get; set; }
     }
 
 }

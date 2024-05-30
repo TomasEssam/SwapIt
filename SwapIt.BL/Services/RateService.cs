@@ -80,7 +80,7 @@ namespace SwapIt.BL.Services
             return _mapper.Map<List<RateDto>>(rates.Where(r => r.ServiceId == serviceId));
         }
 
-        public async Task<int> GetTotalRateForUser(int userId)
+        public async Task<float> GetTotalRateForUser(int userId)
         {
             
             var totalRateList = 
@@ -89,9 +89,9 @@ namespace SwapIt.BL.Services
                 .Where(x => x.ServiceProviderId == userId)
                 .Select(x => new ProfileDto
                 {
-                   TotalRate  = (x.Rates.Count() == 0) ? 0 : x.Rates.Select(x => x.RateValue).Sum() / x.Rates.Count()
+                   TotalRate  = (x.Rates.Count() == 0) ? 0 : (float)x.Rates.Select(x => x.RateValue).Sum() / (float)x.Rates.Count()
                 }).ToListAsync();
-            return (totalRateList.Count == 0) ? 0 : (int)totalRateList.Select(x => x.TotalRate).Average();
+            return (totalRateList.Count == 0) ? 0 : (float)totalRateList.Select(x => x.TotalRate).Average();
              
         }
         public async Task<RateDto> GetByIdAsync(int rateId)

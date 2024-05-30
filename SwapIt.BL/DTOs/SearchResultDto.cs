@@ -18,6 +18,7 @@ namespace SwapIt.BL.DTOs
         public string Username { get; set; }
         public string? ProfileImagePath { get; set; }
         public string? Notes { get; set; }
+        public string? Feedback { get; set; }
         public int? ServiceRequestId { get; set; }
     }
 }

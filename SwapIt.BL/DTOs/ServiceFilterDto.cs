@@ -12,6 +12,7 @@ namespace SwapIt.BL.DTOs
         public int ServicePrice { get; set; }
         public int ServiceProviderId { get; set; }
         public int CategoryId { get; set; }
+        public int UserId { get; set; }
 
     }
 }

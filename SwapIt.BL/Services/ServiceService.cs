@@ -84,7 +84,7 @@ namespace SwapIt.BL.Services
                       ServiceDescription = x.Service.Description,
                       ServiceName = x.Service.Name,
                       ServicePrice = x.Service.Price,
-                      totalRate = (x.Service.Rates.Count() == 0) ? 0 : x.Service.Rates.Select(x => x.RateValue).Sum() / x.Service.Rates.Count(),
+                      totalRate = (x.Service.Rates.Count() == 0) ? 0 : (float)x.Service.Rates.Select(x => x.RateValue).Sum() / (float)x.Service.Rates.Count(),
                       Username = x.Customer.UserName, 
                       Notes = x.Notes,
                       ServiceRequestId = x.Id
@@ -116,9 +116,10 @@ namespace SwapIt.BL.Services
                     ServiceDescription = x.Service.Description,
                     ServiceName = x.Service.Name,
                     ServicePrice = x.Service.Price,
-                    totalRate = (x.Service.Rates.Count() == 0) ? 0 : x.Service.Rates.Select(x => x.RateValue).Sum() / x.Service.Rates.Count(),
+                    totalRate = (x.Service.Rates.Count() == 0) ? 0 : (float)x.Service.Rates.Select(x => x.RateValue).Sum() /(float) x.Service.Rates.Count(),
                     Username = x.Customer.UserName,
                     Notes = x.Notes,
+                    Feedback = x.Service.Rates.Where(r => r.CustomerId == x.CustomerId).OrderByDescending(r => r.Id).FirstOrDefault().Feedback,
                     ServiceRequestId = x.Id
                 }).ToListAsync();
         }
@@ -157,7 +158,7 @@ namespace SwapIt.BL.Services
                 query = _context.Services.Where(x => x.CategoryId == dto.CategoryId);
             }
 
-            var result = query.Select(x => new SearchResultDto
+            var result = query.Where(x => x.ServiceProviderId != dto.UserId).Select(x => new SearchResultDto
             {
                 Id = x.Id,
                 ServiceName = x.Name,
@@ -217,7 +218,7 @@ namespace SwapIt.BL.Services
                         ServiceDescription = x.Service.Description,
                         ServiceName = x.Service.Name,
                         ServicePrice = x.Service.Price,
-                        totalRate = (x.Service.Rates.Count() == 0) ? 0 : x.Service.Rates.Select(x => x.RateValue).Sum() / x.Service.Rates.Count(),
+                        totalRate = (x.Service.Rates.Count() == 0) ? 0 : (float)x.Service.Rates.Select(x => x.RateValue).Sum() / (float)x.Service.Rates.Count(),
                         Username = x.Customer.UserName,
                         Notes = x.Notes,
                         ServiceRequestId = x.Id
@@ -242,7 +243,7 @@ namespace SwapIt.BL.Services
                     ServiceDescription = x.Service.Description,
                     ServiceName = x.Service.Name,
                     ServicePrice = x.Service.Price,
-                    totalRate = (x.Service.Rates.Count() == 0) ? 0 : x.Service.Rates.Select(x => x.RateValue).Sum() / x.Service.Rates.Count(),
+                    totalRate = (x.Service.Rates.Count() == 0) ? 0 : (float)x.Service.Rates.Select(x => x.RateValue).Sum() / (float)x.Service.Rates.Count(),
                     Username = x.Customer.UserName,
                     Notes = x.Notes,
                     ServiceRequestId = x.Id
@@ -266,7 +267,7 @@ namespace SwapIt.BL.Services
                      ServiceDescription = x.Service.Description,
                      ServiceName = x.Service.Name,
                      ServicePrice = x.Service.Price,
-                     totalRate = (x.Service.Rates.Count() == 0) ? 0 : x.Service.Rates.Select(x => x.RateValue).Sum() / x.Service.Rates.Count(),
+                     totalRate = (x.Service.Rates.Count() == 0) ? 0 : (float)x.Service.Rates.Select(x => x.RateValue).Sum() / (float)x.Service.Rates.Count(),
                      Username = x.Service.ServiceProvider.UserName,
                      Notes = x.Notes,
                      ServiceRequestId = x.Id
@@ -290,9 +291,10 @@ namespace SwapIt.BL.Services
                     ServiceDescription = x.Service.Description,
                     ServiceName = x.Service.Name,
                     ServicePrice = x.Service.Price,
-                    totalRate = (x.Service.Rates.Count() == 0) ? 0 : x.Service.Rates.Select(x => x.RateValue).Sum() / x.Service.Rates.Count(),
+                    totalRate = (x.Service.Rates.Count() == 0) ? 0 : (float)x.Service.Rates.Select(x => x.RateValue).Sum() / (float)x.Service.Rates.Count(),
                     Username = x.Service.ServiceProvider.UserName,
                     Notes = x.Notes,
+                    Feedback = x.Service.Rates.Where(r => r.CustomerId == x.CustomerId).OrderByDescending(r => r.Id).FirstOrDefault().Feedback,
                     ServiceRequestId = x.Id
                 }).ToListAsync();
         }
@@ -314,7 +316,7 @@ namespace SwapIt.BL.Services
                     ServiceDescription = x.Service.Description,
                     ServiceName = x.Service.Name,
                     ServicePrice = x.Service.Price,
-                    totalRate = (x.Service.Rates.Count() == 0) ? 0 : x.Service.Rates.Select(x => x.RateValue).Sum() / x.Service.Rates.Count(),
+                    totalRate = (x.Service.Rates.Count() == 0) ? 0 : (float)x.Service.Rates.Select(x => x.RateValue).Sum() / (float)x.Service.Rates.Count(),
                     Username = x.Service.ServiceProvider.UserName,
                     Notes = x.Notes,
                     ServiceRequestId = x.Id
@@ -338,7 +340,7 @@ namespace SwapIt.BL.Services
                     ServiceDescription = x.Service.Description,
                     ServiceName = x.Service.Name,
                     ServicePrice = x.Service.Price,
-                    totalRate = (x.Service.Rates.Count() == 0) ? 0 : x.Service.Rates.Select(x => x.RateValue).Sum() / x.Service.Rates.Count(),
+                    totalRate = (x.Service.Rates.Count() == 0) ? 0 : (float)x.Service.Rates.Select(x => x.RateValue).Sum() / (float)x.Service.Rates.Count(),
                     Username = x.Service.ServiceProvider.UserName,
                     Notes = x.Notes,
                     ServiceRequestId = x.Id

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SwapIt.BL.DTOs.Identity;
 using SwapIt.BL.IServices;
 using SwapIt.BL.IServices.Identity;
+using SwapIt.BL.Services;
 using SwapIt.Data.Constants;
 
 namespace SwapIt.API.Controllers
@@ -73,7 +74,12 @@ namespace SwapIt.API.Controllers
         {
             return Ok(await _serviceService.GetAllPreviousWorkImageUrlAsync(userId));
         }
-
+        [HttpGet]
+        [Route("ServiceProvidersDropDown")]
+        public async Task<IActionResult> DropDownAsync()
+        {
+            return Ok(await _userService.DropDownAsync());
+        }
         #endregion
     }
 }

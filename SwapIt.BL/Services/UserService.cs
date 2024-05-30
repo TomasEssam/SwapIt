@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.JSInterop.Infrastructure;
@@ -67,7 +68,7 @@ namespace SwapIt.BL.Services
                         UserName = user.UserName,
                         UserId = user.Id,
                         Roles = userRoles,
- 
+
 
                     };
                 }
@@ -76,10 +77,22 @@ namespace SwapIt.BL.Services
             throw new Exception("Invalid User name or password");
         }
 
+        public async Task<List<DropDownDto>> DropDownAsync()
+        {
+            return await _userManager.Users
+                  .Include(x => x.Services)
+                  .Where(x => x.Services.Count() > 0)
+                  .Select(x => new DropDownDto
+                  {
+                      Id = x.Id,
+                      Name = x.UserName
+                  }).ToListAsync();
+        }
+
         public async Task<ProfileDto> GetUserAsync(int userId)
         {
-         var user =   await _userManager.FindByIdAsync(userId.ToString());
-            if(user == null)
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
             {
                 throw new Exception("There is no user with this Id");
             }
@@ -94,7 +107,7 @@ namespace SwapIt.BL.Services
             dto.DateOfBirth = user.BirthDate;
             dto.Address = user.Address;
             dto.TotalRate = await _rateService.GetTotalRateForUser(user.Id);
-            return(dto);
+            return (dto);
         }
         public async Task CreateUserAsync(UserDto dto)
         {
@@ -112,7 +125,7 @@ namespace SwapIt.BL.Services
                 UserName = dto.Username,
                 IsActive = true
             };
-            
+
 
             var result = await _userManager.CreateAsync(user, dto.Password);
 
@@ -129,7 +142,7 @@ namespace SwapIt.BL.Services
                     Points = 0,
                     UserId = user.Id
                 });
-            
+
             dto.UserId = user.Id;
             try
             {
@@ -141,7 +154,7 @@ namespace SwapIt.BL.Services
                 }
                 else if (dto.RoleId == RolesNames.Admin || dto.RoleId == RolesNames.SuperAdmin)
                 {
-                    await _userManager.AddToRoleAsync(user, dto.RoleId); 
+                    await _userManager.AddToRoleAsync(user, dto.RoleId);
                 }
                 else
                 {
@@ -264,7 +277,7 @@ namespace SwapIt.BL.Services
         private async Task<IEnumerable<Claim>> GetUserClaims(ApplicationUser user)
         {
             var userRoles = await _userManager.GetRolesAsync(user);
-           
+
 
             var identity = new ClaimsIdentity(new List<Claim>()
             {

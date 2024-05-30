@@ -19,5 +19,6 @@ namespace SwapIt.BL.IServices.Identity
         Task ResetPasswordAsync(ResetPasswordDto dto);
         Task<LoginResultDto> RefreshToken(string authenticationToken, string refreshToken);
         Task<ProfileDto> GetUserAsync(int userId);
+        Task<List<DropDownDto>> DropDownAsync();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SwapIt.BL.DTOs;
@@ -345,6 +346,38 @@ namespace SwapIt.BL.Services
                     Notes = x.Notes,
                     ServiceRequestId = x.Id
                 }).ToListAsync();
+        }
+
+        public async Task<bool> UploadServiceImage(IFormFile serviceImage, int serviceId, string folderName)
+        {
+            //folder path
+            StringBuilder fullPath = new StringBuilder();
+            fullPath.Append(Directory.GetCurrentDirectory());
+            fullPath.Append(@"\wwwroot\");
+            fullPath.Append(folderName);
+            fullPath.Append(@"\");
+
+            Directory.CreateDirectory(fullPath.ToString());
+
+            //image details
+            fullPath.Append(Guid.NewGuid().ToString());
+            fullPath.Append('_');
+            fullPath.Append(serviceId.ToString());
+            fullPath.Append(Path.GetExtension(serviceImage.FileName));
+
+            try
+            {
+                using (var fileStream = new FileStream(fullPath.ToString(), FileMode.Create))
+                {
+                    await serviceImage.CopyToAsync  (fileStream);
+                }
+                return true;
+            }
+            catch
+            {
+
+                return false;
+            }
         }
     }
 }

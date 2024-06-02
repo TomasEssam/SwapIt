@@ -110,7 +110,7 @@ namespace SwapIt.API.Controllers
         public async Task<IActionResult> UploadServiceImage(IFormFile image,int serviceId)
         {
 
-            string folderName = @"/servicesImages";
+            string folderName = @"servicesImages";
             return Ok(await _serviceService.UploadServiceImage(image,serviceId,folderName));
         }
     }

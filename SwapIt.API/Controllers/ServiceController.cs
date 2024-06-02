@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SwapIt.BL.DTOs;
 using SwapIt.BL.DTOs.Identity;
 using SwapIt.BL.IServices;
-using System.Security.Claims;
 
 namespace SwapIt.API.Controllers
 {
@@ -105,6 +103,15 @@ namespace SwapIt.API.Controllers
         public async Task<IActionResult> GetAllFinishedCustomer([FromQuery] int customerId)
         {
             return Ok(await _serviceService.GetAllFinishiedCustomerSideAsync(customerId));
+        }
+
+        [HttpPost]
+        [Route("UploadServiceImage")]
+        public async Task<IActionResult> UploadServiceImage(IFormFile image,int serviceId)
+        {
+
+            string folderName = @"/servicesImages";
+            return Ok(await _serviceService.UploadServiceImage(image,serviceId,folderName));
         }
     }
 }

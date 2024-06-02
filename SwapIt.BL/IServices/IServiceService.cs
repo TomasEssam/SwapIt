@@ -1,4 +1,5 @@
-﻿using SwapIt.BL.DTOs;
+﻿using Microsoft.AspNetCore.Http;
+using SwapIt.BL.DTOs;
 using SwapIt.BL.DTOs.Identity;
 using SwapIt.Data.Entities.Common;
 using System;
@@ -31,5 +32,8 @@ namespace SwapIt.BL.IServices
         Task<ServiceDto> GetServiceByIdAsync(int serviceId);
         Task<List<DropDownDto>> GetServiceDDAsync();
         Task<List<RateDto>> GetRatesAsync(int serviceId);
+        Task<bool> UploadServiceImage(IFormFile serviceImage,int serviceId, string folderName);
+
+
     }
 }

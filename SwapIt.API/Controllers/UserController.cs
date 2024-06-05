@@ -56,17 +56,24 @@ namespace SwapIt.API.Controllers
 
         [HttpPost]
         [Route("create")]
-        public async Task<IActionResult> CreateAsync([FromBody] UserDto dto)
+        public async Task<IActionResult> CreateAsync([FromForm] UserDto dto, [FromForm] IFormFile profileImage, [FromForm] IFormFile idImage)
         {
-            await _userService.CreateUserAsync(dto);
-            return Ok();
+            try
+            {
+                await _userService.CreateUserAsync(dto, profileImage, idImage);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet]
         [Route("GetUser")]
         public async Task<IActionResult> GetUser(int userId)
         {
-           return Ok(await _userService.GetUserAsync(userId));
+            return Ok(await _userService.GetUserAsync(userId));
         }
 
         [HttpGet]

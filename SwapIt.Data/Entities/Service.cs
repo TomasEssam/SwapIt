@@ -23,7 +23,7 @@ namespace SwapIt.Data.Entities
         [Required]
         public int Price { get; set; }
         public int TimeToExecute { get; set; }
-        public string PreviousworkImagesUrl { get; set; }
+        public string? PreviousworkImagesUrl { get; set; }
         public int ServiceProviderId { get; set; }
         public int CategoryId { get; set; }
         public bool IsDeleted { get; set; }

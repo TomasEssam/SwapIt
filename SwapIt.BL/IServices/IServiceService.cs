@@ -13,7 +13,7 @@ namespace SwapIt.BL.IServices
 {
     public interface IServiceService
     {
-        Task<bool> CreateAsync(ServiceDto dto);
+        Task<bool> CreateAsync(ServiceDto dto, IFormFile serviceImage);
         Task<bool> DeleteAsync(int serviceId);
         Task<bool> UpdateAsync(ServiceDto dto);
         Task<List<SearchResultDto>> GetAllAcceptedServiceProviderSideAsync(int serviceProviderId);

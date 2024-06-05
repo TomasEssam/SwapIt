@@ -42,8 +42,19 @@ namespace SwapIt.BL.Services
             var model = _mapper.Map<ServiceDto>(service);
             return model;
         }
-        public async Task<bool> CreateAsync(ServiceDto dto)
+        public async Task<bool> CreateAsync(ServiceDto dto, IFormFile serviceImage)
         {
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+
+            // Get the file extension
+            var extension = Path.GetExtension(serviceImage.FileName).ToLowerInvariant();
+
+            // Check if the file extension is valid
+            if (!allowedExtensions.Contains(extension))
+            {
+                throw new Exception("the given file is not an image"); // or throw new InvalidOperationException("Invalid image file format");
+            }
+
             var model = _mapper.Map<Service>(dto);
 
             //for Notification 
@@ -53,8 +64,13 @@ namespace SwapIt.BL.Services
                 NotificationType = NotificationTypes.CreateService
             }, dto.ServiceProviderId);
 
-            return await _serviceRepository.AddAsync(model);
-
+            var result = await _serviceRepository.AddAsync(model);
+            if (!result)
+                return false;
+            result = await UploadServiceImage(serviceImage, model.Id, FolderName.servicesImages);
+            if (!result)
+                return false;
+            return true;
         }
 
         public async Task<bool> DeleteAsync(int serviceId)
@@ -382,17 +398,6 @@ namespace SwapIt.BL.Services
 
         public async Task<bool> UploadServiceImage(IFormFile serviceImage, int serviceId, string folderName)
         {
-            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
-
-            // Get the file extension
-            var extension = Path.GetExtension(serviceImage.FileName).ToLowerInvariant();
-
-            // Check if the file extension is valid
-            if (!allowedExtensions.Contains(extension))
-            {
-               throw new Exception("the given file is not an image"); // or throw new InvalidOperationException("Invalid image file format");
-            }
-
             //folder path
             StringBuilder fullPath = new StringBuilder();
             fullPath.Append(Directory.GetCurrentDirectory());

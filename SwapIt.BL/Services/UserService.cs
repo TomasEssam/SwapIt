@@ -14,6 +14,7 @@ using SwapIt.Data.Entities.Identity;
 using SwapIt.Data.Helpers;
 using SwapIt.Data.IRepository;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -44,6 +45,192 @@ namespace SwapIt.BL.Services
             _userBalanceRepository = userBalanceRepository;
             _rateService = rateService;
         }
+
+        public async Task<bool> UploadIdImage(IFormFile idImage, int userId, string folderName)
+        {
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+
+            // Get the file extension
+            var extension = Path.GetExtension(idImage.FileName).ToLowerInvariant();
+
+            // Check if the file extension is valid
+            if (!allowedExtensions.Contains(extension))
+            {
+                throw new Exception("the given file is not an image"); // or throw new InvalidOperationException("Invalid image file format");
+            }
+
+            //folder path
+            StringBuilder fullPath = new StringBuilder();
+            fullPath.Append(Directory.GetCurrentDirectory());
+            fullPath.Append(@"\wwwroot\");
+            fullPath.Append(folderName);
+            fullPath.Append(@"\");
+
+            Directory.CreateDirectory(fullPath.ToString());
+
+            //image details
+            fullPath.Append(Guid.NewGuid().ToString());
+            fullPath.Append('_');
+            fullPath.Append(userId.ToString());
+            fullPath.Append(Path.GetExtension(idImage.FileName));
+
+            string imagePath = fullPath.ToString();
+
+            try
+            {
+                using (var fileStream = new FileStream(fullPath.ToString(), FileMode.Create))
+                {
+                    await idImage.CopyToAsync(fileStream);
+                }
+                var user = await _userManager.FindByIdAsync(userId.ToString());
+                if (user != null)
+                {
+                    user.ImageId = imagePath;
+                    await _userManager.UpdateAsync(user);
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> UploadProfileImage(IFormFile profileImage, int userId, string folderName)
+        {
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+
+            // Get the file extension
+            var extension = Path.GetExtension(profileImage.FileName).ToLowerInvariant();
+
+            // Check if the file extension is valid
+            if (!allowedExtensions.Contains(extension))
+            {
+                throw new Exception("the given file is not an image"); // or throw new InvalidOperationException("Invalid image file format");
+            }
+            //folder path
+            StringBuilder fullPath = new StringBuilder();
+            fullPath.Append(Directory.GetCurrentDirectory());
+            fullPath.Append(@"\wwwroot\");
+            fullPath.Append(folderName);
+            fullPath.Append(@"\");
+
+            Directory.CreateDirectory(fullPath.ToString());
+
+            //image details
+            fullPath.Append(Guid.NewGuid().ToString());
+            fullPath.Append('_');
+            fullPath.Append(userId.ToString());
+            fullPath.Append(Path.GetExtension(profileImage.FileName));
+
+            string imagePath = fullPath.ToString();
+
+            try
+            {
+                using (var fileStream = new FileStream(fullPath.ToString(), FileMode.Create))
+                {
+                    await profileImage.CopyToAsync(fileStream);
+                }
+                var user = await _userManager.FindByIdAsync(userId.ToString());
+                if (user != null)
+                {
+                    user.ProfileImagePath = imagePath;
+                    await _userManager.UpdateAsync(user);
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<ImageResultDto> GetProfileImage(int userId)
+        {
+
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null || string.IsNullOrEmpty(user.ProfileImagePath))
+            {
+                return new ImageResultDto
+                {
+                    Success = false,
+                    ErrorMessage = "User not found or image path is empty"
+                };
+            }
+
+            var imagePath = user.ProfileImagePath;
+            try
+            {
+                var imageFileStream = new FileStream(imagePath, FileMode.Open, FileAccess.Read);
+                var contentType = GetContentType(imagePath);
+
+                return new ImageResultDto
+                {
+                    ImageStream = imageFileStream,
+                    ContentType = contentType,
+                    Success = true
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ImageResultDto
+                {
+                    Success = false,
+                    ErrorMessage = ex.Message
+                };
+            }
+        }
+
+        public async Task<ImageResultDto> GetIdImage(int userId)
+        {
+
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null || string.IsNullOrEmpty(user.ImageId))
+            {
+                return new ImageResultDto
+                {
+                    Success = false,
+                    ErrorMessage = "User not found or image path is empty"
+                };
+            }
+
+            var imagePath = user.ImageId;
+            try
+            {
+                var imageFileStream = new FileStream(imagePath, FileMode.Open, FileAccess.Read);
+                var contentType = GetContentType(imagePath);
+
+                return new ImageResultDto
+                {
+                    ImageStream = imageFileStream,
+                    ContentType = contentType,
+                    Success = true
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ImageResultDto
+                {
+                    Success = false,
+                    ErrorMessage = ex.Message
+                };
+            }
+        }
+
+
+        private string GetContentType(string path)
+        {
+            var types = new Dictionary<string, string>
+                        {
+                             {".jpg", "image/jpeg"},
+                             {".jpeg", "image/jpeg"},
+                             {".png", "image/png"},
+                             {".gif", "image/gif"}
+                         };
+            var ext = Path.GetExtension(path).ToLowerInvariant();
+            return types[ext];
+        }
+
         public async Task<LoginResultDto> Authenticate(LoginDto dto)
         {
             var user = await _userManager.FindByNameAsync(dto.Username);

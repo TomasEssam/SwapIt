@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using SwapIt.BL.DTOs.Identity;
 using SwapIt.BL.IServices;
 using SwapIt.BL.IServices.Identity;
@@ -72,14 +73,88 @@ namespace SwapIt.API.Controllers
         [Route("GetServicesImages")]
         public async Task<IActionResult> GetServicesImages(int userId)
         {
-            return Ok(await _serviceService.GetAllPreviousWorkImageUrlAsync(userId));
+            var imageResults = await _serviceService.GetAllPreviousWorkImageUrlAsync(userId);
+
+            if (imageResults == null || !imageResults.Any())
+            {
+                return NotFound("No images found for the specified service provider.");
+            }
+
+            var base64Images = imageResults
+                .Where(r => r.Success)
+                .Select(r => new
+                {
+                    r.Base64Image,
+                    r.ContentType
+                })
+                .ToList();
+
+            return Ok(base64Images);
         }
+
         [HttpGet]
         [Route("ServiceProvidersDropDown")]
         public async Task<IActionResult> DropDownAsync()
         {
             return Ok(await _userService.DropDownAsync());
         }
+
+        [HttpPost]
+        [Route("UploadProfileImage")]
+        public async Task<IActionResult> UploadProfileImage([FromForm] IFormFile image, [FromForm] int userId)
+        {
+            try
+            {
+                return Ok(await _userService.UploadProfileImage(image, userId, FolderName.profileImages));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("UploadIdImage")]
+        public async Task<IActionResult> UploadIdImage([FromForm] IFormFile image, [FromForm] int userId)
+        {
+            try
+            {
+                return Ok(await _userService.UploadIdImage(image, userId, FolderName.IdImages));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetProfileImage")]
+        public async Task<IActionResult> GetProfileImage(int userId)
+        {
+            var result = await _userService.GetProfileImage(userId);
+
+            if (!result.Success)
+            {
+                return NotFound(result.ErrorMessage);
+            }
+
+            return File(result.ImageStream, result.ContentType);
+        }
+
+        [HttpGet]
+        [Route("GetIdImage")]
+        public async Task<IActionResult> GetIdImage(int userId)
+        {
+            var result = await _userService.GetIdImage(userId);
+
+            if (!result.Success)
+            {
+                return NotFound(result.ErrorMessage);
+            }
+
+            return File(result.ImageStream, result.ContentType);
+        }
+
         #endregion
     }
 }

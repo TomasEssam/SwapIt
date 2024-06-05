@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SwapIt.BL.DTOs;
 using SwapIt.BL.DTOs.Identity;
 using SwapIt.BL.IServices;
+using SwapIt.Data.Constants;
 
 namespace SwapIt.API.Controllers
 {
@@ -109,9 +110,14 @@ namespace SwapIt.API.Controllers
         [Route("UploadServiceImage")]
         public async Task<IActionResult> UploadServiceImage([FromForm] IFormFile image, [FromForm] int serviceId)
         {
-
-            string folderName = @"servicesImages";
-            return Ok(await _serviceService.UploadServiceImage(image, serviceId, folderName));
+            try
+            {
+                return Ok(await _serviceService.UploadServiceImage(image, serviceId, FolderName.servicesImages));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet]

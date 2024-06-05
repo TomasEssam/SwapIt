@@ -127,12 +127,42 @@ namespace SwapIt.BL.Services
                 }).ToListAsync();
         }
 
-        public async Task<List<string>> GetAllPreviousWorkImageUrlAsync(int serviceProviderId)
+        public async Task<List<ImageResultDto>> GetAllPreviousWorkImageUrlAsync(int serviceProviderId)
         {
             var servicesList = await _serviceRepository.GetAllAsync();
             var userServicesUrls = servicesList.Where(x => x.ServiceProviderId == serviceProviderId)
                 .Select(x => x.PreviousworkImagesUrl).ToList();
-            return userServicesUrls;
+
+            var imageResults = new List<ImageResultDto>();
+
+            foreach (var imageUrl in userServicesUrls)
+            {
+                try
+                {
+                    using var imageFileStream = new FileStream(imageUrl, FileMode.Open, FileAccess.Read);
+                    using var memoryStream = new MemoryStream();
+                    await imageFileStream.CopyToAsync(memoryStream);
+                    var base64Image = Convert.ToBase64String(memoryStream.ToArray());
+                    var contentType = GetContentType(imageUrl);
+
+                    imageResults.Add(new ImageResultDto
+                    {
+                        Base64Image = base64Image,
+                        ContentType = contentType,
+                        Success = true
+                    });
+                }
+                catch (Exception ex)
+                {
+                    imageResults.Add(new ImageResultDto
+                    {
+                        Success = false,
+                        ErrorMessage = ex.Message
+                    });
+                }
+            }
+
+            return imageResults;
         }
 
 
@@ -352,6 +382,17 @@ namespace SwapIt.BL.Services
 
         public async Task<bool> UploadServiceImage(IFormFile serviceImage, int serviceId, string folderName)
         {
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+
+            // Get the file extension
+            var extension = Path.GetExtension(serviceImage.FileName).ToLowerInvariant();
+
+            // Check if the file extension is valid
+            if (!allowedExtensions.Contains(extension))
+            {
+               throw new Exception("the given file is not an image"); // or throw new InvalidOperationException("Invalid image file format");
+            }
+
             //folder path
             StringBuilder fullPath = new StringBuilder();
             fullPath.Append(Directory.GetCurrentDirectory());

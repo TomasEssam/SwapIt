@@ -1,4 +1,5 @@
-﻿using SwapIt.BL.DTOs;
+﻿using Microsoft.AspNetCore.Http;
+using SwapIt.BL.DTOs;
 using SwapIt.BL.DTOs.Identity;
 using System;
 using System.Collections.Generic;
@@ -20,5 +21,9 @@ namespace SwapIt.BL.IServices.Identity
         Task<LoginResultDto> RefreshToken(string authenticationToken, string refreshToken);
         Task<ProfileDto> GetUserAsync(int userId);
         Task<List<DropDownDto>> DropDownAsync();
+        Task<bool> UploadIdImage(IFormFile idImage, int userId, string folderName);
+        Task<bool> UploadProfileImage(IFormFile profileImage, int userId, string folderName);
+        Task<ImageResultDto> GetProfileImage(int userId);
+        Task<ImageResultDto> GetIdImage(int userId);
     }
 }

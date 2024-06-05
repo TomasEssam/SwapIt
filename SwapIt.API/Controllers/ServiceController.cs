@@ -28,7 +28,7 @@ namespace SwapIt.API.Controllers
 
         [HttpGet]
         [Route("Delete")]
-        public async Task<IActionResult> Delete([FromQuery]int serviceId)
+        public async Task<IActionResult> Delete([FromQuery] int serviceId)
         {
             return Ok(await _serviceService.DeleteAsync(serviceId));
         }
@@ -43,7 +43,7 @@ namespace SwapIt.API.Controllers
 
         [HttpPost]
         [Route("Search")]
-        public async Task<IActionResult> Search([FromBody] ServiceFilterDto serviceFilterDto )
+        public async Task<IActionResult> Search([FromBody] ServiceFilterDto serviceFilterDto)
         {
             //var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             return Ok(await _serviceService.SearchServiceAsync(serviceFilterDto));
@@ -107,11 +107,25 @@ namespace SwapIt.API.Controllers
 
         [HttpPost]
         [Route("UploadServiceImage")]
-        public async Task<IActionResult> UploadServiceImage(IFormFile image,int serviceId)
+        public async Task<IActionResult> UploadServiceImage([FromForm] IFormFile image, [FromForm] int serviceId)
         {
 
             string folderName = @"servicesImages";
-            return Ok(await _serviceService.UploadServiceImage(image,serviceId,folderName));
+            return Ok(await _serviceService.UploadServiceImage(image, serviceId, folderName));
+        }
+
+        [HttpGet]
+        [Route("GetServiceImage")]
+        public async Task<IActionResult> GetServiceImage(int serviceId)
+        {
+            var result = await _serviceService.GetServiceImage(serviceId);
+
+            if (!result.Success)
+            {
+                return NotFound(result.ErrorMessage);
+            }
+
+            return File(result.ImageStream, result.ContentType);
         }
     }
 }

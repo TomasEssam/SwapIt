@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SwapIt.BL.DTOs;
 using SwapIt.BL.IServices;
@@ -52,7 +54,7 @@ namespace SwapIt.BL.Services
             }, dto.ServiceProviderId);
 
             return await _serviceRepository.AddAsync(model);
-         
+
         }
 
         public async Task<bool> DeleteAsync(int serviceId)
@@ -86,7 +88,7 @@ namespace SwapIt.BL.Services
                       ServiceName = x.Service.Name,
                       ServicePrice = x.Service.Price,
                       totalRate = (x.Service.Rates.Count() == 0) ? 0 : (float)x.Service.Rates.Select(x => x.RateValue).Sum() / (float)x.Service.Rates.Count(),
-                      Username = x.Customer.UserName, 
+                      Username = x.Customer.UserName,
                       Notes = x.Notes,
                       ServiceRequestId = x.Id
                   }).ToListAsync();
@@ -117,7 +119,7 @@ namespace SwapIt.BL.Services
                     ServiceDescription = x.Service.Description,
                     ServiceName = x.Service.Name,
                     ServicePrice = x.Service.Price,
-                    totalRate = (x.Service.Rates.Count() == 0) ? 0 : (float)x.Service.Rates.Select(x => x.RateValue).Sum() /(float) x.Service.Rates.Count(),
+                    totalRate = (x.Service.Rates.Count() == 0) ? 0 : (float)x.Service.Rates.Select(x => x.RateValue).Sum() / (float)x.Service.Rates.Count(),
                     Username = x.Customer.UserName,
                     Notes = x.Notes,
                     Feedback = x.Service.Rates.Where(r => r.CustomerId == x.CustomerId).OrderByDescending(r => r.Id).FirstOrDefault().Feedback,
@@ -203,27 +205,27 @@ namespace SwapIt.BL.Services
 
         public async Task<List<SearchResultDto>> GetAllPendingServiceProviderSideAsync(int serviceProviderId)
         {
-                return await _context.ServiceRequests.Include(x => x.Service)
-                    .ThenInclude(x => x.Category)
-                    .Include(x => x.Service)
-                    .ThenInclude(x => x.ServiceProvider)
-                    .Include(x => x.Service)
-                    .ThenInclude(x => x.Rates)
-                    .Include(x => x.Customer)
-                    .Where(x => x.RequestState == RequestStateNames.Pending && x.Service.ServiceProviderId == serviceProviderId)
-                    .Select(x => new SearchResultDto
-                    {
-                        Id = x.ServiceId,
-                        CategoryName = x.Service.Category.Name,
-                        ProfileImagePath = x.Service.ServiceProvider.ProfileImagePath,
-                        ServiceDescription = x.Service.Description,
-                        ServiceName = x.Service.Name,
-                        ServicePrice = x.Service.Price,
-                        totalRate = (x.Service.Rates.Count() == 0) ? 0 : (float)x.Service.Rates.Select(x => x.RateValue).Sum() / (float)x.Service.Rates.Count(),
-                        Username = x.Customer.UserName,
-                        Notes = x.Notes,
-                        ServiceRequestId = x.Id
-                    }).ToListAsync();
+            return await _context.ServiceRequests.Include(x => x.Service)
+                .ThenInclude(x => x.Category)
+                .Include(x => x.Service)
+                .ThenInclude(x => x.ServiceProvider)
+                .Include(x => x.Service)
+                .ThenInclude(x => x.Rates)
+                .Include(x => x.Customer)
+                .Where(x => x.RequestState == RequestStateNames.Pending && x.Service.ServiceProviderId == serviceProviderId)
+                .Select(x => new SearchResultDto
+                {
+                    Id = x.ServiceId,
+                    CategoryName = x.Service.Category.Name,
+                    ProfileImagePath = x.Service.ServiceProvider.ProfileImagePath,
+                    ServiceDescription = x.Service.Description,
+                    ServiceName = x.Service.Name,
+                    ServicePrice = x.Service.Price,
+                    totalRate = (x.Service.Rates.Count() == 0) ? 0 : (float)x.Service.Rates.Select(x => x.RateValue).Sum() / (float)x.Service.Rates.Count(),
+                    Username = x.Customer.UserName,
+                    Notes = x.Notes,
+                    ServiceRequestId = x.Id
+                }).ToListAsync();
         }
 
         public async Task<List<SearchResultDto>> GetAllCanceledServiceProviderSideAsync(int serviceProviderId)
@@ -365,19 +367,75 @@ namespace SwapIt.BL.Services
             fullPath.Append(serviceId.ToString());
             fullPath.Append(Path.GetExtension(serviceImage.FileName));
 
+            string imagePath = fullPath.ToString();
+
             try
             {
                 using (var fileStream = new FileStream(fullPath.ToString(), FileMode.Create))
                 {
-                    await serviceImage.CopyToAsync  (fileStream);
+                    await serviceImage.CopyToAsync(fileStream);
+                }
+                var service = await _context.Services.FindAsync(serviceId);
+                if (service != null)
+                {
+                    service.PreviousworkImagesUrl = imagePath;
+                    await _context.SaveChangesAsync();
                 }
                 return true;
             }
             catch
             {
-
                 return false;
             }
+        }
+
+        public async Task<ImageResultDto> GetServiceImage(int serviceId)
+        {
+
+            var service = await _context.Services.FindAsync(serviceId);
+            if (service == null || string.IsNullOrEmpty(service.PreviousworkImagesUrl))
+            {
+                return new ImageResultDto
+                {
+                    Success = false,
+                    ErrorMessage = "Service not found or image path is empty"
+                };
+            }
+
+            var imagePath = service.PreviousworkImagesUrl;
+            try
+            {
+                var imageFileStream = new FileStream(imagePath, FileMode.Open, FileAccess.Read);
+                var contentType = GetContentType(imagePath);
+
+                return new ImageResultDto
+                {
+                    ImageStream = imageFileStream,
+                    ContentType = contentType,
+                    Success = true
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ImageResultDto
+                {
+                    Success = false,
+                    ErrorMessage = ex.Message
+                };
+            }
+        }
+
+        private string GetContentType(string path)
+        {
+            var types = new Dictionary<string, string>
+                        {
+                             {".jpg", "image/jpeg"},
+                             {".jpeg", "image/jpeg"},
+                             {".png", "image/png"},
+                             {".gif", "image/gif"}
+                         };
+            var ext = Path.GetExtension(path).ToLowerInvariant();
+            return types[ext];
         }
     }
 }

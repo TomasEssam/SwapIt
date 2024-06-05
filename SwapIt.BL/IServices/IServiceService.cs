@@ -32,8 +32,8 @@ namespace SwapIt.BL.IServices
         Task<ServiceDto> GetServiceByIdAsync(int serviceId);
         Task<List<DropDownDto>> GetServiceDDAsync();
         Task<List<RateDto>> GetRatesAsync(int serviceId);
-        Task<bool> UploadServiceImage(IFormFile serviceImage,int serviceId, string folderName);
-
+        Task<bool> UploadServiceImage(IFormFile serviceImage, int serviceId, string folderName);
+        Task<ImageResultDto> GetServiceImage(int serviceId);
 
     }
 }

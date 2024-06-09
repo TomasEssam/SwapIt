@@ -20,6 +20,7 @@ namespace SwapIt.BL.DTOs
         public string? Notes { get; set; }
         public string? Feedback { get; set; }
         public int? ServiceRequestId { get; set; }
+        public int? ServiceProviderId { get; set; }
         public string? RequestImage { get; set; }
         public string? userImage { get; set; }
     }

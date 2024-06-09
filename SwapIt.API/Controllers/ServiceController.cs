@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SwapIt.BL.DTOs;
-using SwapIt.BL.DTOs.Identity;
 using SwapIt.BL.IServices;
-using SwapIt.Data.Constants;
 using SwapIt.Data.Helpers;
 
 namespace SwapIt.API.Controllers

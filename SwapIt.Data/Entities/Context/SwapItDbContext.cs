@@ -1,14 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using SwapIt.Data.Configurations.Identity;
 using SwapIt.Data.Entities.Common;
 using SwapIt.Data.Entities.Identity;
-using SwapIt.Data.Helpers;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 

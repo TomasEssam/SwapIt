@@ -1,23 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using SwapIt.BL.DTOs;
 using SwapIt.BL.IServices;
 using SwapIt.Data.Constants;
 using SwapIt.Data.Entities;
 using SwapIt.Data.Entities.Context;
-using SwapIt.Data.Entities.Identity;
 using SwapIt.Data.IRepository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SwapIt.BL.Services
 {
@@ -180,6 +170,7 @@ namespace SwapIt.BL.Services
                     Username = x.ServiceProvider.UserName,
                     userImage = (x.ServiceProvider.ProfileImagePath == null) ? null : GetImageBase64(x.ServiceProvider.ProfileImagePath),
                     totalRate = (x.Rates.Count() == 0) ? 0 : x.Rates.Select(x => x.RateValue).Sum() / x.Rates.Count(),
+                    ServiceProviderId = x.ServiceProviderId
                 }).ToList();
 
             return result;

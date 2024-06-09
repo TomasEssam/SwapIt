@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "37ace4dc-5a97-41ec-832b-01a137454ce0",
+		"_postman_id": "3c1f516c-4787-44b6-9aad-9917bd863505",
 		"name": "SwapIt",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "33097770"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34797178"
 	},
 	"item": [
 		{
@@ -16,14 +16,26 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"username\": \"TomasEssam\",\r\n  \"password\": \"P@$$w0rd\"\r\n}",
+							"raw": "{\r\n  \"username\": \"TanaWRna\",\r\n  \"password\": \"P@$$w0rd\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "https://localhost:7064/api/users/authenticate"
+						"url": {
+							"raw": "https://localhost:7064/api/users/authenticate",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"users",
+								"authenticate"
+							]
+						}
 					},
 					"response": []
 				},
@@ -77,9 +89,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiVG9tYXNFc3NhbSIsInVzZXJfaWQiOiIxIiwidXNlcl9uYW1lIjoiVG9tYXNFc3NhbSIsInJvbGVzIjoiQWRtaW4iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsIm5iZiI6MTcxMzEwNTEwNiwiZXhwIjoxNzEzMTM1MTA2LCJpc3MiOiJtcnMtaXNzdWVyIiwiYXVkIjoibXJzLWF1ZGllbmNlIn0.Uf3kKpAWcpzzU3mkuNyYZcKNOHHDCCGINCNz_1JRDQU"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiVG9tYXNFc3NhbSIsInVzZXJfaWQiOiIxIiwidXNlcl9uYW1lIjoiVG9tYXNFc3NhbSIsInJvbGVzIjoiQWRtaW4iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsIm5iZiI6MTcxMzEwNTEwNiwiZXhwIjoxNzEzMTM1MTA2LCJpc3MiOiJtcnMtaXNzdWVyIiwiYXVkIjoibXJzLWF1ZGllbmNlIn0.Uf3kKpAWcpzzU3mkuNyYZcKNOHHDCCGINCNz_1JRDQU",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [],
@@ -92,7 +108,19 @@
 								}
 							}
 						},
-						"url": "https://localhost:7064/api/users/ResetPassword"
+						"url": {
+							"raw": "https://localhost:7064/api/users/ResetPassword",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"users",
+								"ResetPassword"
+							]
+						}
 					},
 					"response": []
 				},
@@ -102,15 +130,284 @@
 						"method": "POST",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"username\": \"Geoooo\",\r\n  \"password\": \"P@$$w0rd\",\r\n  \"email\": \"Geooo@Gmail.com\",\r\n  \"dateOfBirth\": \"2002-04-14\",\r\n  \"gender\": \"Male\",\r\n  \"phoneNumber\": \"01223205919\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "TomasESSSam",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "P@$$w0rd",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "titi@Gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "gender",
+									"value": "Male",
+									"type": "text"
+								},
+								{
+									"key": "phoneNumber",
+									"value": "01223205919",
+									"type": "text"
+								},
+								{
+									"key": "JobTitle",
+									"value": "Servant of the Lord",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "13,Minia,Egypt",
+									"type": "text"
+								},
+								{
+									"key": "profileImage",
+									"type": "file",
+									"src": "/C:/Users/Thomas/OneDrive/Desktop/photo_2023-05-23_22-06-36.jpg"
+								},
+								{
+									"key": "idImage",
+									"type": "file",
+									"src": "/C:/Users/Thomas/OneDrive/Desktop/white-background-designify.png"
+								},
+								{
+									"key": "dateOfBirth",
+									"value": "2002-04-14",
+									"type": "text"
 								}
-							}
+							]
 						},
-						"url": "https://localhost:7064/api/users/create"
+						"url": {
+							"raw": "https://localhost:7064/api/users/create",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"users",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetUser",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7064/api/users/GetUser?userId=9",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"users",
+								"GetUser"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "9"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetImages",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7064/api/users/GetServicesImages?userId=9",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"users",
+								"GetServicesImages"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "9"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ServiceProviders Drop Down",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7064/api/users/ServiceProvidersDropDown",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"users",
+								"ServiceProvidersDropDown"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Profile Image",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "userId",
+									"value": "9",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/Thomas/OneDrive/Desktop/photo_2023-05-23_22-06-36.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://localhost:7064/api/users/UploadProfileImage?userId=9&Image",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"users",
+								"UploadProfileImage"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "9"
+								},
+								{
+									"key": "Image",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Profile Image",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7064/api/users/GetProfileImage?userId=1010",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"users",
+								"GetProfileImage"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "1010"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Id Image",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "userId",
+									"value": "9",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/Thomas/Downloads/GOxY8fHW4AAh0Zf.jpeg"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://localhost:7064/api/users/UploadIdImage",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"users",
+								"UploadIdImage"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Id Image",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7064/api/users/GetIdImage?userId=1010",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"users",
+								"GetIdImage"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "1010"
+								}
+							]
+						}
 					},
 					"response": []
 				}
@@ -133,7 +430,19 @@
 								}
 							}
 						},
-						"url": "https://localhost:7064/api/roles/AddUserRole"
+						"url": {
+							"raw": "https://localhost:7064/api/roles/AddUserRole",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"roles",
+								"AddUserRole"
+							]
+						}
 					},
 					"response": []
 				}
@@ -156,7 +465,19 @@
 								}
 							}
 						},
-						"url": "https://localhost:7064/api/categories/create"
+						"url": {
+							"raw": "https://localhost:7064/api/categories/create",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"categories",
+								"create"
+							]
+						}
 					},
 					"response": []
 				},
@@ -165,7 +486,19 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "https://localhost:7064/api/categories/getall"
+						"url": {
+							"raw": "https://localhost:7064/api/categories/getall",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"categories",
+								"getall"
+							]
+						}
 					},
 					"response": []
 				},
@@ -201,7 +534,19 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "https://localhost:7064/api/categories/CategoryDropDown"
+						"url": {
+							"raw": "https://localhost:7064/api/categories/CategoryDropDown",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"categories",
+								"CategoryDropDown"
+							]
+						}
 					},
 					"response": []
 				}
@@ -216,42 +561,122 @@
 						"method": "POST",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"name\": \"Coashing\",\r\n  \"description\": \"I coash in private Session\",\r\n  \"price\": 20,\r\n  \"timeToExecute\": 15,\r\n  \"previousworkImagesUrl\": \"2.jpg\",\r\n  \"serviceProviderId\": 9,\r\n  \"categoryId\": 3\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "asdf",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "I deliver orders for the least money",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "20",
+									"type": "text"
+								},
+								{
+									"key": "timeToExecute",
+									"value": "15",
+									"type": "text"
+								},
+								{
+									"key": "serviceProviderId",
+									"value": "11",
+									"type": "text"
+								},
+								{
+									"key": "categoryId",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "serviceImage",
+									"type": "file",
+									"src": "/C:/Users/george/Pictures/Picture1.png"
 								}
-							}
+							]
 						},
-						"url": "https://localhost:7064/api/services/Create"
+						"url": {
+							"raw": "https://localhost:7064/api/services/Create",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"services",
+								"Create"
+							]
+						}
 					},
 					"response": []
 				},
 				{
 					"name": "GetAll",
 					"request": {
+						"auth": {
+							"type": "basic"
+						},
 						"method": "GET",
 						"header": [],
-						"url": "https://localhost:7064/api/services/getall"
+						"url": {
+							"raw": "https://localhost:7064/api/services/getall",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"services",
+								"getall"
+							]
+						}
 					},
 					"response": []
 				},
 				{
 					"name": "Search",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiVG9tYXNFc3NhbSIsInVzZXJfaWQiOiIxIiwidXNlcl9uYW1lIjoiVG9tYXNFc3NhbSIsInJvbGVzIjoiQWRtaW4iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsIm5iZiI6MTcxMzEwNTEwNiwiZXhwIjoxNzEzMTM1MTA2LCJpc3MiOiJtcnMtaXNzdWVyIiwiYXVkIjoibXJzLWF1ZGllbmNlIn0.Uf3kKpAWcpzzU3mkuNyYZcKNOHHDCCGINCNz_1JRDQU",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"serviceName\": \"Editing\",\r\n  \"servicePrice\": 0,\r\n  \"serviceProviderId\": 0,\r\n  \"categoryId\": 0\r\n}",
+							"raw": "{\r\n  \"serviceName\": \"\",\r\n  \"servicePrice\": 0,\r\n  \"serviceProviderId\": 0,\r\n  \"categoryId\": 0,\r\n  \"userId\": 9\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "https://localhost:7064/api/services/Search"
+						"url": {
+							"raw": "https://localhost:7064/api/services/Search",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"services",
+								"Search"
+							]
+						}
 					},
 					"response": []
 				},
@@ -315,7 +740,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:7064/api/services/GetAllFinishedServiceProvider?serviceProviderId=6",
+							"raw": "https://localhost:7064/api/services/GetAllFinishedServiceProvider?serviceProviderId=9",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -329,7 +754,7 @@
 							"query": [
 								{
 									"key": "serviceProviderId",
-									"value": "6"
+									"value": "9"
 								}
 							]
 						}
@@ -342,7 +767,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:7064/api/services/GetAllPendingServiceProvider?serviceProviderId=6",
+							"raw": "https://localhost:7064/api/services/GetAllPendingServiceProvider?serviceProviderId=11",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -356,7 +781,7 @@
 							"query": [
 								{
 									"key": "serviceProviderId",
-									"value": "6"
+									"value": "11"
 								}
 							]
 						}
@@ -497,6 +922,69 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Upload Image",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "serviceId",
+									"value": "6",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/Thomas/OneDrive/Desktop/New Text Document (2).TXT"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://localhost:7064/api/services/UploadServiceImage",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"services",
+								"UploadServiceImage"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Image",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7064/api/services/GetServiceImage?serviceId=1008",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"services",
+								"GetServiceImage"
+							],
+							"query": [
+								{
+									"key": "serviceId",
+									"value": "1008"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -509,15 +997,58 @@
 						"method": "POST",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"requestDate\": \"2024-05-14T22:17:36.217Z\",\r\n  \"requestState\": \"Pending\",\r\n  \"executionTime\": 30,\r\n  \"customerId\": 7,\r\n  \"serviceId\": 5,\r\n  \"notes\": \"I slkajdfldslk \"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "requestDate",
+									"value": "2024-05-14T22:17:36.217Z",
+									"type": "text"
+								},
+								{
+									"key": "requestState",
+									"value": "Pending",
+									"type": "text"
+								},
+								{
+									"key": "executionTime",
+									"value": "30",
+									"type": "text"
+								},
+								{
+									"key": "customerId",
+									"value": "12",
+									"type": "text"
+								},
+								{
+									"key": "serviceId",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "notes",
+									"value": "adsfasdf",
+									"type": "text"
+								},
+								{
+									"key": "RequestImage",
+									"type": "file",
+									"src": "/C:/Users/george/Pictures/Picture1.png"
 								}
-							}
+							]
 						},
-						"url": "https://localhost:7064/api/serviceRequests/Create"
+						"url": {
+							"raw": "https://localhost:7064/api/serviceRequests/Create",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"serviceRequests",
+								"Create"
+							]
+						}
 					},
 					"response": []
 				},
@@ -527,7 +1058,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:7064/api/serviceRequests/AcceptServiceRequest?ServiceRequestId=3",
+							"raw": "https://localhost:7064/api/serviceRequests/AcceptServiceRequest?ServiceRequestId=4",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -541,7 +1072,7 @@
 							"query": [
 								{
 									"key": "ServiceRequestId",
-									"value": "3"
+									"value": "4"
 								}
 							]
 						}
@@ -584,7 +1115,19 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "https://localhost:7064/api/serviceRequests/GetAll"
+						"url": {
+							"raw": "https://localhost:7064/api/serviceRequests/GetAll",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"serviceRequests",
+								"GetAll"
+							]
+						}
 					},
 					"response": []
 				},
@@ -594,7 +1137,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:7064/api/serviceRequests/FinishServiceRequest?ServiceRequestId=3",
+							"raw": "https://localhost:7064/api/serviceRequests/FinishServiceRequest?ServiceRequestId=4",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -608,7 +1151,7 @@
 							"query": [
 								{
 									"key": "ServiceRequestId",
-									"value": "3"
+									"value": "4"
 								}
 							]
 						}
@@ -690,6 +1233,33 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get MyPoints",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7064/api/payment/MyPoints?userId=7",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"payment",
+								"MyPoints"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -703,14 +1273,85 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\r\n  \"rateValue\": 4,\r\n  \"rateDate\": \"2024-05-15T20:53:46.825Z\",\r\n  \"feedback\": \"this with shit\",\r\n  \"serviceId\": 5,\r\n  \"customerId\": 6\r\n}",
+							"raw": "{\r\n\r\n  \"rateValue\": 3,\r\n  \"rateDate\": \"2024-05-30T13:45:44.908Z\",\r\n  \"feedback\": \"Not that good\",\r\n  \"serviceId\": 5,\r\n  \"customerId\": 7\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "https://localhost:7064/api/rates/Create"
+						"url": {
+							"raw": "https://localhost:7064/api/rates/Create",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"rates",
+								"Create"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Notification",
+			"item": [
+				{
+					"name": "GetAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7064/api/notification/getall?userId=9",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"notification",
+								"getall"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "9"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7064/api/notification/read?userNotificationId=1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7064",
+							"path": [
+								"api",
+								"notification",
+								"read"
+							],
+							"query": [
+								{
+									"key": "userNotificationId",
+									"value": "1"
+								}
+							]
+						}
 					},
 					"response": []
 				}

@@ -99,7 +99,7 @@ namespace SwapIt.BL.Services
         public async Task<bool> UploadProfileImage(IFormFile profileImage, int userId, string folderName)
 
         {
-            if (AllowedExtensions.isValid(Path.GetExtension(profileImage.FileName)))
+            if (!AllowedExtensions.isValid(Path.GetExtension(profileImage.FileName)))
             {
                 throw new Exception("the given file is not an image");
             }

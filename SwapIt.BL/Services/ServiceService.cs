@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using SwapIt.BL.DTOs;
 using SwapIt.BL.IServices;
 using SwapIt.Data.Constants;
@@ -47,11 +48,11 @@ namespace SwapIt.BL.Services
         }
         public async Task<bool> CreateAsync(ServiceDto dto)
         {
-            if(dto.serviceImage != null)
-            if (AllowedExtensions.isValid(Path.GetExtension(dto.serviceImage.FileName)))
-            {
-                throw new Exception("the given file is not an image");
-            }
+            if (dto.serviceImage != null)
+                if (!AllowedExtensions.isValid(Path.GetExtension(dto.serviceImage.FileName)))
+                {
+                    throw new Exception("the given file is not an image");
+                }
 
             var model = _mapper.Map<Service>(dto);
 
@@ -88,27 +89,7 @@ namespace SwapIt.BL.Services
 
         public async Task<List<SearchResultDto>> GetAllAcceptedServiceProviderSideAsync(int serviceProviderId)
         {
-            return await _context.ServiceRequests.Include(x => x.Service)
-                  .ThenInclude(x => x.Category)
-                  .Include(x => x.Service)
-                  .ThenInclude(x => x.ServiceProvider)
-                  .Include(x => x.Service)
-                  .ThenInclude(x => x.Rates)
-                  .Include(x => x.Customer)
-                  .Where(x => x.RequestState == RequestStateNames.Accepted && x.Service.ServiceProviderId == serviceProviderId)
-                  .Select(x => new SearchResultDto
-                  {
-                      Id = x.ServiceId,
-                      CategoryName = x.Service.Category.Name,
-                      ProfileImagePath = x.Service.ServiceProvider.ProfileImagePath,
-                      ServiceDescription = x.Service.Description,
-                      ServiceName = x.Service.Name,
-                      ServicePrice = x.Service.Price,
-                      totalRate = (x.Service.Rates.Count() == 0) ? 0 : (float)x.Service.Rates.Select(x => x.RateValue).Sum() / (float)x.Service.Rates.Count(),
-                      Username = x.Customer.UserName,
-                      Notes = x.Notes,
-                      ServiceRequestId = x.Id
-                  }).ToListAsync();
+            return await GetALLServiceProviderSideAsync(serviceProviderId, RequestStateNames.Accepted);
 
         }
 
@@ -120,30 +101,7 @@ namespace SwapIt.BL.Services
 
         public async Task<List<SearchResultDto>> GetAllFinshiedServiceProviderSideAsync(int serviceProviderId)
         {
-            return await _context.ServiceRequests.Include(x => x.Service)
-                .ThenInclude(x => x.Category)
-                .Include(x => x.Service)
-                .ThenInclude(x => x.ServiceProvider)
-                .Include(x => x.Service)
-                .ThenInclude(x => x.Rates)
-                .Include(x => x.Customer)
-                .Where(x => x.RequestState == RequestStateNames.Finished && x.Service.ServiceProviderId == serviceProviderId)
-                .Select(x => new SearchResultDto
-                {
-                    Id = x.ServiceId,
-                    CategoryName = x.Service.Category.Name,
-                    ProfileImagePath = x.Service.ServiceProvider.ProfileImagePath,
-                    ServiceDescription = x.Service.Description,
-                    ServiceName = x.Service.Name,
-                    ServicePrice = x.Service.Price,
-                    totalRate = (x.Service.Rates.Count() == 0) ? 0 : (float)x.Service.Rates.Select(x => x.RateValue).Sum() / (float)x.Service.Rates.Count(),
-                    Username = x.Customer.UserName,
-                    Notes = x.Notes,
-                    Feedback = x.Service.Rates.Where(r => r.CustomerId == x.CustomerId).OrderByDescending(r => r.Id).FirstOrDefault().Feedback,
-                    ServiceRequestId = x.Id,
-                    Base64Image  = GetServiceImageBase64(x.Service.ServiceProvider.ProfileImagePath),
-            
-                }).ToListAsync();
+            return await GetALLServiceProviderSideAsync(serviceProviderId, RequestStateNames.Finished);
         }
 
         public async Task<List<ImageResultDto>> GetAllPreviousWorkImageUrlAsync(int serviceProviderId)
@@ -254,150 +212,33 @@ namespace SwapIt.BL.Services
 
         public async Task<List<SearchResultDto>> GetAllPendingServiceProviderSideAsync(int serviceProviderId)
         {
-            return await _context.ServiceRequests.Include(x => x.Service)
-                .ThenInclude(x => x.Category)
-                .Include(x => x.Service)
-                .ThenInclude(x => x.ServiceProvider)
-                .Include(x => x.Service)
-                .ThenInclude(x => x.Rates)
-                .Include(x => x.Customer)
-                .Where(x => x.RequestState == RequestStateNames.Pending && x.Service.ServiceProviderId == serviceProviderId)
-                .Select(x => new SearchResultDto
-                {
-                    Id = x.ServiceId,
-                    CategoryName = x.Service.Category.Name,
-                    ProfileImagePath = x.Service.ServiceProvider.ProfileImagePath,
-                    ServiceDescription = x.Service.Description,
-                    ServiceName = x.Service.Name,
-                    ServicePrice = x.Service.Price,
-                    totalRate = (x.Service.Rates.Count() == 0) ? 0 : (float)x.Service.Rates.Select(x => x.RateValue).Sum() / (float)x.Service.Rates.Count(),
-                    Username = x.Customer.UserName,
-                    Notes = x.Notes,
-                    ServiceRequestId = x.Id,
-                    Base64Image = GetServiceImageBase64(x.Service.ServiceProvider.ProfileImagePath),
-                }).ToListAsync();
+            return await GetALLServiceProviderSideAsync(serviceProviderId, RequestStateNames.Pending);
         }
 
         public async Task<List<SearchResultDto>> GetAllCanceledServiceProviderSideAsync(int serviceProviderId)
         {
-            return await _context.ServiceRequests.Include(x => x.Service)
-                .ThenInclude(x => x.Category)
-                .Include(x => x.Service)
-                .ThenInclude(x => x.ServiceProvider)
-                .Include(x => x.Service)
-                .ThenInclude(x => x.Rates)
-                .Include(x => x.Customer)
-                .Where(x => x.RequestState == RequestStateNames.Canceled && x.Service.ServiceProviderId == serviceProviderId)
-                .Select(x => new SearchResultDto
-                {
-                    Id = x.ServiceId,
-                    CategoryName = x.Service.Category.Name,
-                    ProfileImagePath = x.Service.ServiceProvider.ProfileImagePath,
-                    ServiceDescription = x.Service.Description,
-                    ServiceName = x.Service.Name,
-                    ServicePrice = x.Service.Price,
-                    totalRate = (x.Service.Rates.Count() == 0) ? 0 : (float)x.Service.Rates.Select(x => x.RateValue).Sum() / (float)x.Service.Rates.Count(),
-                    Username = x.Customer.UserName,
-                    Notes = x.Notes,
-                    ServiceRequestId = x.Id
-                }).ToListAsync();
+            return await GetALLServiceProviderSideAsync(serviceProviderId, RequestStateNames.Canceled);
+
         }
 
         public async Task<List<SearchResultDto>> GetAllAcceptedCustomerSideAsync(int customerId)
         {
-            return await _context.ServiceRequests.Include(x => x.Service)
-                 .ThenInclude(x => x.Category)
-                 .Include(x => x.Service)
-                 .ThenInclude(x => x.ServiceProvider)
-                 .Include(x => x.Service)
-                 .ThenInclude(x => x.Rates)
-                 .Where(x => x.RequestState == RequestStateNames.Accepted && x.CustomerId == customerId)
-                 .Select(x => new SearchResultDto
-                 {
-                     Id = x.ServiceId,
-                     CategoryName = x.Service.Category.Name,
-                     ProfileImagePath = x.Service.ServiceProvider.ProfileImagePath,
-                     ServiceDescription = x.Service.Description,
-                     ServiceName = x.Service.Name,
-                     ServicePrice = x.Service.Price,
-                     totalRate = (x.Service.Rates.Count() == 0) ? 0 : (float)x.Service.Rates.Select(x => x.RateValue).Sum() / (float)x.Service.Rates.Count(),
-                     Username = x.Service.ServiceProvider.UserName,
-                     Notes = x.Notes,
-                     ServiceRequestId = x.Id
-                 }).ToListAsync();
+            return await GetALLCustomerSideAsync(customerId, RequestStateNames.Accepted);
         }
 
         public async Task<List<SearchResultDto>> GetAllFinishiedCustomerSideAsync(int customerId)
         {
-            return await _context.ServiceRequests.Include(x => x.Service)
-                .ThenInclude(x => x.Category)
-                .Include(x => x.Service)
-                .ThenInclude(x => x.ServiceProvider)
-                .Include(x => x.Service)
-                .ThenInclude(x => x.Rates)
-                .Where(x => x.RequestState == RequestStateNames.Finished && x.CustomerId == customerId)
-                .Select(x => new SearchResultDto
-                {
-                    Id = x.ServiceId,
-                    CategoryName = x.Service.Category.Name,
-                    ProfileImagePath = x.Service.ServiceProvider.ProfileImagePath,
-                    ServiceDescription = x.Service.Description,
-                    ServiceName = x.Service.Name,
-                    ServicePrice = x.Service.Price,
-                    totalRate = (x.Service.Rates.Count() == 0) ? 0 : (float)x.Service.Rates.Select(x => x.RateValue).Sum() / (float)x.Service.Rates.Count(),
-                    Username = x.Service.ServiceProvider.UserName,
-                    Notes = x.Notes,
-                    Feedback = x.Service.Rates.Where(r => r.CustomerId == x.CustomerId).OrderByDescending(r => r.Id).FirstOrDefault().Feedback,
-                    ServiceRequestId = x.Id
-                }).ToListAsync();
+            return await GetALLCustomerSideAsync(customerId, RequestStateNames.Finished);
         }
 
         public async Task<List<SearchResultDto>> GetAllPendingCustomerSideAsync(int customerId)
         {
-            return await _context.ServiceRequests.Include(x => x.Service)
-                .ThenInclude(x => x.Category)
-                .Include(x => x.Service)
-                .ThenInclude(x => x.ServiceProvider)
-                .Include(x => x.Service)
-                .ThenInclude(x => x.Rates)
-                .Where(x => x.RequestState == RequestStateNames.Pending && x.CustomerId == customerId)
-                .Select(x => new SearchResultDto
-                {
-                    Id = x.ServiceId,
-                    CategoryName = x.Service.Category.Name,
-                    ProfileImagePath = x.Service.ServiceProvider.ProfileImagePath,
-                    ServiceDescription = x.Service.Description,
-                    ServiceName = x.Service.Name,
-                    ServicePrice = x.Service.Price,
-                    totalRate = (x.Service.Rates.Count() == 0) ? 0 : (float)x.Service.Rates.Select(x => x.RateValue).Sum() / (float)x.Service.Rates.Count(),
-                    Username = x.Service.ServiceProvider.UserName,
-                    Notes = x.Notes,
-                    ServiceRequestId = x.Id
-                }).ToListAsync();
+            return await GetALLCustomerSideAsync(customerId, RequestStateNames.Pending);
         }
 
         public async Task<List<SearchResultDto>> GetAllCanceledCustomerSideAsync(int customerId)
         {
-            return await _context.ServiceRequests.Include(x => x.Service)
-                .ThenInclude(x => x.Category)
-                .Include(x => x.Service)
-                .ThenInclude(x => x.ServiceProvider)
-                .Include(x => x.Service)
-                .ThenInclude(x => x.Rates)
-                .Where(x => x.RequestState == RequestStateNames.Canceled && x.CustomerId == customerId)
-                .Select(x => new SearchResultDto
-                {
-                    Id = x.ServiceId,
-                    CategoryName = x.Service.Category.Name,
-                    ProfileImagePath = x.Service.ServiceProvider.ProfileImagePath,
-                    ServiceDescription = x.Service.Description,
-                    ServiceName = x.Service.Name,
-                    ServicePrice = x.Service.Price,
-                    totalRate = (x.Service.Rates.Count() == 0) ? 0 : (float)x.Service.Rates.Select(x => x.RateValue).Sum() / (float)x.Service.Rates.Count(),
-                    Username = x.Service.ServiceProvider.UserName,
-                    Notes = x.Notes,
-                    ServiceRequestId = x.Id
-                }).ToListAsync();
+            return await GetALLCustomerSideAsync(customerId, RequestStateNames.Canceled);
         }
 
         public async Task<bool> UploadServiceImage(IFormFile serviceImage, int serviceId, string folderName)
@@ -480,7 +321,7 @@ namespace SwapIt.BL.Services
             using var imageFileStream = new FileStream(ImageUrl, FileMode.Open, FileAccess.Read);
             using var memoryStream = new MemoryStream();
             imageFileStream.CopyTo(memoryStream);
-             return Convert.ToBase64String(memoryStream.ToArray());
+            return Convert.ToBase64String(memoryStream.ToArray());
 
         }
 
@@ -495,6 +336,58 @@ namespace SwapIt.BL.Services
                          };
             var ext = Path.GetExtension(path).ToLowerInvariant();
             return types[ext];
+        }
+
+        private async Task<List<SearchResultDto>> GetALLServiceProviderSideAsync(int serviceProviderId, string requestState)
+        {
+            return await _context.ServiceRequests.Include(x => x.Service)
+                .ThenInclude(x => x.Category)
+                .Include(x => x.Service)
+                .ThenInclude(x => x.ServiceProvider)
+                .Include(x => x.Service)
+                .ThenInclude(x => x.Rates)
+            .Include(x => x.Customer)
+                .Where(x => x.RequestState == requestState && x.Service.ServiceProviderId == serviceProviderId)
+                .Select(x => new SearchResultDto
+                {
+                    Id = x.ServiceId,
+                    CategoryName = x.Service.Category.Name,
+                    ProfileImagePath = x.Service.ServiceProvider.ProfileImagePath,
+                    ServiceDescription = x.Service.Description,
+                    ServiceName = x.Service.Name,
+                    ServicePrice = x.Service.Price,
+                    totalRate = (x.Service.Rates.Count() == 0) ? 0 : (float)x.Service.Rates.Select(x => x.RateValue).Sum() / (float)x.Service.Rates.Count(),
+                    Username = x.Customer.UserName,
+                    Notes = x.Notes,
+                    Feedback = x.Service.Rates.Where(r => r.CustomerId == x.CustomerId).OrderByDescending(r => r.Id).FirstOrDefault().Feedback,
+                    ServiceRequestId = x.Id,
+                    Base64Image = GetServiceImageBase64(x.Service.ServiceProvider.ProfileImagePath),
+
+                }).ToListAsync();
+        }
+        private async Task<List<SearchResultDto>> GetALLCustomerSideAsync(int customerId, string requestState)
+        {
+
+            return await _context.ServiceRequests.Include(x => x.Service)
+     .ThenInclude(x => x.Category)
+     .Include(x => x.Service)
+     .ThenInclude(x => x.ServiceProvider)
+     .Include(x => x.Service)
+     .ThenInclude(x => x.Rates)
+     .Where(x => x.RequestState == requestState && x.CustomerId == customerId)
+     .Select(x => new SearchResultDto
+     {
+         Id = x.ServiceId,
+         CategoryName = x.Service.Category.Name,
+         ProfileImagePath = x.Service.ServiceProvider.ProfileImagePath,
+         ServiceDescription = x.Service.Description,
+         ServiceName = x.Service.Name,
+         ServicePrice = x.Service.Price,
+         totalRate = (x.Service.Rates.Count() == 0) ? 0 : (float)x.Service.Rates.Select(x => x.RateValue).Sum() / (float)x.Service.Rates.Count(),
+         Username = x.Service.ServiceProvider.UserName,
+         Notes = x.Notes,
+         ServiceRequestId = x.Id
+     }).ToListAsync();
         }
     }
 }

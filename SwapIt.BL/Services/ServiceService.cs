@@ -22,6 +22,7 @@ namespace SwapIt.BL.Services
 {
     public class ServiceService : IServiceService
     {
+        #region fields&cotr
         private readonly IMapper _mapper;
         private readonly IServiceRepository _serviceRepository;
         private readonly IRateRepository _rateRepository;
@@ -36,23 +37,20 @@ namespace SwapIt.BL.Services
             _rateRepository = rateRepository;
             _notificationService = notificationService;
         }
+        #endregion
+
         public async Task<ServiceDto> GetServiceByIdAsync(int serviceId)
         {
             var service = await _serviceRepository.GetByIdAsync(serviceId);
             var model = _mapper.Map<ServiceDto>(service);
             return model;
         }
-        public async Task<bool> CreateAsync(ServiceDto dto, IFormFile serviceImage)
+        public async Task<bool> CreateAsync(ServiceDto dto)
         {
-            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
-
-            // Get the file extension
-            var extension = Path.GetExtension(serviceImage.FileName).ToLowerInvariant();
-
-            // Check if the file extension is valid
-            if (!allowedExtensions.Contains(extension))
+            if(dto.serviceImage != null)
+            if (AllowedExtensions.isValid(Path.GetExtension(dto.serviceImage.FileName)))
             {
-                throw new Exception("the given file is not an image"); // or throw new InvalidOperationException("Invalid image file format");
+                throw new Exception("the given file is not an image");
             }
 
             var model = _mapper.Map<Service>(dto);
@@ -67,9 +65,12 @@ namespace SwapIt.BL.Services
             var result = await _serviceRepository.AddAsync(model);
             if (!result)
                 return false;
-            result = await UploadServiceImage(serviceImage, model.Id, FolderName.servicesImages);
-            if (!result)
-                return false;
+            if (dto.serviceImage != null)
+            {
+                result = await UploadServiceImage(dto.serviceImage, model.Id, FolderName.servicesImages);
+                if (!result)
+                    return false;
+            }
             return true;
         }
 
@@ -139,7 +140,9 @@ namespace SwapIt.BL.Services
                     Username = x.Customer.UserName,
                     Notes = x.Notes,
                     Feedback = x.Service.Rates.Where(r => r.CustomerId == x.CustomerId).OrderByDescending(r => r.Id).FirstOrDefault().Feedback,
-                    ServiceRequestId = x.Id
+                    ServiceRequestId = x.Id,
+                    Base64Image  = GetServiceImageBase64(x.Service.ServiceProvider.ProfileImagePath),
+            
                 }).ToListAsync();
         }
 
@@ -270,7 +273,8 @@ namespace SwapIt.BL.Services
                     totalRate = (x.Service.Rates.Count() == 0) ? 0 : (float)x.Service.Rates.Select(x => x.RateValue).Sum() / (float)x.Service.Rates.Count(),
                     Username = x.Customer.UserName,
                     Notes = x.Notes,
-                    ServiceRequestId = x.Id
+                    ServiceRequestId = x.Id,
+                    Base64Image = GetServiceImageBase64(x.Service.ServiceProvider.ProfileImagePath),
                 }).ToListAsync();
         }
 
@@ -469,6 +473,15 @@ namespace SwapIt.BL.Services
                     ErrorMessage = ex.Message
                 };
             }
+        }
+
+        public string GetServiceImageBase64(string ImageUrl)
+        {
+            using var imageFileStream = new FileStream(ImageUrl, FileMode.Open, FileAccess.Read);
+            using var memoryStream = new MemoryStream();
+            imageFileStream.CopyTo(memoryStream);
+             return Convert.ToBase64String(memoryStream.ToArray());
+
         }
 
         private string GetContentType(string path)

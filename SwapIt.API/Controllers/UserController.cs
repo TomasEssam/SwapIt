@@ -56,11 +56,11 @@ namespace SwapIt.API.Controllers
 
         [HttpPost]
         [Route("create")]
-        public async Task<IActionResult> CreateAsync([FromForm] UserDto dto, [FromForm] IFormFile profileImage, [FromForm] IFormFile idImage)
+        public async Task<IActionResult> CreateAsync([FromForm] UserDto dto)
         {
             try
             {
-                await _userService.CreateUserAsync(dto, profileImage, idImage);
+                await _userService.CreateUserAsync(dto);
                 return Ok();
             }
             catch (Exception ex)
@@ -108,7 +108,7 @@ namespace SwapIt.API.Controllers
 
         [HttpPost]
         [Route("UploadProfileImage")]
-        public async Task<IActionResult> UploadProfileImage([FromForm] IFormFile image, [FromForm] int userId)
+        public async Task<IActionResult> UploadProfileImage( IFormFile image,int userId)
         {
             try
             {

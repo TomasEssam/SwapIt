@@ -1,4 +1,5 @@
-﻿using SwapIt.Data.Entities;
+﻿using Microsoft.AspNetCore.Http;
+using SwapIt.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -22,6 +23,7 @@ namespace SwapIt.BL.DTOs
         public string? PreviousworkImagesUrl { get; set; }
         public int ServiceProviderId { get; set; }
         public int CategoryId { get; set; }
+        public IFormFile? serviceImage { get; set; }
 
     }
 }

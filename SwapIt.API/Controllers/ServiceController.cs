@@ -21,11 +21,11 @@ namespace SwapIt.API.Controllers
 
         [HttpPost]
         [Route("Create")]
-        public async Task<IActionResult> Create([FromForm] ServiceDto dto, [FromForm] IFormFile serviceImage)
+        public async Task<IActionResult> Create([FromForm] ServiceDto dto)
         {
             try
             {
-                return Ok(await _serviceService.CreateAsync(dto, serviceImage));
+                return Ok(await _serviceService.CreateAsync(dto));
 
             }
             catch (Exception ex)

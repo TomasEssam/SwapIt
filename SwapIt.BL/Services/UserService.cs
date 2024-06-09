@@ -97,7 +97,13 @@ namespace SwapIt.BL.Services
         }
 
         public async Task<bool> UploadProfileImage(IFormFile profileImage, int userId, string folderName)
+
         {
+            if (AllowedExtensions.isValid(Path.GetExtension(profileImage.FileName)))
+            {
+                throw new Exception("the given file is not an image");
+            }
+
             //folder path
             StringBuilder fullPath = new StringBuilder();
             fullPath.Append(Directory.GetCurrentDirectory());
@@ -286,20 +292,8 @@ namespace SwapIt.BL.Services
             dto.TotalRate = await _rateService.GetTotalRateForUser(user.Id);
             return (dto);
         }
-        public async Task CreateUserAsync(UserDto dto, IFormFile profileImage, IFormFile idImage)
+        public async Task CreateUserAsync(UserDto dto)
         {
-            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
-
-            // Get the file extension
-            var extension1 = Path.GetExtension(profileImage.FileName).ToLowerInvariant();
-            var extension2 = Path.GetExtension(idImage.FileName).ToLowerInvariant();
-
-            // Check if the file extension is valid
-            if (!allowedExtensions.Contains(extension1) || !allowedExtensions.Contains(extension2))
-            {
-                throw new Exception("the given file is not an image"); // or throw new InvalidOperationException("Invalid image file format");
-            }
-
             var user = new ApplicationUser()
             {
                 BirthDate = dto.DateOfBirth,
@@ -312,7 +306,7 @@ namespace SwapIt.BL.Services
                 SecurityStamp = Guid.NewGuid().ToString(),
                 ApplicationUserId = Guid.NewGuid(),
                 UserName = dto.Username,
-                IsActive = true
+                IsActive = false
             };
 
 
@@ -324,14 +318,19 @@ namespace SwapIt.BL.Services
                 throw new Exception(errors);
             }
 
-           //add the images 
-                var assure = await UploadProfileImage(profileImage, user.Id, FolderName.profileImages);
+            //add the images 
+            if (dto.profileImage != null)
+            {
+                var assure = await UploadProfileImage(dto.profileImage, user.Id, FolderName.profileImages);
                 if (!assure)
                     return;
-                assure = await UploadIdImage(idImage, user.Id, FolderName.IdImages);
+            }
+            if (dto.idImage != null)
+            {
+                var assure = await UploadIdImage(dto.idImage, user.Id, FolderName.IdImages);
                 if (!assure)
                     return;
-
+            }
             await _userBalanceRepository.AddAsync(
                 new UserBalance()
                 {

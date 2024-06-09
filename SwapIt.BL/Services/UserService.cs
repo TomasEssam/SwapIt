@@ -286,7 +286,7 @@ namespace SwapIt.BL.Services
             dto.Email = user.Email;
             dto.JobTitle = user.JobTitle;
             dto.PhoneNumber = user.PhoneNumber;
-            dto.ProfileImagePath = user.ProfileImagePath;
+            dto.ProfileImage = (user.ProfileImagePath == null) ? null : GetImageBase64(user.ProfileImagePath);
             dto.DateOfBirth = user.BirthDate;
             dto.Address = user.Address;
             dto.TotalRate = await _rateService.GetTotalRateForUser(user.Id);
@@ -319,15 +319,15 @@ namespace SwapIt.BL.Services
             }
 
             //add the images 
-            if (dto.profileImage != null)
+            if (dto.ProfileImage != null)
             {
-                var assure = await UploadProfileImage(dto.profileImage, user.Id, FolderName.profileImages);
+                var assure = await UploadProfileImage(dto.ProfileImage, user.Id, FolderName.profileImages);
                 if (!assure)
                     return;
             }
-            if (dto.idImage != null)
+            if (dto.IdImage != null)
             {
-                var assure = await UploadIdImage(dto.idImage, user.Id, FolderName.IdImages);
+                var assure = await UploadIdImage(dto.IdImage, user.Id, FolderName.IdImages);
                 if (!assure)
                     return;
             }
@@ -496,6 +496,15 @@ namespace SwapIt.BL.Services
             var claimsIdentity = new ClaimsIdentity(claims, "Token");
             _httpContextAccessor.HttpContext.User = new ClaimsPrincipal(claimsIdentity);
             AppSecurityContext.Configure(_httpContextAccessor);
+        }
+
+        private static string GetImageBase64(string ImageUrl)
+        {
+            using var imageFileStream = new FileStream(ImageUrl, FileMode.Open, FileAccess.Read);
+            using var memoryStream = new MemoryStream();
+            imageFileStream.CopyTo(memoryStream);
+            return Convert.ToBase64String(memoryStream.ToArray());
+
         }
 
     }

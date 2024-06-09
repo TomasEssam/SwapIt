@@ -168,17 +168,19 @@ namespace SwapIt.BL.Services
                 query = _context.Services.Where(x => x.CategoryId == dto.CategoryId);
             }
 
-            var result = query.Where(x => x.ServiceProviderId != dto.UserId).Select(x => new SearchResultDto
-            {
-                Id = x.Id,
-                ServiceName = x.Name,
-                ServiceDescription = x.Description,
-                ServicePrice = x.Price,
-                CategoryName = x.Category.Name,
-                Username = x.ServiceProvider.UserName,
-                ProfileImagePath = x.ServiceProvider.ProfileImagePath,
-                totalRate = (x.Rates.Count() == 0) ? 0 : x.Rates.Select(x => x.RateValue).Sum() / x.Rates.Count(),
-            }).ToList();
+            var result = query
+                .Include(x => x.ServiceProvider)
+                .Where(x => x.ServiceProviderId != dto.UserId).Select(x => new SearchResultDto
+                {
+                    Id = x.Id,
+                    ServiceName = x.Name,
+                    ServiceDescription = x.Description,
+                    ServicePrice = x.Price,
+                    CategoryName = x.Category.Name,
+                    Username = x.ServiceProvider.UserName,
+                    userImage = (x.ServiceProvider.ProfileImagePath == null) ? null : GetImageBase64(x.ServiceProvider.ProfileImagePath),
+                    totalRate = (x.Rates.Count() == 0) ? 0 : x.Rates.Select(x => x.RateValue).Sum() / x.Rates.Count(),
+                }).ToList();
 
             return result;
 
@@ -316,13 +318,14 @@ namespace SwapIt.BL.Services
             }
         }
 
-        public string GetServiceImageBase64(string ImageUrl)
+        public static string GetImageBase64(string ImageUrl)
         {
             using var imageFileStream = new FileStream(ImageUrl, FileMode.Open, FileAccess.Read);
+
             using var memoryStream = new MemoryStream();
+
             imageFileStream.CopyTo(memoryStream);
             return Convert.ToBase64String(memoryStream.ToArray());
-
         }
 
         private string GetContentType(string path)
@@ -361,7 +364,8 @@ namespace SwapIt.BL.Services
                     Notes = x.Notes,
                     Feedback = x.Service.Rates.Where(r => r.CustomerId == x.CustomerId).OrderByDescending(r => r.Id).FirstOrDefault().Feedback,
                     ServiceRequestId = x.Id,
-                    Base64Image = GetServiceImageBase64(x.Service.ServiceProvider.ProfileImagePath),
+                    userImage = (x.Service.ServiceProvider.ProfileImagePath == null) ? null : GetImageBase64(x.Service.ServiceProvider.ProfileImagePath),
+                    RequestImage = (x.ImageUrl == null) ? null : GetImageBase64(x.ImageUrl)
 
                 }).ToListAsync();
         }
@@ -369,25 +373,27 @@ namespace SwapIt.BL.Services
         {
 
             return await _context.ServiceRequests.Include(x => x.Service)
-     .ThenInclude(x => x.Category)
-     .Include(x => x.Service)
-     .ThenInclude(x => x.ServiceProvider)
-     .Include(x => x.Service)
-     .ThenInclude(x => x.Rates)
-     .Where(x => x.RequestState == requestState && x.CustomerId == customerId)
-     .Select(x => new SearchResultDto
-     {
-         Id = x.ServiceId,
-         CategoryName = x.Service.Category.Name,
-         ProfileImagePath = x.Service.ServiceProvider.ProfileImagePath,
-         ServiceDescription = x.Service.Description,
-         ServiceName = x.Service.Name,
-         ServicePrice = x.Service.Price,
-         totalRate = (x.Service.Rates.Count() == 0) ? 0 : (float)x.Service.Rates.Select(x => x.RateValue).Sum() / (float)x.Service.Rates.Count(),
-         Username = x.Service.ServiceProvider.UserName,
-         Notes = x.Notes,
-         ServiceRequestId = x.Id
-     }).ToListAsync();
+            .ThenInclude(x => x.Category)
+            .Include(x => x.Service)
+            .ThenInclude(x => x.ServiceProvider)
+            .Include(x => x.Service)
+            .ThenInclude(x => x.Rates)
+            .Where(x => x.RequestState == requestState && x.CustomerId == customerId)
+            .Select(x => new SearchResultDto
+            {
+                Id = x.ServiceId,
+                CategoryName = x.Service.Category.Name,
+                ProfileImagePath = x.Service.ServiceProvider.ProfileImagePath,
+                ServiceDescription = x.Service.Description,
+                ServiceName = x.Service.Name,
+                ServicePrice = x.Service.Price,
+                totalRate = (x.Service.Rates.Count() == 0) ? 0 : (float)x.Service.Rates.Select(x => x.RateValue).Sum() / (float)x.Service.Rates.Count(),
+                Username = x.Service.ServiceProvider.UserName,
+                Notes = x.Notes,
+                ServiceRequestId = x.Id,
+                userImage = (x.Service.ServiceProvider.ProfileImagePath == null) ? null : GetImageBase64(x.Service.ServiceProvider.ProfileImagePath)
+
+            }).ToListAsync();
         }
     }
 }

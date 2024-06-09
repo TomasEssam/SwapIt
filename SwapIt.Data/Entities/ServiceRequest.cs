@@ -21,6 +21,7 @@ namespace SwapIt.Data.Entities
         [Required]
         public string RequestState { get; set; } 
         public float? ExecutionTime { get; set; }
+        public string? ImageUrl {  get; set; }
         [MaxLength(500)]
         public string? Notes { get; set; }
         public int CustomerId { get; set; }
@@ -38,6 +39,7 @@ namespace SwapIt.Data.Entities
         public ApplicationUser Customer { get; set; }
 
         public ICollection<PointsLogger> PointsLoggers { get; set; }
+        
 
     }
 }

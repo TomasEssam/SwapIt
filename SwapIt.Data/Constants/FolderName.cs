@@ -11,5 +11,6 @@ namespace SwapIt.Data.Constants
         public const string servicesImages = "servicesImages";
         public const string profileImages = "profileImages";
         public const string IdImages = "IdImages";
+        public const string requests = "requests";
     }
 }

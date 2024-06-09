@@ -59,7 +59,14 @@ namespace SwapIt.API.Controllers
         public async Task<IActionResult> Search([FromBody] ServiceFilterDto serviceFilterDto)
         {
             //var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            return Ok(await _serviceService.SearchServiceAsync(serviceFilterDto));
+            try
+            {
+                return Ok(await _serviceService.SearchServiceAsync(serviceFilterDto));
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
         #region serviceProvider view endPoints
         [HttpGet]
@@ -121,32 +128,32 @@ namespace SwapIt.API.Controllers
         }
         #endregion
 
-        [HttpPost]
-        [Route("UploadServiceImage")]
-        public async Task<IActionResult> UploadServiceImage([FromForm] IFormFile image, [FromForm] int serviceId)
-        {
-            try
-            {
-                return Ok(await _serviceService.UploadServiceImage(image, serviceId, FolderName.servicesImages));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //[HttpPost]
+        //[Route("UploadServiceImage")]
+        //public async Task<IActionResult> UploadServiceImage([FromForm] IFormFile image, [FromForm] int serviceId)
+        //{
+        //    try
+        //    {
+        //        return Ok(await _serviceService.UploadServiceImage(image, serviceId, FolderName.servicesImages));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
-        [HttpGet]
-        [Route("GetServiceImage")]
-        public async Task<IActionResult> GetServiceImage(int serviceId)
-        {
-            var result = await _serviceService.GetServiceImage(serviceId);
+        //[HttpGet]
+        //[Route("GetServiceImage")]
+        //public async Task<IActionResult> GetServiceImage(int serviceId)
+        //{
+        //    var result = await _serviceService.GetServiceImage(serviceId);
 
-            if (!result.Success)
-            {
-                return NotFound(result.ErrorMessage);
-            }
+        //    if (!result.Success)
+        //    {
+        //        return NotFound(result.ErrorMessage);
+        //    }
 
-            return File(result.ImageStream, result.ContentType);
-        }
+        //    return File(result.ImageStream, result.ContentType);
+        //}
     }
 }

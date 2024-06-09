@@ -205,7 +205,31 @@ namespace SwapIt.BL.Services
             dto.RequestState = RequestStateNames.Pending;
 
 
+
+            if (dto.RequestImage is not null)
+            {
+                if (!AllowedExtensions.isValid(Path.GetExtension(dto.RequestImage.FileName)))
+                {
+                    throw new Exception("the given file is not an image");
+                }
+            }
+
+
             var serviceRequest = await _serviceRequestRepository.AddAndReturnAsync(_mapper.Map<ServiceRequest>(dto));
+
+
+
+
+            if (dto.RequestImage is not null)
+            {
+                if (!await UploadRequestImage(dto.RequestImage, serviceRequest.Id, FolderName.requests))
+                {
+                    throw new Exception("Couldn't upload image");
+                }
+            }
+
+
+
 
             //track points transaction
             var pointsLogger = new PointsLogger();
@@ -228,6 +252,8 @@ namespace SwapIt.BL.Services
                 $"and the money of the service is in the hold phase waiting for the request to be accepted",
                 NotificationType = NotificationTypes.RequestCreated
             }, user.Id);
+
+
 
             return true;
         }
@@ -309,6 +335,45 @@ namespace SwapIt.BL.Services
         {
             return await _serviceRequestRepository.UpdateAsync(_mapper.Map<ServiceRequest>(dto));
 
+        }
+
+        private async Task<bool> UploadRequestImage(IFormFile serviceImage, int serviceId, string folderName)
+        {
+            //folder path
+            StringBuilder fullPath = new StringBuilder();
+            fullPath.Append(Directory.GetCurrentDirectory());
+            fullPath.Append(@"\wwwroot\");
+            fullPath.Append(folderName);
+            fullPath.Append(@"\");
+
+            Directory.CreateDirectory(fullPath.ToString());
+
+            //image details
+            fullPath.Append(Guid.NewGuid().ToString());
+            fullPath.Append('_');
+            fullPath.Append(serviceId.ToString());
+            fullPath.Append(Path.GetExtension(serviceImage.FileName));
+
+            string imagePath = fullPath.ToString();
+
+            try
+            {
+                using (var fileStream = new FileStream(fullPath.ToString(), FileMode.Create))
+                {
+                    await serviceImage.CopyToAsync(fileStream);
+                }
+                var service = await _context.ServiceRequests.FindAsync(serviceId);
+                if (service != null)
+                {
+                    service.ImageUrl = imagePath;
+                    await _context.SaveChangesAsync();
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
 

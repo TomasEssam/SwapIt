@@ -52,7 +52,7 @@ namespace SwapIt.API.Controllers
 
         [HttpPost]
         [Route("Create")]
-        public async Task<IActionResult> CreateAsync(ServiceRequestDto dto)
+        public async Task<IActionResult> CreateAsync([FromForm]ServiceRequestDto dto)
         {
             return Ok(await _serviceRequestService.CreateAsync(dto));
         }

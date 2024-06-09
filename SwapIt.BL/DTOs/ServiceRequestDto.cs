@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace SwapIt.BL.DTOs
 {
@@ -25,5 +26,8 @@ namespace SwapIt.BL.DTOs
 
         [MaxLength(500)]
         public string? Notes { get; set; }
+
+        public IFormFile? RequestImage { get; set; }
+
     }
 }

@@ -40,8 +40,8 @@ namespace SwapIt.BL.DTOs.Identity
         public string? JobTitle { get; set; }
         public string? ProfileImagePath { get; set; }
         public string? RoleId { get; set; }
-        public IFormFile? profileImage { get; set; }
-        public IFormFile? idImage { get; set; }
+        public IFormFile? ProfileImage { get; set; }
+        public IFormFile? IdImage { get; set; }
 
     }
 }

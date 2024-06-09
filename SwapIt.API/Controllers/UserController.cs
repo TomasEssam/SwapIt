@@ -120,19 +120,19 @@ namespace SwapIt.API.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("UploadIdImage")]
-        public async Task<IActionResult> UploadIdImage([FromForm] IFormFile image, [FromForm] int userId)
-        {
-            try
-            {
-                return Ok(await _userService.UploadIdImage(image, userId, FolderName.IdImages));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //[HttpPost]
+        //[Route("UploadIdImage")]
+        //public async Task<IActionResult> UploadIdImage([FromForm] IFormFile image, [FromForm] int userId)
+        //{
+        //    try
+        //    {
+        //        return Ok(await _userService.UploadIdImage(image, userId, FolderName.IdImages));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
         [HttpGet]
         [Route("GetProfileImage")]

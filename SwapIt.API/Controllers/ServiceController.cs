@@ -4,6 +4,7 @@ using SwapIt.BL.DTOs;
 using SwapIt.BL.DTOs.Identity;
 using SwapIt.BL.IServices;
 using SwapIt.Data.Constants;
+using SwapIt.Data.Helpers;
 
 namespace SwapIt.API.Controllers
 {
@@ -12,12 +13,14 @@ namespace SwapIt.API.Controllers
     [AllowAnonymous]
     public class ServiceController : ControllerBase
     {
+        #region fileds & ctor
         private readonly IServiceService _serviceService;
 
         public ServiceController(IServiceService serviceService)
         {
             _serviceService = serviceService;
         }
+        #endregion
 
         [HttpPost]
         [Route("Create")]
@@ -38,14 +41,16 @@ namespace SwapIt.API.Controllers
         [Route("Delete")]
         public async Task<IActionResult> Delete([FromQuery] int serviceId)
         {
+            
             return Ok(await _serviceService.DeleteAsync(serviceId));
         }
 
-
+        
         [HttpGet]
         [Route("GetAll")]
         public async Task<IActionResult> GetAll()
         {
+            string s = AppSecurityContext.UserName;
             return Ok(await _serviceService.GetAllAsync());
         }
 
@@ -56,7 +61,7 @@ namespace SwapIt.API.Controllers
             //var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             return Ok(await _serviceService.SearchServiceAsync(serviceFilterDto));
         }
-
+        #region serviceProvider view endPoints
         [HttpGet]
         [Route("GetAllAcceptedServiceProvider")]
         public async Task<IActionResult> GetAllAcceptedServiceProvider([FromQuery] int serviceProviderId)
@@ -84,7 +89,9 @@ namespace SwapIt.API.Controllers
         {
             return Ok(await _serviceService.GetAllCanceledServiceProviderSideAsync(serviceProviderId));
         }
+        #endregion
 
+        #region Customers view endPoints
         [HttpGet]
         [Route("GetAllPendingCustomer")]
         public async Task<IActionResult> GetAllPendingCustomer([FromQuery] int customerId)
@@ -112,6 +119,7 @@ namespace SwapIt.API.Controllers
         {
             return Ok(await _serviceService.GetAllFinishiedCustomerSideAsync(customerId));
         }
+        #endregion
 
         [HttpPost]
         [Route("UploadServiceImage")]

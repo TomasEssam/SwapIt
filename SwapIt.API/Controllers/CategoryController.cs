@@ -20,30 +20,38 @@ namespace SwapIt.API.Controllers
         }
 
         [HttpPost]
-        [Route("Create")]
-        public async Task<IActionResult> Create([FromBody] CategoryDto dto)
+        public async Task<IActionResult> New([FromBody] CategoryDto dto)
         {
-            return Ok(await _categoryService.CreateAsync(dto));
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState.Values.SelectMany(m=>m.Errors).Select(e=>e.ErrorMessage));
+
+            bool success = await _categoryService.CreateAsync(dto);
+
+            if(!success)
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+
+            return new StatusCodeResult(StatusCodes.Status201Created);
         }
 
 
-        [HttpGet]
-        [Route("Delete")]
+        [HttpDelete]
         public async Task<IActionResult> Delete([FromQuery] int categoryId)
         {
-            return Ok(await _categoryService.DeleteAsync(categoryId));
+            bool success = await _categoryService.DeleteAsync(categoryId);
+            if (!success)
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+
+            return new StatusCodeResult(StatusCodes.Status204NoContent);
         }
 
         [HttpGet]
-        [Route("GetAll")]
         public async Task<IActionResult> GetAll()
         {
             return Ok(await _categoryService.GetAllAsync());
         }
 
-        [HttpGet]
-        [Route("CategoryDropDown")]
-        public async Task<IActionResult> GetCategoryDropDownAsync()
+        [HttpGet("/CategoryDropDown")]
+        public async Task<IActionResult> GetCategoryDropDown()
         {
             return Ok(await _categoryService.GetCategoryDDAsync());
         }

@@ -23,12 +23,18 @@ namespace SwapIt.API.Controllers
         #endregion
 
         [HttpPost]
-        [Route("Create")]
         public async Task<IActionResult> Create([FromForm] ServiceDto dto)
         {
             try
             {
-                return Ok(await _serviceService.CreateAsync(dto));
+                if(!ModelState.IsValid) 
+                    return BadRequest(ModelState.Values.SelectMany(v=>v.Errors).Select(e=>e.ErrorMessage));
+
+                bool success = await _serviceService.CreateAsync(dto);
+                if (!success)
+                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+
+                return NoContent();
 
             }
             catch (Exception ex)
@@ -37,26 +43,41 @@ namespace SwapIt.API.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("Delete")]
+        [HttpDelete]
         public async Task<IActionResult> Delete([FromQuery] int serviceId)
         {
-            
-            return Ok(await _serviceService.DeleteAsync(serviceId));
+            try
+            {
+                bool success = await _serviceService.DeleteAsync(serviceId);
+                if (!success)
+                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+
+                return NoContent();
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         
         [HttpGet]
-        [Route("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            string s = AppSecurityContext.UserName;
-            return Ok(await _serviceService.GetAllAsync());
+            //string s = AppSecurityContext.UserName;
+            try
+            {
+                return Ok(await _serviceService.GetAllAsync());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        [HttpPost]
-        [Route("Search")]
-        public async Task<IActionResult> Search([FromBody] ServiceFilterDto serviceFilterDto)
+        [HttpGet("Search")]
+        public async Task<IActionResult> Search([FromQuery] ServiceFilterDto serviceFilterDto)
         {
             //var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             try
@@ -69,65 +90,58 @@ namespace SwapIt.API.Controllers
             }
         }
         #region serviceProvider view endPoints
-        [HttpGet]
-        [Route("GetAllAcceptedServiceProvider")]
-        public async Task<IActionResult> GetAllAcceptedServiceProvider([FromQuery] int serviceProviderId)
+        [HttpGet("serviceProvider/Accepted/{serviceProviderId:int}")]
+        public async Task<IActionResult> GetAllAcceptedServiceProvider( int serviceProviderId)
         {
             return Ok(await _serviceService.GetAllAcceptedServiceProviderSideAsync(serviceProviderId));
         }
 
-        [HttpGet]
-        [Route("GetAllFinishedServiceProvider")]
-        public async Task<IActionResult> GetAllFinishedServiceProvider([FromQuery] int serviceProviderId)
-        {
+        [HttpGet("serviceProvider/finished/{serviceProviderId:int}")]
+        public async Task<IActionResult> GetAllFinishedServiceProvider(int serviceProviderId)
+        { 
             return Ok(await _serviceService.GetAllFinshiedServiceProviderSideAsync(serviceProviderId));
         }
 
-        [HttpGet]
-        [Route("GetAllPendingServiceProvider")]
-        public async Task<IActionResult> GetAllPendingServiceProvider([FromQuery] int serviceProviderId)
+        [HttpGet("serviceProvider/pending/{serviceProviderId:int}")]
+        public async Task<IActionResult> GetAllPendingServiceProvider(int serviceProviderId)
         {
             return Ok(await _serviceService.GetAllPendingServiceProviderSideAsync(serviceProviderId));
         }
 
-        [HttpGet]
-        [Route("GetAllCanceledServiceProvider")]
-        public async Task<IActionResult> GetAllCanceledServiceProvider([FromQuery] int serviceProviderId)
+        [HttpGet("serviceProvider/cancelled/{serviceProviderId:int}")]
+        public async Task<IActionResult> GetAllCanceledServiceProvider(int serviceProviderId)
         {
             return Ok(await _serviceService.GetAllCanceledServiceProviderSideAsync(serviceProviderId));
         }
         #endregion
 
         #region Customers view endPoints
-        [HttpGet]
-        [Route("GetAllPendingCustomer")]
-        public async Task<IActionResult> GetAllPendingCustomer([FromQuery] int customerId)
+        [HttpGet("customer/pending/{customerId:int}")]
+        public async Task<IActionResult> GetAllPendingCustomer(int customerId)
         {
             return Ok(await _serviceService.GetAllPendingCustomerSideAsync(customerId));
         }
 
-        [HttpGet]
-        [Route("GetAllAcceptedCustomer")]
-        public async Task<IActionResult> GetAllAcceptedCustomer([FromQuery] int customerId)
+        [HttpGet("customer/accepted/{customerId:int}")]
+        public async Task<IActionResult> GetAllAcceptedCustomer( int customerId)
         {
             return Ok(await _serviceService.GetAllAcceptedCustomerSideAsync(customerId));
         }
 
-        [HttpGet]
-        [Route("GetAllCanceledCustomer")]
-        public async Task<IActionResult> GetAllCanceledCustomer([FromQuery] int customerId)
+        [HttpGet("customer/cancelled/{customerId:int}")]
+        public async Task<IActionResult> GetAllCanceledCustomer(int customerId)
         {
             return Ok(await _serviceService.GetAllCanceledCustomerSideAsync(customerId));
         }
 
-        [HttpGet]
-        [Route("GetAllFinishedCustomer")]
-        public async Task<IActionResult> GetAllFinishedCustomer([FromQuery] int customerId)
+        [HttpGet("customer/finished/{customerId:int}")]
+        public async Task<IActionResult> GetAllFinishedCustomer(int customerId)
         {
             return Ok(await _serviceService.GetAllFinishiedCustomerSideAsync(customerId));
         }
         #endregion
 
+        /*
         //[HttpPost]
         //[Route("UploadServiceImage")]
         //public async Task<IActionResult> UploadServiceImage([FromForm] IFormFile image, [FromForm] int serviceId)
@@ -155,5 +169,6 @@ namespace SwapIt.API.Controllers
 
         //    return File(result.ImageStream, result.ContentType);
         //}
+        */
     }
 }

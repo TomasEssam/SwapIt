@@ -11,22 +11,27 @@ namespace SwapIt.API.Controllers
     [Route("api/notification")]
     public class NotificationController : Controller
     {
+        #region fileds & ctor
         private readonly INotificationService _notificationService;
 
         public NotificationController(INotificationService notificationService)
         {
             _notificationService = notificationService;
         }
-        [HttpGet]
-        [Route("read")]
+        #endregion
+
+
+        [HttpPut("read/{userNotificationId:int}")]
         public async Task<IActionResult> ReadNotification(int userNotificationId)
         {
-           
-            return Ok(await _notificationService.ReadNotification(userNotificationId));
-        }
-        [HttpGet]
-        [Route("getall")]
+            bool success = await _notificationService.ReadNotification(userNotificationId);
+            if (!success)
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
 
+            return NoContent();
+        }
+
+        [HttpGet("{userId:int}")]
         public async Task<IActionResult> GetAll(int userId)
         {
             return Ok(await _notificationService.GetAllAsync(userId));

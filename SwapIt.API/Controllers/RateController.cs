@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SwapIt.BL.DTOs;
 using SwapIt.BL.IServices;
+using SwapIt.BL.Services;
 
 namespace SwapIt.API.Controllers
 {
@@ -19,29 +20,44 @@ namespace SwapIt.API.Controllers
         }
 
         [HttpPost]
-        [Route("Create")]
         public async Task<IActionResult> Create([FromBody] RateDto dto)
         {
-            return Ok(await _rateService.CreateAsync(dto));
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState.Values.SelectMany(m => m.Errors).Select(e => e.ErrorMessage));
+
+            bool success = await _rateService.CreateAsync(dto);
+
+            if (!success)
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+
+            return NoContent();
         }
 
 
-        [HttpGet]
-        [Route("Delete")]
+        [HttpDelete]
         public async Task<IActionResult> Delete([FromQuery] int rateId)
         {
-            return Ok(await _rateService.DeleteAsync(rateId));
+
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState.Values.SelectMany(m => m.Errors).Select(e => e.ErrorMessage));
+
+            bool success = await _rateService.DeleteAsync(rateId);
+
+            if (!success)
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+
+            return NoContent();
         }
 
         [HttpGet]
-        [Route("GetAll")]
         public async Task<IActionResult> GetAll()
         {
             return Ok(await _rateService.GetAllAsync());
         }
 
         [HttpGet]
-        [Route("GetByService")]
+        [Route("GetByService/{serviceId:int}")]
         public async Task<IActionResult> GetByService(int serviceId)
         {
             return Ok(await _rateService.GetByServiceIdAsync(serviceId));

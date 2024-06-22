@@ -12,15 +12,18 @@ namespace SwapIt.API.Controllers
     [AllowAnonymous]
     public class CategoryController : ControllerBase
     {
+        #region fields & ctor
+
         private readonly ICategoryService _categoryService;
 
         public CategoryController(ICategoryService categoryService)
         {
             _categoryService = categoryService;
         }
+        #endregion
 
         [HttpPost]
-        public async Task<IActionResult> New([FromBody] CategoryDto dto)
+        public async Task<IActionResult> Create([FromBody] CategoryDto dto)
         {
             if(!ModelState.IsValid)
                 return BadRequest(ModelState.Values.SelectMany(m=>m.Errors).Select(e=>e.ErrorMessage));
@@ -50,7 +53,7 @@ namespace SwapIt.API.Controllers
             return Ok(await _categoryService.GetAllAsync());
         }
 
-        [HttpGet("/CategoryDropDown")]
+        [HttpGet("CategoryDropDown")]
         public async Task<IActionResult> GetCategoryDropDown()
         {
             return Ok(await _categoryService.GetCategoryDDAsync());

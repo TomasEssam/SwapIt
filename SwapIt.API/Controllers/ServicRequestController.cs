@@ -29,56 +29,87 @@ namespace SwapIt.API.Controllers
         #endregion
 
         #region Actions
-        [HttpGet]
-        [Route("AcceptServiceRequest")]
-        public async Task<IActionResult> AcceptServiceRequestAsync(int ServiceRequestId)
+        [HttpPut("Accept/{serviceRequestId:int}")]
+        public async Task<IActionResult> AcceptServiceRequestAsync(int serviceRequestId)
         {
-            return Ok(await _serviceRequestService.AcceptServiceRequestAsync(ServiceRequestId));
+            bool success = await _serviceRequestService.AcceptServiceRequestAsync(serviceRequestId);
+
+            if (!success)
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+
+            return new StatusCodeResult(StatusCodes.Status201Created);
         }
 
-        [HttpGet]
-        [Route("CancelServiceRequest")]
-        public async Task<IActionResult> CancelServiceRequestAsync(int userId, int ServiceRequestId)
+        [HttpPut("Cancel/{serviceRequestId:int}")]
+        public async Task<IActionResult> CancelServiceRequestAsync([FromQuery]int userId, int serviceRequestId)
         {
-            return Ok(await _serviceRequestService.CancelServiceRequestAsync(userId, ServiceRequestId));
+            bool success = await _serviceRequestService.CancelServiceRequestAsync(userId, serviceRequestId);
+
+            if (!success)
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+
+            return new StatusCodeResult(StatusCodes.Status201Created);
         }
 
-        [HttpGet]
-        [Route("FinishServiceRequest")]
-        public async Task<IActionResult> FinishServiceRequestAsync( int ServiceRequestId)
+        [HttpPut("Finish/{serviceRequestId:int}")]
+        public async Task<IActionResult> FinishServiceRequestAsync( int serviceRequestId)
         {
-            return Ok(await _serviceRequestService.FinishServiceRequestAsync(ServiceRequestId));
+            bool success = await _serviceRequestService.FinishServiceRequestAsync(serviceRequestId);
+
+            if (!success)
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+
+            return new StatusCodeResult(StatusCodes.Status201Created);
         }
 
         [HttpPost]
-        [Route("Create")]
         public async Task<IActionResult> CreateAsync([FromForm]ServiceRequestDto dto)
         {
-            return Ok(await _serviceRequestService.CreateAsync(dto));
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState.Values.SelectMany(m => m.Errors).Select(e => e.ErrorMessage));
+
+            bool success = await _serviceRequestService.CreateAsync(dto);
+
+            if (!success)
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+
+            return new StatusCodeResult(StatusCodes.Status201Created);
         }
 
-        [HttpGet]
-        [Route("Delete")]
+        [HttpDelete]
         public async Task<IActionResult> DeleteAsync(int serviceRequestId)
         {
-            return Ok(await _serviceRequestService.DeleteAsync(serviceRequestId));
+
+            bool success = await _serviceRequestService.DeleteAsync(serviceRequestId);
+
+            if (!success)
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+
+            return new StatusCodeResult(StatusCodes.Status201Created);
         }
 
-        [HttpGet]
-        [Route("GetById")]
-        public async Task<IActionResult> GetByIdAsync(int id)
+        [HttpGet("GetById/{requestId:int}")]
+        public async Task<IActionResult> GetByIdAsync(int requestId)
         {
-            return Ok(await _serviceRequestService.GetByIdAsync(id));
+            var request = await _serviceRequestService.GetByIdAsync(requestId);
+            if (request is null)
+                return BadRequest("no request with This Id");
+
+            return Ok(request);
         }
-        [HttpPost]
-        [Route("Update")]
+        [HttpPut]
         public async Task<IActionResult> UpdateAsync(ServiceRequestDto dto)
         {
-            return Ok(await _serviceRequestService.UpdateAsync(dto));
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState.Values.SelectMany(v=>v.Errors).Select(e => e.ErrorMessage));
+            bool success = await _serviceRequestService.UpdateAsync(dto);
+            if (!success)
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+
+            return NoContent();
         }
 
         [HttpGet]
-        [Route("GetAll")]
         public async Task<IActionResult> GetAll()
         {
             return Ok(await _serviceRequestService.GetAllAsync());

@@ -11,13 +11,16 @@ namespace SwapIt.API.Controllers
     [AllowAnonymous]
     public class AdminController : Controller
     {
+        #region fields & ctor
         private readonly UserManager<ApplicationUser> _userManager;
         public AdminController(UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
         }
-        [HttpGet]
-        [Route("ActivateAccount")]
+
+        #endregion
+
+        [HttpPut("ActivateAccount")]
         public async Task<IActionResult> ActivateAccount(int userId)
         { 
             var user = await _userManager.FindByIdAsync(userId.ToString());
@@ -27,10 +30,11 @@ namespace SwapIt.API.Controllers
 
             user.IsActive = true;
             var result = await _userManager.UpdateAsync(user);
-            if (!result.Succeeded)
-                return BadRequest("couldn't activate");
 
-            return Ok();
+            if (!result.Succeeded)
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+
+            return new StatusCodeResult(StatusCodes.Status204NoContent);
         }
     }
 }

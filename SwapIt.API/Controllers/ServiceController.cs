@@ -10,7 +10,7 @@ namespace SwapIt.API.Controllers
 {
     [Route("api/services")]
     [ApiController]
-    [AllowAnonymous]
+    [Authorize]
     public class ServiceController : ControllerBase
     {
         #region fileds & ctor
@@ -27,8 +27,8 @@ namespace SwapIt.API.Controllers
         {
             try
             {
-                if(!ModelState.IsValid) 
-                    return BadRequest(ModelState.Values.SelectMany(v=>v.Errors).Select(e=>e.ErrorMessage));
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
 
                 bool success = await _serviceService.CreateAsync(dto);
                 if (!success)
@@ -61,7 +61,7 @@ namespace SwapIt.API.Controllers
             }
         }
 
-        
+        [Authorize(Roles = RolesNames.SuperAdmin + "," + RolesNames.Admin)]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -84,34 +84,62 @@ namespace SwapIt.API.Controllers
             {
                 return Ok(await _serviceService.SearchServiceAsync(serviceFilterDto));
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
         }
         #region serviceProvider view endPoints
         [HttpGet("serviceProvider/Accepted/{serviceProviderId:int}")]
-        public async Task<IActionResult> GetAllAcceptedServiceProvider( int serviceProviderId)
+        public async Task<IActionResult> GetAllAcceptedServiceProvider(int serviceProviderId)
         {
-            return Ok(await _serviceService.GetAllAcceptedServiceProviderSideAsync(serviceProviderId));
+            try
+            {
+                return Ok(await _serviceService.GetAllAcceptedServiceProviderSideAsync(serviceProviderId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("serviceProvider/finished/{serviceProviderId:int}")]
         public async Task<IActionResult> GetAllFinishedServiceProvider(int serviceProviderId)
-        { 
-            return Ok(await _serviceService.GetAllFinshiedServiceProviderSideAsync(serviceProviderId));
+        {
+            try
+            {
+                return Ok(await _serviceService.GetAllFinshiedServiceProviderSideAsync(serviceProviderId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("serviceProvider/pending/{serviceProviderId:int}")]
         public async Task<IActionResult> GetAllPendingServiceProvider(int serviceProviderId)
         {
-            return Ok(await _serviceService.GetAllPendingServiceProviderSideAsync(serviceProviderId));
+            try
+            {
+                return Ok(await _serviceService.GetAllPendingServiceProviderSideAsync(serviceProviderId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("serviceProvider/cancelled/{serviceProviderId:int}")]
         public async Task<IActionResult> GetAllCanceledServiceProvider(int serviceProviderId)
         {
-            return Ok(await _serviceService.GetAllCanceledServiceProviderSideAsync(serviceProviderId));
+            try
+            {
+                return Ok(await _serviceService.GetAllCanceledServiceProviderSideAsync(serviceProviderId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         #endregion
 
@@ -119,56 +147,56 @@ namespace SwapIt.API.Controllers
         [HttpGet("customer/pending/{customerId:int}")]
         public async Task<IActionResult> GetAllPendingCustomer(int customerId)
         {
-            return Ok(await _serviceService.GetAllPendingCustomerSideAsync(customerId));
+            try
+            {
+                return Ok(await _serviceService.GetAllPendingCustomerSideAsync(customerId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("customer/accepted/{customerId:int}")]
-        public async Task<IActionResult> GetAllAcceptedCustomer( int customerId)
+        public async Task<IActionResult> GetAllAcceptedCustomer(int customerId)
         {
-            return Ok(await _serviceService.GetAllAcceptedCustomerSideAsync(customerId));
+            try
+            {
+
+
+                return Ok(await _serviceService.GetAllAcceptedCustomerSideAsync(customerId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("customer/cancelled/{customerId:int}")]
         public async Task<IActionResult> GetAllCanceledCustomer(int customerId)
         {
-            return Ok(await _serviceService.GetAllCanceledCustomerSideAsync(customerId));
+            try
+            {
+                return Ok(await _serviceService.GetAllCanceledCustomerSideAsync(customerId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("customer/finished/{customerId:int}")]
         public async Task<IActionResult> GetAllFinishedCustomer(int customerId)
         {
-            return Ok(await _serviceService.GetAllFinishiedCustomerSideAsync(customerId));
+            try
+            {
+                return Ok(await _serviceService.GetAllFinishiedCustomerSideAsync(customerId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         #endregion
-
-        /*
-        //[HttpPost]
-        //[Route("UploadServiceImage")]
-        //public async Task<IActionResult> UploadServiceImage([FromForm] IFormFile image, [FromForm] int serviceId)
-        //{
-        //    try
-        //    {
-        //        return Ok(await _serviceService.UploadServiceImage(image, serviceId, FolderName.servicesImages));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
-
-        //[HttpGet]
-        //[Route("GetServiceImage")]
-        //public async Task<IActionResult> GetServiceImage(int serviceId)
-        //{
-        //    var result = await _serviceService.GetServiceImage(serviceId);
-
-        //    if (!result.Success)
-        //    {
-        //        return NotFound(result.ErrorMessage);
-        //    }
-
-        //    return File(result.ImageStream, result.ContentType);
-        //}
-        */
     }
 }

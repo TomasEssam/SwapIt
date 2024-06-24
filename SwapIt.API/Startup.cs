@@ -24,7 +24,7 @@ namespace SwapIt.API
             //services.AddCors(Configuration);
             services.AddDbContext(Configuration);
             services.AddIdentity();
-            //services.AddAuthenticationConfiguration(Configuration);
+            services.AddAuthenticationConfiguration(Configuration);
             services.AddMapper();
             services.AddApplicationServices();
             services.AddSwaggerGen();
@@ -74,6 +74,7 @@ namespace SwapIt.API
             }
             app.UseRouting();
             app.UseAuthentication();
+            app.UseAuthorization();
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {

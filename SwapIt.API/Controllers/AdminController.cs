@@ -2,13 +2,14 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SwapIt.BL.IServices.Identity;
+using SwapIt.Data.Constants;
 using SwapIt.Data.Entities.Identity;
 
 namespace SwapIt.API.Controllers
 {
     [ApiController]
     [Route("api/admin")]
-    [AllowAnonymous]
+    [Authorize(Roles = RolesNames.SuperAdmin + "," + RolesNames.Admin)]
     public class AdminController : Controller
     {
         #region fields & ctor
@@ -22,19 +23,26 @@ namespace SwapIt.API.Controllers
 
         [HttpPut("ActivateAccount")]
         public async Task<IActionResult> ActivateAccount(int userId)
-        { 
-            var user = await _userManager.FindByIdAsync(userId.ToString());
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(userId.ToString());
 
-            if (user is null)
-                return NotFound("user can't be found");
+                if (user is null)
+                    return NotFound("user can't be found");
 
-            user.IsActive = true;
-            var result = await _userManager.UpdateAsync(user);
+                user.IsActive = true;
+                var result = await _userManager.UpdateAsync(user);
 
-            if (!result.Succeeded)
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                if (!result.Succeeded)
+                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
 
-            return new StatusCodeResult(StatusCodes.Status204NoContent);
+                return new StatusCodeResult(StatusCodes.Status204NoContent);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

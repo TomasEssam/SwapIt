@@ -4,12 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using SwapIt.BL.DTOs;
 using SwapIt.BL.IServices;
 using SwapIt.BL.Services;
+using SwapIt.Data.Constants;
 
 namespace SwapIt.API.Controllers
 {
     [Route("api/rates")]
     [ApiController]
-    [AllowAnonymous]
+    [Authorize]
     public class RateController : ControllerBase
     {
         private readonly IRateService _rateService;
@@ -22,34 +23,43 @@ namespace SwapIt.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] RateDto dto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState.Values.SelectMany(m => m.Errors).Select(e => e.ErrorMessage));
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState.Values.SelectMany(m => m.Errors).Select(e => e.ErrorMessage));
 
-            bool success = await _rateService.CreateAsync(dto);
+                bool success = await _rateService.CreateAsync(dto);
 
-            if (!success)
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                if (!success)
+                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
 
-            return NoContent();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
 
         [HttpDelete]
         public async Task<IActionResult> Delete([FromQuery] int rateId)
         {
+            try
+            {
+                bool success = await _rateService.DeleteAsync(rateId);
 
+                if (!success)
+                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState.Values.SelectMany(m => m.Errors).Select(e => e.ErrorMessage));
-
-            bool success = await _rateService.DeleteAsync(rateId);
-
-            if (!success)
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-
-            return NoContent();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
-
+        [Authorize(Roles = RolesNames.SuperAdmin + "," + RolesNames.Admin)]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -60,7 +70,15 @@ namespace SwapIt.API.Controllers
         [Route("GetByService/{serviceId:int}")]
         public async Task<IActionResult> GetByService(int serviceId)
         {
-            return Ok(await _rateService.GetByServiceIdAsync(serviceId));
+            try
+            {
+                return Ok(await _rateService.GetByServiceIdAsync(serviceId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
     }
 }

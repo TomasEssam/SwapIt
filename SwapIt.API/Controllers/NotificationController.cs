@@ -7,7 +7,7 @@ using SwapIt.Data.Entities;
 namespace SwapIt.API.Controllers
 {
     [ApiController]
-    [AllowAnonymous]
+    [Authorize]
     [Route("api/notification")]
     public class NotificationController : Controller
     {
@@ -24,17 +24,31 @@ namespace SwapIt.API.Controllers
         [HttpPut("read/{userNotificationId:int}")]
         public async Task<IActionResult> ReadNotification(int userNotificationId)
         {
-            bool success = await _notificationService.ReadNotification(userNotificationId);
-            if (!success)
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            try
+            {
+                bool success = await _notificationService.ReadNotification(userNotificationId);
+                if (!success)
+                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
 
-            return NoContent();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{userId:int}")]
         public async Task<IActionResult> GetAll(int userId)
         {
-            return Ok(await _notificationService.GetAllAsync(userId));
+            try
+            {
+                return Ok(await _notificationService.GetAllAsync(userId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

@@ -4,12 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using SwapIt.BL.DTOs;
 using SwapIt.BL.IServices;
 using SwapIt.BL.Services;
+using SwapIt.Data.Constants;
 
 namespace SwapIt.API.Controllers
 {
     [Route("api/categories")]
     [ApiController]
-    [AllowAnonymous]
+    [Authorize]
     public class CategoryController : ControllerBase
     {
         #region fields & ctor
@@ -21,30 +22,45 @@ namespace SwapIt.API.Controllers
             _categoryService = categoryService;
         }
         #endregion
-
+        
+        [Authorize(Roles = RolesNames.SuperAdmin + "," + RolesNames.Admin)]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CategoryDto dto)
         {
-            if(!ModelState.IsValid)
-                return BadRequest(ModelState.Values.SelectMany(m=>m.Errors).Select(e=>e.ErrorMessage));
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState.Values.SelectMany(m => m.Errors).Select(e => e.ErrorMessage));
 
-            bool success = await _categoryService.CreateAsync(dto);
+                bool success = await _categoryService.CreateAsync(dto);
 
-            if(!success)
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                if (!success)
+                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
 
-            return new StatusCodeResult(StatusCodes.Status201Created);
+                return new StatusCodeResult(StatusCodes.Status201Created);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-
+        [Authorize(Roles = RolesNames.SuperAdmin + "," + RolesNames.Admin)]
         [HttpDelete]
         public async Task<IActionResult> Delete([FromQuery] int categoryId)
         {
-            bool success = await _categoryService.DeleteAsync(categoryId);
-            if (!success)
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            try
+            {
+                bool success = await _categoryService.DeleteAsync(categoryId);
+                if (!success)
+                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
 
-            return new StatusCodeResult(StatusCodes.Status204NoContent);
+                return new StatusCodeResult(StatusCodes.Status204NoContent);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet]

@@ -21,6 +21,8 @@ namespace SwapIt.API.Controllers
 
         #endregion
 
+
+        #region Admin View
         [HttpPut("ActivateAccount")]
         public async Task<IActionResult> ActivateAccount(int userId)
         {
@@ -44,5 +46,10 @@ namespace SwapIt.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        #endregion
+
+        #region Super Admin View
+        #endregion
+
     }
 }

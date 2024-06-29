@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SwapIt.BL.DTOs;
 using SwapIt.BL.IServices;
+using SwapIt.BL.IServices.Identity;
 using SwapIt.BL.Services;
 using SwapIt.Data.Constants;
+using SwapIt.Data.Helpers;
 
 namespace SwapIt.API.Controllers
 {
@@ -13,13 +15,19 @@ namespace SwapIt.API.Controllers
     [Authorize]
     public class RateController : ControllerBase
     {
+        #region fields and ctor
         private readonly IRateService _rateService;
+        private readonly IUserService _userService;
 
-        public RateController(IRateService rateService)
+        public RateController(IRateService rateService, IUserService userService)
         {
             _rateService = rateService;
+            _userService = userService;
         }
 
+        #endregion
+
+        #region User View
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] RateDto dto)
         {
@@ -27,6 +35,8 @@ namespace SwapIt.API.Controllers
             {
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState.Values.SelectMany(m => m.Errors).Select(e => e.ErrorMessage));
+
+                dto.CustomerId = AppSecurityContext.UserId;
 
                 bool success = await _rateService.CreateAsync(dto);
 
@@ -40,13 +50,18 @@ namespace SwapIt.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-
         [HttpDelete]
         public async Task<IActionResult> Delete([FromQuery] int rateId)
         {
             try
             {
+                var roles = await _userService.GetUserRole(AppSecurityContext.UserId);
+                var rate = await _rateService.GetByIdAsync(rateId);
+
+                if (!roles.Contains(RolesNames.SuperAdmin) && !roles.Contains(RolesNames.Admin))
+                    if (AppSecurityContext.UserId != rate?.CustomerId)
+                        return Unauthorized();
+
                 bool success = await _rateService.DeleteAsync(rateId);
 
                 if (!success)
@@ -58,12 +73,6 @@ namespace SwapIt.API.Controllers
             {
                 return BadRequest(ex.Message);
             }
-        }
-        [Authorize(Roles = RolesNames.SuperAdmin + "," + RolesNames.Admin)]
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            return Ok(await _rateService.GetAllAsync());
         }
 
         [HttpGet]
@@ -80,5 +89,22 @@ namespace SwapIt.API.Controllers
             }
 
         }
+
+        #endregion
+
+        #region Admin View
+
+        #endregion
+
+        #region Super Admin View
+
+        [Authorize(Roles = RolesNames.SuperAdmin)]
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            return Ok(await _rateService.GetAllAsync());
+        }
+
+        #endregion
     }
 }

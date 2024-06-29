@@ -14,13 +14,10 @@ namespace SwapIt.API.Controllers
     [Authorize]
     public class ServicRequestController : ControllerBase
     {
-        #region Fields
+        #region Fields & CTOR
 
         private readonly IServiceRequestService _serviceRequestService;
 
-        #endregion
-
-        #region Ctor
 
         public ServicRequestController(IServiceRequestService serviceRequestService)
         {
@@ -28,7 +25,9 @@ namespace SwapIt.API.Controllers
         }
         #endregion
 
-        #region Actions
+
+        #region User View
+        #region Service Provider View
         [HttpPut("Accept/{serviceRequestId:int}")]
         public async Task<IActionResult> AcceptServiceRequestAsync(int serviceRequestId)
         {
@@ -46,26 +45,10 @@ namespace SwapIt.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-        [HttpPut("Cancel/{serviceRequestId:int}")]
-        public async Task<IActionResult> CancelServiceRequestAsync([FromQuery]int userId, int serviceRequestId)
-        {
-            try { 
-            bool success = await _serviceRequestService.CancelServiceRequestAsync(userId, serviceRequestId);
-
-            if (!success)
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-
-            return new StatusCodeResult(StatusCodes.Status201Created);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
+        #endregion
+        #region Customer View
         [HttpPut("Finish/{serviceRequestId:int}")]
-        public async Task<IActionResult> FinishServiceRequestAsync( int serviceRequestId)
+        public async Task<IActionResult> FinishServiceRequestAsync(int serviceRequestId)
         {
             try
             {
@@ -74,7 +57,7 @@ namespace SwapIt.API.Controllers
                 if (!success)
                     return new StatusCodeResult(StatusCodes.Status500InternalServerError);
 
-                return new StatusCodeResult(StatusCodes.Status201Created);
+                return new StatusCodeResult(StatusCodes.Status204NoContent);
             }
             catch (Exception ex)
             {
@@ -82,9 +65,26 @@ namespace SwapIt.API.Controllers
             }
 
         }
+        #endregion
+        [HttpPut("Cancel/{serviceRequestId:int}")]
+        public async Task<IActionResult> CancelServiceRequestAsync([FromQuery] int userId, int serviceRequestId)
+        {
+            try
+            {
+                bool success = await _serviceRequestService.CancelServiceRequestAsync(userId, serviceRequestId);
 
+                if (!success)
+                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+
+                return new StatusCodeResult(StatusCodes.Status204NoContent);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromForm]ServiceRequestDto dto)
+        public async Task<IActionResult> CreateAsync([FromForm] ServiceRequestDto dto)
         {
             try
             {
@@ -92,25 +92,6 @@ namespace SwapIt.API.Controllers
                     return BadRequest(ModelState.Values.SelectMany(m => m.Errors).Select(e => e.ErrorMessage));
 
                 bool success = await _serviceRequestService.CreateAsync(dto);
-
-                if (!success)
-                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-
-                return new StatusCodeResult(StatusCodes.Status201Created);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-
-        }
-
-        [HttpDelete]
-        public async Task<IActionResult> DeleteAsync(int serviceRequestId)
-        {
-            try
-            {
-                bool success = await _serviceRequestService.DeleteAsync(serviceRequestId);
 
                 if (!success)
                     return new StatusCodeResult(StatusCodes.Status500InternalServerError);
@@ -140,6 +121,7 @@ namespace SwapIt.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpPut]
         public async Task<IActionResult> UpdateAsync(ServiceRequestDto dto)
         {
@@ -159,14 +141,37 @@ namespace SwapIt.API.Controllers
             }
 
         }
+        #endregion
 
+        #region Admin View
+        [HttpDelete]
+        public async Task<IActionResult> DeleteAsync(int serviceRequestId)
+        {
+            try
+            {
+                bool success = await _serviceRequestService.DeleteAsync(serviceRequestId);
+
+                if (!success)
+                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+
+                return new StatusCodeResult(StatusCodes.Status201Created);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+        #endregion
+
+        #region Super Admin View
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             return Ok(await _serviceRequestService.GetAllAsync());
         }
-
         #endregion
+
     }
 }

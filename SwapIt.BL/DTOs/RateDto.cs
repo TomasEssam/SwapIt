@@ -9,11 +9,11 @@ namespace SwapIt.BL.DTOs
 {
     public class RateDto
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         [Required]
         public int RateValue { get; set; }
         [Required]
-        public DateTime RateDate { get; set; }
+        public DateTime RateDate { get; set; } = DateTime.Now;
         [MaxLength(1000)]
         public string? Feedback { get; set; }
         public int ServiceId { get; set; }

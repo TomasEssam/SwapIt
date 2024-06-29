@@ -22,7 +22,19 @@ namespace SwapIt.API.Controllers
             _categoryService = categoryService;
         }
         #endregion
-        
+
+        #region User View
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            return Ok(await _categoryService.GetAllAsync());
+        }
+
+        #endregion
+
+        #region Admin View
+
         [Authorize(Roles = RolesNames.SuperAdmin + "," + RolesNames.Admin)]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CategoryDto dto)
@@ -62,18 +74,10 @@ namespace SwapIt.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        #endregion
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            return Ok(await _categoryService.GetAllAsync());
-        }
-
-        [HttpGet("CategoryDropDown")]
-        public async Task<IActionResult> GetCategoryDropDown()
-        {
-            return Ok(await _categoryService.GetCategoryDDAsync());
-        }
+        #region Super Admin View
+        #endregion
 
     }
 }

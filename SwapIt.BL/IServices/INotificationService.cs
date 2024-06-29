@@ -13,7 +13,9 @@ namespace SwapIt.BL.IServices
         Task<bool> CreateAsync(NotificationDto dto , int userId);
         Task<bool> DeleteAsync(int notificationId);
         Task<bool> UpdateAsync(NotificationDto dto);
-        Task<List<UserNotificationDto>> GetAllAsync(int userId);
+        Task<List<UserNotificationDto>> GetByUserId(int userId);
         Task<bool> ReadNotification(int userNotificationId);
+        Task<UserNotification> getById(int userNotificationId);
+        Task<List<UserNotificationDto>> GetAllAsync();
     }
 }

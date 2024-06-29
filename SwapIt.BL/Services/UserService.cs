@@ -231,33 +231,33 @@ namespace SwapIt.BL.Services
         {
             var user = await _userManager.FindByNameAsync(dto.Username);
 
-            if (user != null && user.IsActive)
-            {
-                var result = await _signinManager.CheckPasswordSignInAsync(user, dto.Password, false);
+            if (!user.IsActive)
+                throw new Exception("account is not been activated");
 
-                if (result.Succeeded)
-                {
-                    var claims = await GetUserClaims(user);
-                    var token = GenerateAccessToken(claims);
-                    var refreshToken = GenerateRefreshToken();
-                    user.RefreshToken = refreshToken;
-                    SetClaimsInHttpContextManualy(claims);
-                    await _userManager.UpdateAsync(user);
-                    var userRoles = await _userManager.GetRolesAsync(user);
-                    return new LoginResultDto()
-                    {
-                        Token = token,
-                        RefreshToken = refreshToken,
-                        UserName = user.UserName,
-                        UserId = user.Id,
-                        Roles = userRoles,
-
-
-                    };
-                }
+            if (user is null)
                 throw new Exception("Invalid User name or password");
-            }
-            throw new Exception("Invalid User name or password");
+
+            var result = await _signinManager.CheckPasswordSignInAsync(user, dto.Password, false);
+
+
+            if (!result.Succeeded)
+                throw new Exception("Invalid User name or password");
+
+            var claims = await GetUserClaims(user);
+            var token = GenerateAccessToken(claims);
+            var refreshToken = GenerateRefreshToken();
+            user.RefreshToken = refreshToken;
+            SetClaimsInHttpContextManualy(claims);
+            await _userManager.UpdateAsync(user);
+            var userRoles = await _userManager.GetRolesAsync(user);
+            return new LoginResultDto()
+            {
+                Token = token,
+                RefreshToken = refreshToken,
+                UserName = user.UserName,
+                UserId = user.Id,
+                Roles = userRoles,
+            };
         }
 
         public async Task<List<DropDownDto>> DropDownAsync()
@@ -390,11 +390,11 @@ namespace SwapIt.BL.Services
 
             return (user != null || (userId.HasValue && userId.Value == user.Id));
         }
-        public async Task<string> GetUserRole(int userId)
+        public async Task<IList<string>> GetUserRole(int userId)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
             var userRoles = await _userManager.GetRolesAsync(user);
-            return userRoles.FirstOrDefault();
+            return userRoles;
         }
         public async Task ResetPasswordAsync(ResetPasswordDto dto)
         {

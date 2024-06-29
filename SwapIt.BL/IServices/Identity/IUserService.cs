@@ -16,7 +16,7 @@ namespace SwapIt.BL.IServices.Identity
         Task DeleteUserAsync(int userId);
         Task UpdateUserAsync(UserDto dto);
         Task<bool> IsUserNameExists(string userName, int? userId = null);
-        Task<string> GetUserRole(int userId);
+        Task<IList<string>> GetUserRole(int userId);
         Task ResetPasswordAsync(ResetPasswordDto dto);
         Task<LoginResultDto> RefreshToken(string authenticationToken, string refreshToken);
         Task<ProfileDto> GetUserAsync(int userId);

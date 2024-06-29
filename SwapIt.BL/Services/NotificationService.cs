@@ -23,7 +23,7 @@ namespace SwapIt.BL.Services
             _mapper = mapper;
         }
 
-        public async Task<bool> CreateAsync(NotificationDto dto , int userId)
+        public async Task<bool> CreateAsync(NotificationDto dto, int userId)
         {
             //Create general notification using Notification obj
             var notification = _mapper.Map<Notification>(dto);
@@ -64,7 +64,7 @@ namespace SwapIt.BL.Services
             return await _notificationRepository.DeleteByIdAsync(notificationId);
         }
 
-        public async Task<List<UserNotificationDto>> GetAllAsync(int userId)
+        public async Task<List<UserNotificationDto>> GetByUserId(int userId)
         {
             var result = new List<UserNotificationDto>();
 
@@ -77,7 +77,7 @@ namespace SwapIt.BL.Services
             var relatedNotification = new Notification();
             foreach (UserNotification n in notificationsForUser)
             {
-                relatedNotification =await _notificationRepository.GetByIdAsync(n.NotificationId);
+                relatedNotification = await _notificationRepository.GetByIdAsync(n.NotificationId);
 
                 result.Add(new UserNotificationDto()
                 {
@@ -90,6 +90,12 @@ namespace SwapIt.BL.Services
             }
             return result;
         }
+        public async Task<List<UserNotificationDto>> GetAllAsync()
+        {
+            var notifications = await _userNotificationRepository.GetAllAsync();
+            return _mapper.Map<List<UserNotificationDto>>(notifications);
+        }
+
         public async Task<bool> ReadNotification(int userNotificationId)
         {
             var userNotification = await _userNotificationRepository.GetByIdAsync(userNotificationId);
@@ -100,6 +106,11 @@ namespace SwapIt.BL.Services
         public async Task<bool> UpdateAsync(NotificationDto dto)
         {
             return await _notificationRepository.UpdateAsync(_mapper.Map<Notification>(dto));
+        }
+
+        public async Task<UserNotification> getById(int userNotificationId)
+        {
+            return await _userNotificationRepository.GetByIdAsync(userNotificationId);
         }
     }
 }

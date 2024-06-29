@@ -22,7 +22,7 @@ namespace SwapIt.API.Controllers
         #endregion
 
 
-        [HttpPost("Deposite")]
+        [HttpPut("Deposite")]
         public async Task<IActionResult> Deposite(int userId, int points)
         {
             try
@@ -40,7 +40,7 @@ namespace SwapIt.API.Controllers
             }
         }
 
-        [HttpPost("Withdraw")]
+        [HttpPut("Withdraw")]
         public async Task<IActionResult> Withdraw(int userId, int points)
         {
             try

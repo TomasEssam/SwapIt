@@ -57,7 +57,7 @@ namespace SwapIt.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("SwapIt.Data.Entities.Identity.ApplicationRole", b =>
@@ -387,7 +387,7 @@ namespace SwapIt.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("SwapIt.Data.Entities.PointsLogger", b =>
@@ -438,7 +438,7 @@ namespace SwapIt.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("PointsLoggers");
+                    b.ToTable("PointsLoggers", (string)null);
                 });
 
             modelBuilder.Entity("SwapIt.Data.Entities.Rate", b =>
@@ -491,7 +491,7 @@ namespace SwapIt.Data.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("Rates");
+                    b.ToTable("Rates", (string)null);
                 });
 
             modelBuilder.Entity("SwapIt.Data.Entities.Service", b =>
@@ -553,7 +553,7 @@ namespace SwapIt.Data.Migrations
 
                     b.HasIndex("ServiceProviderId");
 
-                    b.ToTable("Services");
+                    b.ToTable("Services", (string)null);
                 });
 
             modelBuilder.Entity("SwapIt.Data.Entities.ServiceRequest", b =>
@@ -613,7 +613,7 @@ namespace SwapIt.Data.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("ServiceRequests");
+                    b.ToTable("ServiceRequests", (string)null);
                 });
 
             modelBuilder.Entity("SwapIt.Data.Entities.UserBalance", b =>
@@ -658,7 +658,7 @@ namespace SwapIt.Data.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("UserBalances");
+                    b.ToTable("UserBalances", (string)null);
                 });
 
             modelBuilder.Entity("SwapIt.Data.Entities.UserNotification", b =>
@@ -704,7 +704,7 @@ namespace SwapIt.Data.Migrations
 
                     b.HasIndex("NotificationId");
 
-                    b.ToTable("UserNotifications");
+                    b.ToTable("UserNotifications", (string)null);
                 });
 
             modelBuilder.Entity("SwapIt.Data.Entities.Identity.ApplicationRoleClaim", b =>

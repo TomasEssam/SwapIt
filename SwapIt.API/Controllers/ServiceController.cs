@@ -22,6 +22,10 @@ namespace SwapIt.API.Controllers
         }
         #endregion
 
+        #region User View
+
+        #region Service Provider
+        [Authorize(Roles = RolesNames.ServiceProvider + "," + RolesNames.Admin + "," + RolesNames.SuperAdmin)]
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] ServiceDto dto)
         {
@@ -43,6 +47,8 @@ namespace SwapIt.API.Controllers
             }
         }
 
+
+        [Authorize(Roles = RolesNames.ServiceProvider + "," + RolesNames.Admin + "," + RolesNames.SuperAdmin)]
         [HttpDelete]
         public async Task<IActionResult> Delete([FromQuery] int serviceId)
         {
@@ -61,35 +67,6 @@ namespace SwapIt.API.Controllers
             }
         }
 
-        [Authorize(Roles = RolesNames.SuperAdmin + "," + RolesNames.Admin)]
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            //string s = AppSecurityContext.UserName;
-            try
-            {
-                return Ok(await _serviceService.GetAllAsync());
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpGet("Search")]
-        public async Task<IActionResult> Search([FromQuery] ServiceFilterDto serviceFilterDto)
-        {
-            //var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            try
-            {
-                return Ok(await _serviceService.SearchServiceAsync(serviceFilterDto));
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-        #region serviceProvider view endPoints
         [HttpGet("serviceProvider/Accepted/{serviceProviderId:int}")]
         public async Task<IActionResult> GetAllAcceptedServiceProvider(int serviceProviderId)
         {
@@ -143,7 +120,7 @@ namespace SwapIt.API.Controllers
         }
         #endregion
 
-        #region Customers view endPoints
+        #region Customer
         [HttpGet("customer/pending/{customerId:int}")]
         public async Task<IActionResult> GetAllPendingCustomer(int customerId)
         {
@@ -191,6 +168,42 @@ namespace SwapIt.API.Controllers
             try
             {
                 return Ok(await _serviceService.GetAllFinishiedCustomerSideAsync(customerId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        #endregion
+
+
+        [HttpGet("Search")]
+        public async Task<IActionResult> Search([FromQuery] ServiceFilterDto serviceFilterDto)
+        {
+            //var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            try
+            {
+                return Ok(await _serviceService.SearchServiceAsync(serviceFilterDto));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        #endregion
+
+        #region Admin View
+        #endregion
+
+        #region Super Admin View
+        [Authorize(Roles = RolesNames.SuperAdmin)]
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            try
+            {
+                return Ok(await _serviceService.GetAllAsync());
             }
             catch (Exception ex)
             {

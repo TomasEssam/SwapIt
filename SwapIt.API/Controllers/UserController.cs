@@ -36,7 +36,14 @@ namespace SwapIt.API.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Authenticate([FromBody] LoginDto dto)
         {
-            return Ok(await _userService.Authenticate(dto));
+            try
+            {
+                return Ok(await _userService.Authenticate(dto));
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet]

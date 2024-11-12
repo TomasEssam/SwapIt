@@ -96,7 +96,7 @@ namespace SwapIt.API.Controllers
         #region Super Admin View
 
         [Authorize(Roles = RolesNames.SuperAdmin)]
-        [HttpGet("{userId:int}")]
+        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             try

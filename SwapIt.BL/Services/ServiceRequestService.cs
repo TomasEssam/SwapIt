@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using SwapIt.BL.DTOs;
 using SwapIt.BL.DTOs.Identity;
 using SwapIt.BL.IServices;
+using SwapIt.BL.IServices.Identity;
 using SwapIt.Data.Constants;
 using SwapIt.Data.Entities;
 using SwapIt.Data.Entities.Context;
@@ -28,9 +29,10 @@ namespace SwapIt.BL.Services
         private readonly IUserBalanceRepository _UserBalanceRepository;
         private readonly SwapItDbContext _context;
         private readonly INotificationService _notificationService;
+        private readonly IUserService _userService;
 
 
-        public ServiceRequestService(IMapper mapper, IServiceRequestRepository serviceRequestRepository, IPointsLoggerRepository pointsLoggerRepository, IServiceRepository serviceRepository, UserManager<ApplicationUser> userManager, IUserBalanceRepository userBalanceRepository, SwapItDbContext swapItDbContext, INotificationService notificationService)
+        public ServiceRequestService(IMapper mapper, IServiceRequestRepository serviceRequestRepository, IPointsLoggerRepository pointsLoggerRepository, IServiceRepository serviceRepository, UserManager<ApplicationUser> userManager, IUserBalanceRepository userBalanceRepository, SwapItDbContext swapItDbContext, INotificationService notificationService, IUserService userService)
         {
             _mapper = mapper;
             _serviceRequestRepository = serviceRequestRepository;
@@ -40,11 +42,13 @@ namespace SwapIt.BL.Services
             _UserBalanceRepository = userBalanceRepository;
             _context = swapItDbContext;
             _notificationService = notificationService;
+            _userService = userService;
         }
         [Authorize(Roles = RolesNames.Admin + "," + RolesNames.ServiceProvider)]
-        public async Task<bool> AcceptServiceRequestAsync(int ServiceRequestId)
+        public async Task<bool> AcceptServiceRequestAsync(int ServiceRequestId, int userId)
         {
             var serviceRequest = await _serviceRequestRepository.GetByIdAsync(ServiceRequestId);
+            
 
             if (serviceRequest is null)
                 return false;
@@ -52,11 +56,16 @@ namespace SwapIt.BL.Services
             if (serviceRequest.RequestState != RequestStateNames.Pending)
                 return false;
 
-            serviceRequest.RequestState = RequestStateNames.Accepted;
+
+            var service = await _serviceRepository.GetByIdAsync(serviceRequest.ServiceId);
+            if (service.ServiceProviderId != userId)
+                return false;
+
+                serviceRequest.RequestState = RequestStateNames.Accepted;
             await _serviceRequestRepository.UpdateAsync(serviceRequest);
 
             var customer = await _userManager.FindByIdAsync(serviceRequest.CustomerId.ToString());
-            var service = await _serviceRepository.GetByIdAsync(serviceRequest.ServiceId);
+
             //for Notification
             await _notificationService.CreateAsync(new NotificationDto
             {

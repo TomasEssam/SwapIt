@@ -4,7 +4,9 @@ using SwapIt.BL.IServices;
 using SwapIt.BL.Services;
 using SwapIt.Data.Entities.Context;
 using SwapIt.Data.Helpers;
+using SwapIt.Data.IPersistance;
 using SwapIt.Data.IRepository;
+using SwapIt.Data.Persistance;
 using SwapIt.Data.Repository;
 
 namespace SwapIt.API
@@ -50,6 +52,8 @@ namespace SwapIt.API
 
 
             services.AddDbContext<SwapItDbContext>();
+            services.AddScoped<IDbFactory, DbFactory>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             //var mappingConfig = new MapperConfiguration(mc =>
             //{

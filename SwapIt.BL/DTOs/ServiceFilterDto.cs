@@ -8,11 +8,10 @@ namespace SwapIt.BL.DTOs
 {
     public class ServiceFilterDto
     {
-        public string ServiceName { get; set; }
-        public int ServicePrice { get; set; }
-        public int ServiceProviderId { get; set; }
-        public int CategoryId { get; set; }
-        public int UserId { get; set; }
+        public string? ServiceName { get; set; }
+        public int? ServiceMaxPrice { get; set; }
+        public int? ServiceProviderId { get; set; }
+        public int? CategoryId { get; set; }
 
     }
 }

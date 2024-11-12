@@ -3,7 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using SwapIt.BL.DTOs;
 using SwapIt.BL.DTOs.Identity;
 using SwapIt.BL.IServices;
+using SwapIt.BL.IServices.Identity;
+using SwapIt.BL.Services;
 using SwapIt.Data.Constants;
+using SwapIt.Data.Entities;
 using SwapIt.Data.Helpers;
 
 namespace SwapIt.API.Controllers
@@ -15,16 +18,17 @@ namespace SwapIt.API.Controllers
     {
         #region fileds & ctor
         private readonly IServiceService _serviceService;
+        private readonly IUserService _userService;
 
-        public ServiceController(IServiceService serviceService)
+        public ServiceController(IServiceService serviceService, IUserService userService)
         {
             _serviceService = serviceService;
+            _userService = userService;
         }
         #endregion
 
         #region User View
 
-        #region Service Provider
         [Authorize(Roles = RolesNames.ServiceProvider + "," + RolesNames.Admin + "," + RolesNames.SuperAdmin)]
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] ServiceDto dto)
@@ -54,6 +58,13 @@ namespace SwapIt.API.Controllers
         {
             try
             {
+                var roles = await _userService.GetUserRole(AppSecurityContext.UserId);
+                var service = await _serviceService.GetServiceByIdAsync(serviceId);
+
+                if (!roles.Contains(RolesNames.SuperAdmin) && !roles.Contains(RolesNames.Admin))
+                    if (AppSecurityContext.UserId != service?.ServiceProviderId)
+                        return Unauthorized();
+
                 bool success = await _serviceService.DeleteAsync(serviceId);
                 if (!success)
                     return new StatusCodeResult(StatusCodes.Status500InternalServerError);
@@ -67,123 +78,13 @@ namespace SwapIt.API.Controllers
             }
         }
 
-        [HttpGet("serviceProvider/Accepted/{serviceProviderId:int}")]
-        public async Task<IActionResult> GetAllAcceptedServiceProvider(int serviceProviderId)
-        {
-            try
-            {
-                return Ok(await _serviceService.GetAllAcceptedServiceProviderSideAsync(serviceProviderId));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpGet("serviceProvider/finished/{serviceProviderId:int}")]
-        public async Task<IActionResult> GetAllFinishedServiceProvider(int serviceProviderId)
-        {
-            try
-            {
-                return Ok(await _serviceService.GetAllFinshiedServiceProviderSideAsync(serviceProviderId));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpGet("serviceProvider/pending/{serviceProviderId:int}")]
-        public async Task<IActionResult> GetAllPendingServiceProvider(int serviceProviderId)
-        {
-            try
-            {
-                return Ok(await _serviceService.GetAllPendingServiceProviderSideAsync(serviceProviderId));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpGet("serviceProvider/cancelled/{serviceProviderId:int}")]
-        public async Task<IActionResult> GetAllCanceledServiceProvider(int serviceProviderId)
-        {
-            try
-            {
-                return Ok(await _serviceService.GetAllCanceledServiceProviderSideAsync(serviceProviderId));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-        #endregion
-
-        #region Customer
-        [HttpGet("customer/pending/{customerId:int}")]
-        public async Task<IActionResult> GetAllPendingCustomer(int customerId)
-        {
-            try
-            {
-                return Ok(await _serviceService.GetAllPendingCustomerSideAsync(customerId));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpGet("customer/accepted/{customerId:int}")]
-        public async Task<IActionResult> GetAllAcceptedCustomer(int customerId)
-        {
-            try
-            {
-
-
-                return Ok(await _serviceService.GetAllAcceptedCustomerSideAsync(customerId));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpGet("customer/cancelled/{customerId:int}")]
-        public async Task<IActionResult> GetAllCanceledCustomer(int customerId)
-        {
-            try
-            {
-                return Ok(await _serviceService.GetAllCanceledCustomerSideAsync(customerId));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpGet("customer/finished/{customerId:int}")]
-        public async Task<IActionResult> GetAllFinishedCustomer(int customerId)
-        {
-            try
-            {
-                return Ok(await _serviceService.GetAllFinishiedCustomerSideAsync(customerId));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-        #endregion
-
-
         [HttpGet("Search")]
         public async Task<IActionResult> Search([FromQuery] ServiceFilterDto serviceFilterDto)
         {
-            //var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            
             try
             {
-                return Ok(await _serviceService.SearchServiceAsync(serviceFilterDto));
+                return Ok(await _serviceService.SearchServiceAsync(serviceFilterDto, AppSecurityContext.UserId));
             }
             catch (Exception e)
             {

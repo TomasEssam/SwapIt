@@ -27,7 +27,7 @@ namespace SwapIt.BL.IServices
         Task<List<SearchResultDto>> GetAllCanceledCustomerSideAsync(int customerId);
 
         Task<List<ServiceDto>> GetAllAsync();
-        Task<List<SearchResultDto>> SearchServiceAsync(ServiceFilterDto Filter);
+        Task<List<SearchResultDto>> SearchServiceAsync(ServiceFilterDto Filter,int userId);
         Task<List<ImageResultDto>> GetAllPreviousWorkImageUrlAsync(int serviceProviderId);
         Task<ServiceDto> GetServiceByIdAsync(int serviceId);
         Task<List<DropDownDto>> GetServiceDDAsync();

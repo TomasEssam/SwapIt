@@ -144,7 +144,7 @@ namespace SwapIt.BL.Services
 
 
 
-        public async Task<List<SearchResultDto>> SearchServiceAsync(ServiceFilterDto dto)
+        public async Task<List<SearchResultDto>> SearchServiceAsync(ServiceFilterDto dto, int userId)
         {
             var query = _context.Services.Include(x => x.ServiceProvider)
                 .Include(x => x.Category)
@@ -155,22 +155,22 @@ namespace SwapIt.BL.Services
             {
                 query = _context.Services.Where(x => x.Name.Contains(dto.ServiceName));
             }
-            if (dto.ServicePrice > 0)
+            if ((dto.ServiceMaxPrice??0) > 0)
             {
-                query = _context.Services.Where(x => x.Price <= dto.ServicePrice);
+                query = _context.Services.Where(x => x.Price <= dto.ServiceMaxPrice);
             }
-            if (dto.ServiceProviderId > 0)
+            if ((dto.ServiceProviderId ?? 0) > 0)
             {
                 query = _context.Services.Where(x => x.ServiceProviderId == dto.ServiceProviderId);
             }
-            if (dto.CategoryId > 0)
+            if ((dto.CategoryId ?? 0) > 0)
             {
                 query = _context.Services.Where(x => x.CategoryId == dto.CategoryId);
             }
 
             var result = query
                 .Include(x => x.ServiceProvider)
-                .Where(x => x.ServiceProviderId != dto.UserId).Select(x => new SearchResultDto
+                .Where(x => x.ServiceProviderId != userId).Select(x => new SearchResultDto
                 {
                     Id = x.Id,
                     ServiceName = x.Name,
